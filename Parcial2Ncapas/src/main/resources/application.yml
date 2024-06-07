@@ -1,0 +1,29 @@
+#spring.application.name=ControllersSec02
+#spring.mustache.suffix=.html
+spring:
+  application:
+    name: Parcial2NCapas
+  mustache:
+    suffix: .html
+  datasource:
+    url: jdbc:postgresql://localhost:5500/parcialncapas
+    username: parcialncapas
+    password: parcialncapas
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        jdbc:
+          batch_size: 20
+        transaction:
+          flush_before_completion: true
+  sql:
+    init:
+      mode: always
+
+jwt:
+  secret: "94c9b14f-b497-4f25-bc02-4f5e1a512c3d"
+  exptime: 1296000000
