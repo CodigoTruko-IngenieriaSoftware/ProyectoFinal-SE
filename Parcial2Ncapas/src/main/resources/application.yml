@@ -20,9 +20,9 @@ spring:
           batch_size: 20
         transaction:
           flush_before_completion: true
-  sql:
-    init:
-      mode: always
+  #sql:
+   # init:
+    #  mode: always
 
 jwt:
   secret: "94c9b14f-b497-4f25-bc02-4f5e1a512c3d"

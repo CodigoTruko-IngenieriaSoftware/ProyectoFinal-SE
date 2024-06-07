@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
-    @Query("SELECT a FROM Appointment a JOIN a.users u WHERE u = :user")
+    @Query("SELECT a FROM Appointment a JOIN a.doctors u WHERE u = :user")
     List<Appointment> findByUsers(User user);
 }
