@@ -52,7 +52,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void addUsersToAppointment(UUID appointmentId, List<UUID> userIds) {
         Appointment appointment = findById(appointmentId);
         List<User> users = userRepository.findAllById(userIds);
-        appointment.getUsers().addAll(users);
+        appointment.getDoctors().addAll(users);
         appointmentRepository.save(appointment);
     }
 
@@ -60,7 +60,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void removeUserFromAppointment(UUID appointmentId, UUID userId) {
         Appointment appointment = findById(appointmentId);
-        appointment.getUsers().removeIf(user -> user.getId().equals(userId));
+        appointment.getDoctors().removeIf(user -> user.getId().equals(userId));
         appointmentRepository.save(appointment);
     }
 }

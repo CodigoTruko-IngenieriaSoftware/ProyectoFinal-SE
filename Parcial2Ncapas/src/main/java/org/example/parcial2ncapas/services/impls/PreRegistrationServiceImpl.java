@@ -2,7 +2,7 @@ package org.example.parcial2ncapas.services.impls;
 
 import jakarta.transaction.Transactional;
 import org.example.parcial2ncapas.domain.entities.Appointment;
-import org.example.parcial2ncapas.domain.entities.PreRegistration;
+import org.example.parcial2ncapas.domain.entities.Prescription;
 import org.example.parcial2ncapas.repositories.AppointmentRepository;
 import org.example.parcial2ncapas.repositories.PreRegistrationRepository;
 import org.example.parcial2ncapas.services.PreRegistrationService;
@@ -23,17 +23,17 @@ public class PreRegistrationServiceImpl implements PreRegistrationService {
     }
 
     @Override
-    public PreRegistration create(PreRegistration preRegistration) {
-        return preRegistrationRepository.save(preRegistration);
+    public Prescription create(Prescription prescription) {
+        return preRegistrationRepository.save(prescription);
     }
 
     @Override
-    public PreRegistration findById(UUID id) {
+    public Prescription findById(UUID id) {
         return preRegistrationRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<PreRegistration> findAll() {
+    public List<Prescription> findAll() {
         return preRegistrationRepository.findAll();
     }
 
@@ -43,16 +43,16 @@ public class PreRegistrationServiceImpl implements PreRegistrationService {
     }
 
     @Override
-    public List<PreRegistration> findByAppointment(Appointment appointment) {
+    public List<Prescription> findByAppointment(Appointment appointment) {
         return preRegistrationRepository.findByAppointment(appointment);
     }
 
     @Override
     @Transactional
     public void linkToAppointment(UUID preRegistrationId, UUID appointmentId) {
-        PreRegistration preRegistration = findById(preRegistrationId);
+        Prescription prescription = findById(preRegistrationId);
         Appointment appointment = appointmentRepository.findById(appointmentId).orElse(null);
-        preRegistration.setAppointment(appointment);
-        preRegistrationRepository.save(preRegistration);
+        prescription.setAppointment(appointment);
+        preRegistrationRepository.save(prescription);
     }
 }

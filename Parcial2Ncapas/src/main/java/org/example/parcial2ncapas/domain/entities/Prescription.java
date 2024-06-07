@@ -8,7 +8,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "pre_registrations")
-public class PreRegistration {
+public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -18,6 +18,8 @@ public class PreRegistration {
     private String instructions;
     private String issueDate;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
+    @JoinColumn(name = "appointment_id")
     private Appointment appointment;
+
 }
