@@ -48,4 +48,21 @@ public class AdminController {
 
         return GeneralResponse.getResponse(HttpStatus.OK,"Toggle Active");
     }
+
+
+    @PatchMapping("/toggle-available")
+    public ResponseEntity<?> toggleAvailable(@RequestBody @Valid UserChangesDTO info) {
+        String username = info.getUsername();
+
+        User user = userService.findByIdentifier(username);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        userService.toggleAvailable(username);
+
+        return GeneralResponse.getResponse(HttpStatus.OK,"Toggle Available");
+    }
+
 }

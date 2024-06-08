@@ -12,7 +12,6 @@ public interface PrescriptionService {
     Prescription create(Appointment appointment, PrescriptionCreateRequestDTO info);
     Prescription findById(UUID id);
     List<Prescription> findAll();
-    Boolean isUserAssignedToThisAppointment(User user, Appointment appointment);
     void delete(UUID id);
     List<Prescription> findByAppointment(Appointment appointment);
     void linkToAppointment(UUID preRegistrationId, UUID appointmentId);

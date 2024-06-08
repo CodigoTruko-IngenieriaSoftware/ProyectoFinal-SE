@@ -43,6 +43,11 @@ public class User implements UserDetails {
     @ColumnDefault(value = "true")
     private Boolean active;
 
+    @Column(insertable = false)
+    @ColumnDefault(value = "true")
+    private Boolean available;
+
+
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

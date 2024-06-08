@@ -2,17 +2,12 @@ package org.example.parcial2ncapas.controllers;
 
 import jakarta.validation.Valid;
 import org.example.parcial2ncapas.domain.dtos.GeneralResponse;
-import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentCreateRequestDTO;
 import org.example.parcial2ncapas.domain.dtos.specialty.SpecialtyCreateRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Specialty;
-import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.services.SpecialtyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/specialty")
@@ -33,7 +28,12 @@ public class SpecialtyController {
 
         specialtyService.create(info);
         return GeneralResponse.getResponse(HttpStatus.OK, "Specialty created");
+    }
 
+
+    @GetMapping("/")
+    public ResponseEntity<GeneralResponse> getAll(){
+        return GeneralResponse.getResponse(HttpStatus.OK, specialtyService.findAll());
     }
 
 }

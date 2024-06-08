@@ -40,11 +40,21 @@ public class AttendController {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
         }
 
+        if(!user.getAvailable()){
+            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "User is not available");
+        }
+
+
         Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
 
         if(appointment == null){
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appointment not found");
         }
+
+        if(userService.isUserAssignedToThisAppointment(user, appointment)){
+            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "User already assigned to this appointment");
+        }
+
 
         Specialty specialty = specialtyService.findByName(info.getSpecialty());
 
