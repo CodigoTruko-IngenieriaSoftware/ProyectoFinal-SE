@@ -1,5 +1,6 @@
 package org.example.parcial2ncapas.services;
 
+import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentCreateRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Appointment;
 import org.example.parcial2ncapas.domain.entities.User;
 
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AppointmentService {
-    Appointment create(Appointment info);
+    void create(User user, AppointmentCreateRequestDTO info);
     Appointment findById(UUID id);
     List<Appointment> findAll();
     void delete(UUID id);

@@ -1,0 +1,74 @@
+package org.example.parcial2ncapas.controllers;
+
+import jakarta.validation.Valid;
+import org.example.parcial2ncapas.domain.dtos.GeneralResponse;
+import org.example.parcial2ncapas.domain.dtos.attend.AttendCreateRequestDTO;
+import org.example.parcial2ncapas.domain.entities.Appointment;
+import org.example.parcial2ncapas.domain.entities.Specialty;
+import org.example.parcial2ncapas.domain.entities.User;
+import org.example.parcial2ncapas.services.AppointmentService;
+import org.example.parcial2ncapas.services.AttendService;
+import org.example.parcial2ncapas.services.SpecialtyService;
+import org.example.parcial2ncapas.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/attend")
+public class AttendController {
+
+    private final UserService userService;
+    private final SpecialtyService specialtyService;
+    private final AppointmentService appointmentService;
+    private final AttendService attendService;
+
+    public AttendController(UserService userService, SpecialtyService specialtyService, AppointmentService appointmentService, AttendService attendService) {
+        this.userService = userService;
+        this.specialtyService = specialtyService;
+        this.appointmentService = appointmentService;
+        this.attendService = attendService;
+
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<GeneralResponse> createAttend(@RequestBody @Valid AttendCreateRequestDTO info){
+        User user = userService.findByIdentifier(info.getUsername());
+        if(user == null){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointment_id()));
+
+        if(appointment == null){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appointment not found");
+        }
+
+        Specialty specialty = specialtyService.findByName(info.getSpecialty());
+
+        if(specialty == null){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Specialty not found");
+        }
+
+        attendService.create(appointment, specialty, user);
+        return GeneralResponse.getResponse(HttpStatus.OK, "Attend created");
+
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<GeneralResponse> getAll(){
+        return GeneralResponse.getResponse(HttpStatus.OK, attendService.findAll());
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<GeneralResponse> getAllByUsername(@PathVariable String username){
+        User user = userService.findByIdentifier(username);
+        if(user == null){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
+        }
+        return GeneralResponse.getResponse(HttpStatus.OK, attendService.findByUser(user));
+    }
+
+}

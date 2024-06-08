@@ -1,6 +1,7 @@
 package org.example.parcial2ncapas.services.impls;
 
 import jakarta.transaction.Transactional;
+import org.example.parcial2ncapas.domain.dtos.specialty.SpecialtyCreateRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Specialty;
 import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.repositories.SpecialtyRepository;
@@ -23,13 +24,20 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     }
 
     @Override
-    public Specialty create(Specialty specialty) {
+    public Specialty create(SpecialtyCreateRequestDTO info) {
+        Specialty specialty = new Specialty();
+        specialty.setName(info.getName());
         return specialtyRepository.save(specialty);
     }
 
     @Override
     public Specialty findById(UUID id) {
         return specialtyRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Specialty findByName(String name) {
+        return specialtyRepository.findByName(name);
     }
 
     @Override
@@ -44,7 +52,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
 
     @Override
     public List<Specialty> findByUser(User user) {
-        return specialtyRepository.findByUsers(user);
+        return null;
     }
 
     @Override
@@ -52,7 +60,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     public void addUserToSpecialty(UUID specialtyId, UUID userId) {
         Specialty specialty = findById(specialtyId);
         User user = userRepository.findById(userId).orElse(null);
-        specialty.getUsers().add(user);
+        //specialty.getUsers().add(user);
         specialtyRepository.save(specialty);
     }
 
@@ -60,7 +68,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     @Transactional
     public void removeUserFromSpecialty(UUID specialtyId, UUID userId) {
         Specialty specialty = findById(specialtyId);
-        specialty.getUsers().removeIf(u -> u.getId().equals(userId));
+        //specialty.getUsers().removeIf(u -> u.getId().equals(userId));
         specialtyRepository.save(specialty);
     }
 }
