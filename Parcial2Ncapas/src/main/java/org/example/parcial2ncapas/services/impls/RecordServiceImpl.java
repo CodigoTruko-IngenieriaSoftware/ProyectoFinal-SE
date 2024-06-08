@@ -1,12 +1,15 @@
 package org.example.parcial2ncapas.services.impls;
 
 import jakarta.transaction.Transactional;
+import org.example.parcial2ncapas.domain.dtos.record.RecordCreateRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Record;
 import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.repositories.RecordRepository;
 import org.example.parcial2ncapas.services.RecordService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +23,11 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Record create(Record record) {
+    public Record create(User user, RecordCreateRequestDTO info) {
+        Record record = new Record();
+        record.setUser(user);
+        record.setDescription(info.getDescription());
+        record.setCreationDate(LocalDateTime.now());
         return recordRepository.save(record);
     }
 
@@ -49,7 +56,7 @@ public class RecordServiceImpl implements RecordService {
     public void updateRecordDetails(UUID recordId, String newDetails) {
         Record record = findById(recordId);
         if (record != null) {
-            record.setDetails(newDetails);
+            record.setDescription(newDetails);
             recordRepository.save(record);
         }
     }
