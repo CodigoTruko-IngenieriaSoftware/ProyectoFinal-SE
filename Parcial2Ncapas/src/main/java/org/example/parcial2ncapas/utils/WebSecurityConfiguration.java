@@ -67,7 +67,8 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/appointment/**").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/specialty/**").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/attend/**").hasAuthority("ROLE_ASST")
-                        .requestMatchers("/api/Record/**").hasAuthority("ROLE_ASST")
+                        .requestMatchers("/api/record/**").hasAuthority("ROLE_ASST")
+                        .requestMatchers("/api/prescription/**").hasAuthority("ROLE_DCTR")
                         .anyRequest().authenticated()
         );
 

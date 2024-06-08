@@ -9,7 +9,7 @@ public class AttendCreateRequestDTO {
     private String username;
 
     @NotBlank
-    private String appointment_id;
+    private String appointmentId;
 
     @NotBlank
     private String specialty;
