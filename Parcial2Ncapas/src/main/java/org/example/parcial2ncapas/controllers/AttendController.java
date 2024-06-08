@@ -40,7 +40,7 @@ public class AttendController {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointment_id()));
+        Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
 
         if(appointment == null){
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appointment not found");
