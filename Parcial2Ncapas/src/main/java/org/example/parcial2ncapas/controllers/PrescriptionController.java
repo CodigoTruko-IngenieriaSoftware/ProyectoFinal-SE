@@ -15,10 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/prescription")
+@RequestMapping("/api/clinic/prescription")
 public class PrescriptionController {
 
     private final PrescriptionService prescriptionService;
@@ -53,6 +54,17 @@ public class PrescriptionController {
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> getAll(){
         return GeneralResponse.getResponse(HttpStatus.OK, prescriptionService.findAll());
+    }
+
+    @GetMapping("/{user_id}")
+    public ResponseEntity<GeneralResponse> getAllById(@PathVariable String user_id){
+        User user = userService.findById(UUID.fromString(user_id));
+        if(user == null){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        List<Appointment> appointments = appointmentService.findAllByUser(user);
+        return GeneralResponse.getResponse(HttpStatus.OK, prescriptionService.findAllByAppointments(appointments));
     }
 
     @PostMapping("/search")

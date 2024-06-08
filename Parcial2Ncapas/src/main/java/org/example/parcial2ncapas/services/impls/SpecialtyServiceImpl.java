@@ -46,6 +46,11 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     }
 
     @Override
+    public List<Specialty> findAllByName(List<String> names) {
+        return specialtyRepository.findAllByNameIn(names);
+    }
+
+    @Override
     public void delete(UUID id) {
         specialtyRepository.deleteById(id);
     }

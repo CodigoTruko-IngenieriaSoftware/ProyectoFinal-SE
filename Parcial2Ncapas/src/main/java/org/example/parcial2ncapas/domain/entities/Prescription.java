@@ -3,7 +3,9 @@ package org.example.parcial2ncapas.domain.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -16,7 +18,7 @@ public class Prescription {
 
     private String dose;
     private String instructions;
-    private LocalDateTime issueDate;
+    private LocalDate issueDate;
 
     @ManyToOne(optional = false)
     private Appointment appointment;
