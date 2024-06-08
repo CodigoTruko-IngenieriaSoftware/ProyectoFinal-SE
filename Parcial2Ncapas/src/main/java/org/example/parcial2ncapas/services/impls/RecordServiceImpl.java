@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +49,11 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public List<Record> findByUser(User user) {
+        return recordRepository.findByUser(user);
+    }
+
+    @Override
+    public List<Record> findByUserRangDate(User user, String startDate, String endDate) {
         return recordRepository.findByUser(user);
     }
 
