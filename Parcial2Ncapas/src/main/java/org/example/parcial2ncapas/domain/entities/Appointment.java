@@ -3,6 +3,7 @@ package org.example.parcial2ncapas.domain.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,36 +21,21 @@ public class Appointment {
     @GeneratedValue (strategy = GenerationType.UUID)
     private UUID id;
 
-    private String name;
-    private String date;
     private LocalDateTime dateTime;
     private String description;
     private String appointmentType;
-    private String state;
+    private Boolean authorized;
+    private Boolean pending;
 
-    /* RELACIONES CON OTRAS TABLAS */
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private  User patient;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_code")
+    private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "appointment_doctor",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "doctor_id")
-    )
-    private List<User> doctors;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY)
+    private List<Attend> attends;
 
-
-    @ManyToMany
-    @JoinTable(
-            name = "appointment_specialty",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "specialty_id")
-    )
-    private List<Specialty> specialties;
-
-
+    @JsonIgnore
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY)
     private List<Prescription> prescriptions;
 

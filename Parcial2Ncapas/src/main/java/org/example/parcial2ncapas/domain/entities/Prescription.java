@@ -18,8 +18,7 @@ public class Prescription {
     private String instructions;
     private String issueDate;
 
-    @ManyToOne
-    @JoinColumn(name = "appointment_id")
+    @ManyToOne(optional = false)
     private Appointment appointment;
 
 }

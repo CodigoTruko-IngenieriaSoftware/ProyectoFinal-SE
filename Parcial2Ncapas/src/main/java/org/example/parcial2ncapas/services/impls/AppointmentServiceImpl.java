@@ -1,6 +1,7 @@
 package org.example.parcial2ncapas.services.impls;
 
 import jakarta.transaction.Transactional;
+import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentCreateRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Appointment;
 import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.repositories.AppointmentRepository;
@@ -8,6 +9,7 @@ import org.example.parcial2ncapas.repositories.UserRepository;
 import org.example.parcial2ncapas.services.AppointmentService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +25,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Appointment create(Appointment info) {
-        return appointmentRepository.save(info);
+    public void create(User user, AppointmentCreateRequestDTO info) {
+        Appointment appointment = new Appointment();
+        appointment.setDescription(info.getDescription());
+        appointment.setDateTime(LocalDateTime.parse(info.getDateTime()));
+        appointment.setUser(user);
+        appointment.setAppointmentType(info.getAppointmentType());
+        appointment.setAuthorized(false);
+        appointment.setPending(false);
+
+        appointmentRepository.save(appointment);
     }
 
     @Override
@@ -44,7 +54,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> findByUser(User user) {
-        return appointmentRepository.findByUsers(user);
+        return null;
     }
 
     @Override
@@ -52,7 +62,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void addUsersToAppointment(UUID appointmentId, List<UUID> userIds) {
         Appointment appointment = findById(appointmentId);
         List<User> users = userRepository.findAllById(userIds);
-        appointment.getDoctors().addAll(users);
+        //appointment.getDoctors().addAll(users);
         appointmentRepository.save(appointment);
     }
 
@@ -60,7 +70,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void removeUserFromAppointment(UUID appointmentId, UUID userId) {
         Appointment appointment = findById(appointmentId);
-        appointment.getDoctors().removeIf(user -> user.getId().equals(userId));
+        //appointment.getDoctors().removeIf(user -> user.getId().equals(userId));
         appointmentRepository.save(appointment);
     }
 }

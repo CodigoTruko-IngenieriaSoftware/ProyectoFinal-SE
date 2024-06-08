@@ -9,6 +9,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SpecialtyRepository extends JpaRepository<Specialty, UUID> {
-    @Query("SELECT a FROM Specialty a JOIN a.users u WHERE u = :user")
-    List<Specialty> findByUsers(User user);
+    Specialty findByName(String name);
 }
