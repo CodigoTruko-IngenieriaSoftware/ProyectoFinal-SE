@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +24,7 @@ public class Appointment {
     private String description;
     private String appointmentType;
     private Boolean authorized;
-    private Boolean pending;
+    private Boolean done;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_code")

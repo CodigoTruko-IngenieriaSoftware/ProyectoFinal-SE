@@ -34,7 +34,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = new Appointment();
         appointment.setUser(user);
         appointment.setAuthorized(false);
-        appointment.setPending(true);
+        appointment.setDone(false);
 
         appointmentRepository.save(appointment);
     }
@@ -67,9 +67,26 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void togglePending(Appointment appointment) {
-        appointment.setPending(!appointment.getPending());
+        appointment.setDone(!appointment.getDone());
         appointmentRepository.save(appointment);
     }
+
+    @Override
+    public void done(Appointment appointment) {
+        appointment.setDone(true);
+        appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public Integer countByUserAndDone(User user, Boolean done) {
+        return appointmentRepository.countByUserAndDone(user, done);
+    }
+
+    @Override
+    public List<Appointment> findAllByUserAndDone(User user, Boolean done) {
+        return appointmentRepository.findByUserAndDone(user, done);
+    }
+
 
     @Override
     public Appointment findById(UUID id) {

@@ -11,6 +11,9 @@ public interface AppointmentService {
     void create(User user);
     void validate(Appointment appointment, AppointmentValidateRequestDTO info);
     void togglePending(Appointment appointment);
+    void done(Appointment appointment);
+    Integer countByUserAndDone(User user, Boolean done);
+    List<Appointment> findAllByUserAndDone(User user, Boolean done);
     Appointment findById(UUID id);
     List<Appointment> findAll();
     void delete(UUID id);
