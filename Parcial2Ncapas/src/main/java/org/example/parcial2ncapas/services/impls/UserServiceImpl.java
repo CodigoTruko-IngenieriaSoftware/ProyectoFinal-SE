@@ -14,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -56,8 +58,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findById(UUID id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> findAllByUsername(List<String> usernames) {
+        return userRepository.findAllByUsernameIn(usernames);
     }
 
     @Override
@@ -153,8 +165,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeRoles(User user, List<String> roles) {
-        List<Role> rolesFound = roleRepository.findAllById(roles);
-        user.setRoles(rolesFound);
+        List<Role> currentRoles = user.getRoles();
+
+        List<Role> rolesToToggle = roleRepository.findAllById(roles);
+
+        List<Role> newRoles = new ArrayList<>(currentRoles);
+
+        for (Role roleToToggle : rolesToToggle) {
+            if (currentRoles.contains(roleToToggle)) {
+                newRoles.remove(roleToToggle);
+            } else {
+                newRoles.add(roleToToggle);
+            }
+        }
+
+        user.setRoles(newRoles);
+
         userRepository.save(user);
     }
 

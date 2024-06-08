@@ -12,7 +12,10 @@ import org.example.parcial2ncapas.repositories.PrescriptionRepository;
 import org.example.parcial2ncapas.services.PrescriptionService;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,8 +39,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Prescription prescription = new Prescription();
         prescription.setDose(info.getDose());
         prescription.setInstructions(info.getInstructions());
-        prescription.setIssueDate(LocalDateTime.now());
         prescription.setAppointment(appointment);
+        prescription.setIssueDate(LocalDate.parse(info.getIssueDate()));
 
         return prescriptionRepository.save(prescription);
     }
@@ -52,6 +55,10 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         return prescriptionRepository.findAll();
     }
 
+    @Override
+    public List<Prescription> findAllByAppointments(List<Appointment> appointments) {
+        return prescriptionRepository.findAllByAppointmentAndIssueDateAfterToday(appointments);
+    }
 
 
     @Override

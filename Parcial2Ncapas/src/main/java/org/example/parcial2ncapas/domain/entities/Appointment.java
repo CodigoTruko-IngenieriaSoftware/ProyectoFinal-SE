@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,10 +22,12 @@ public class Appointment {
     @GeneratedValue (strategy = GenerationType.UUID)
     private UUID id;
 
-    private LocalDateTime dateTime;
-    private String description;
-    private String appointmentType;
-    private Boolean authorized;
+    private LocalDate date;
+    private LocalTime entryHour;
+    private LocalTime endHour;
+    private LocalTime estimatedEndHour;
+    private String reason;
+    private String state;
     private Boolean done;
 
     @ManyToOne(fetch = FetchType.EAGER)

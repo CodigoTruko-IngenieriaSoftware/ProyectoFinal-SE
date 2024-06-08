@@ -10,4 +10,5 @@ import java.util.UUID;
 
 public interface SpecialtyRepository extends JpaRepository<Specialty, UUID> {
     Specialty findByName(String name);
+    List<Specialty> findAllByNameIn(List<String> names);
 }

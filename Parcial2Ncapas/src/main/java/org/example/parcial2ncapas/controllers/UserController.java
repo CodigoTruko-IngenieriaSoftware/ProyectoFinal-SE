@@ -1,8 +1,11 @@
 package org.example.parcial2ncapas.controllers;
 
+import jakarta.validation.Valid;
 import org.example.parcial2ncapas.domain.dtos.ChangePasswordRequestDTO;
 import org.example.parcial2ncapas.domain.dtos.GeneralResponse;
+import org.example.parcial2ncapas.domain.dtos.record.RecordSearchByDateRequestDTO;
 import org.example.parcial2ncapas.domain.entities.User;
+import org.example.parcial2ncapas.services.RecordService;
 import org.example.parcial2ncapas.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasAuthority('ROLE_USER')")
 public class UserController {
     private final UserService userService;
+    private final RecordService recordService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RecordService recordService) {
         this.userService = userService;
+        this.recordService = recordService;
     }
 
 
@@ -41,7 +46,11 @@ public class UserController {
         }
     }
 
+    @GetMapping("/record")
+    public ResponseEntity<GeneralResponse> getMyRecord(@AuthenticationPrincipal User user, @RequestBody @Valid RecordSearchByDateRequestDTO info){
 
+        return GeneralResponse.getResponse(HttpStatus.OK, recordService.findByUserRangDate(user, info.getDateStart(), info.getDateEnd()));
+    }
 
 
 }

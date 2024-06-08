@@ -4,6 +4,7 @@ import org.example.parcial2ncapas.domain.dtos.record.RecordCreateRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Record;
 import org.example.parcial2ncapas.domain.entities.User;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,5 +14,6 @@ public interface RecordService {
     List<Record> findAll();
     void delete(UUID id);
     List<Record> findByUser(User user);
+    List<Record> findByUserRangDate(User user, String startDate, String endDate);
     void updateRecordDetails(UUID recordId, String newDetails);
 }

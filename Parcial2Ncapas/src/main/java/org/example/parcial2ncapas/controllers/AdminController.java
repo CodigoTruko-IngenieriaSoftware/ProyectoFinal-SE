@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/config")
 public class AdminController {
 
     private final UserService userService;

@@ -63,14 +63,15 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/").permitAll()
                         .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_SUDO", "ROLE_PTNT")
-                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_SUDO")
-                        .requestMatchers("/api/appointment/").permitAll()
+                        .requestMatchers("/api/config/**").hasAuthority("ROLE_SUDO")
+                        .requestMatchers("/api/appointment/request").permitAll()
+                        .requestMatchers("/api/appointment/own").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/**").hasAuthority("ROLE_ASST")
                         .requestMatchers("/api/specialty/**").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/attend/**").hasAuthority("ROLE_ASST")
                         .requestMatchers("/api/record/my").hasAnyAuthority("ROLE_PTNT", "ROLE_DCTR")
                         .requestMatchers("/api/record/**").hasAuthority("ROLE_DCTR")
-                        .requestMatchers("/api/prescription/**").hasAuthority("ROLE_DCTR")
+                        .requestMatchers("/api/clinic/prescription/**").hasAuthority("ROLE_DCTR")
                         .anyRequest().authenticated()
         );
 

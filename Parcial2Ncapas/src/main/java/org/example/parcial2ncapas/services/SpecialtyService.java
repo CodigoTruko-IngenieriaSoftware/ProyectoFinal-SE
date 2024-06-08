@@ -12,6 +12,7 @@ public interface SpecialtyService {
     Specialty findById(UUID id);
     Specialty findByName(String name);
     List<Specialty> findAll();
+    List<Specialty> findAllByName(List<String> names);
     void delete(UUID id);
     List<Specialty> findByUser(User user);
     void addUserToSpecialty(UUID specialtyId, UUID userId);
