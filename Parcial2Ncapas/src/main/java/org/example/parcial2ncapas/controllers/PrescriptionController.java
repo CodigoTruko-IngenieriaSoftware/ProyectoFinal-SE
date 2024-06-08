@@ -9,6 +9,7 @@ import org.example.parcial2ncapas.domain.entities.Prescription;
 import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.services.AppointmentService;
 import org.example.parcial2ncapas.services.PrescriptionService;
+import org.example.parcial2ncapas.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,10 +23,12 @@ public class PrescriptionController {
 
     private final PrescriptionService prescriptionService;
     private final AppointmentService appointmentService;
+    private final UserService userService;
 
-    public PrescriptionController(PrescriptionService prescriptionService, AppointmentService appointmentService) {
+    public PrescriptionController(PrescriptionService prescriptionService, AppointmentService appointmentService, UserService userService) {
         this.prescriptionService = prescriptionService;
         this.appointmentService = appointmentService;
+        this.userService = userService;
     }
 
     @PostMapping("/")
@@ -37,7 +40,7 @@ public class PrescriptionController {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appointment not found");
         }
 
-        if(prescriptionService.isUserAssignedToThisAppointment(user, appointment)){
+        if(userService.isUserAssignedToThisAppointment(user, appointment)){ //Verifica si el doctor esta asignado a esta cita, ya que solo el puede recetar
             prescriptionService.create(appointment, info);
             return GeneralResponse.getResponse(HttpStatus.OK, "Prescription created");
         }

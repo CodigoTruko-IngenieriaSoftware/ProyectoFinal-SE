@@ -1,6 +1,7 @@
 package org.example.parcial2ncapas.services;
 
 import org.example.parcial2ncapas.domain.dtos.UserRegisterDTO;
+import org.example.parcial2ncapas.domain.entities.Appointment;
 import org.example.parcial2ncapas.domain.entities.Token;
 import org.example.parcial2ncapas.domain.entities.User;
 
@@ -14,6 +15,7 @@ public interface UserService {
     boolean checkPassword(User user, String password);
     boolean isActive(User username);
     void toggleEnable(String username);
+    void toggleAvailable(String username);
     Token registerToken(User user) throws Exception;
     Boolean isTokenValid(User user, String token);
     void cleanTokens(User user) throws Exception;
@@ -21,5 +23,7 @@ public interface UserService {
     void updatePassword(String identifier, String newPassword);
 
     void changeRoles(User user, List<String> roles);
+
+    Boolean isUserAssignedToThisAppointment(User user, Appointment appointment);
 }
 

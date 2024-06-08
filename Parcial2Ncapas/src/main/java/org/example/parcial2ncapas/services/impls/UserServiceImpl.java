@@ -3,9 +3,8 @@ package org.example.parcial2ncapas.services.impls;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.parcial2ncapas.domain.dtos.UserRegisterDTO;
-import org.example.parcial2ncapas.domain.entities.Role;
-import org.example.parcial2ncapas.domain.entities.Token;
-import org.example.parcial2ncapas.domain.entities.User;
+import org.example.parcial2ncapas.domain.entities.*;
+import org.example.parcial2ncapas.repositories.AttendRepository;
 import org.example.parcial2ncapas.repositories.RoleRepository;
 import org.example.parcial2ncapas.repositories.TokenRepository;
 import org.example.parcial2ncapas.repositories.UserRepository;
@@ -25,13 +24,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final AttendRepository attendRepository;
 
-    public UserServiceImpl(UserRepository userRepository, JWTTools jwtTools, TokenRepository tokenRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, JWTTools jwtTools, TokenRepository tokenRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, AttendRepository attendRepository) {
         this.userRepository = userRepository;
         this.jwtTools = jwtTools;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.attendRepository = attendRepository;
     }
 
     @Override
@@ -74,6 +75,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
         assert user != null;
         user.setActive(!user.getActive());
+        userRepository.save(user);
+    }
+
+    @Override
+    public void toggleAvailable(String username) {
+        User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
+        assert user != null;
+        user.setAvailable(!user.getAvailable());
         userRepository.save(user);
     }
 
@@ -147,6 +156,14 @@ public class UserServiceImpl implements UserService {
         List<Role> rolesFound = roleRepository.findAllById(roles);
         user.setRoles(rolesFound);
         userRepository.save(user);
+    }
+
+
+    @Override
+    public Boolean isUserAssignedToThisAppointment(User user, Appointment appointment) {
+
+        Attend attend = attendRepository.findAttendByUserAndAppointment(user, appointment);
+        return attend != null;
     }
 
 }

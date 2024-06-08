@@ -52,12 +52,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         return prescriptionRepository.findAll();
     }
 
-    @Override
-    public Boolean isUserAssignedToThisAppointment(User user, Appointment appointment) {
 
-        Attend attend = attendRepository.findAttendByUserAndAppointment(user, appointment);
-        return attend != null;
-    }
 
     @Override
     public void delete(UUID id) {
