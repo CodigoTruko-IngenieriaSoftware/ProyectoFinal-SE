@@ -42,6 +42,14 @@ public class PrescriptionController {
         }
 
         if(userService.isUserAssignedToThisAppointment(user, appointment)){ //Verifica si el doctor esta asignado a esta cita, ya que solo el puede recetar
+
+            for (List<String> prescription : info.getPrescriptions()) {
+                if (prescription.size() != 3) {
+                    return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, "Prescription does not have two attributes");
+
+                }
+            }
+
             prescriptionService.create(appointment, info);
             return GeneralResponse.getResponse(HttpStatus.OK, "Prescription created");
         }

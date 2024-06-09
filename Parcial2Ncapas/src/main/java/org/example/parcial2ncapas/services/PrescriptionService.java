@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PrescriptionService {
-    Prescription create(Appointment appointment, PrescriptionCreateRequestDTO info);
+    void create(Appointment appointment, PrescriptionCreateRequestDTO info);
     Prescription findById(UUID id);
     List<Prescription> findAll();
     List<Prescription> findAllByAppointments(List<Appointment> appointments);
