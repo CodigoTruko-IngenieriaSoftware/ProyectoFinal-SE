@@ -4,12 +4,13 @@ import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentRequestRequ
 import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentApproveRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Appointment;
 import org.example.parcial2ncapas.domain.entities.Role;
+import org.example.parcial2ncapas.domain.entities.Specialty;
 import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.repositories.AppointmentRepository;
 import org.example.parcial2ncapas.repositories.RoleRepository;
-import org.example.parcial2ncapas.repositories.UserRepository;
 import org.example.parcial2ncapas.services.AppointmentService;
 import org.example.parcial2ncapas.services.AttendService;
+import org.example.parcial2ncapas.services.SpecialtyService;
 import org.example.parcial2ncapas.services.UserService;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +22,15 @@ import java.util.*;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
-    private final RoleRepository roleRepository;
     private final AttendService attendService;
+    private final SpecialtyService specialtyService;
 
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, UserRepository userRepository, UserService userService, RoleRepository roleRepository, AttendService attendService) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, UserService userService, AttendService attendService, SpecialtyService specialtyService) {
         this.appointmentRepository = appointmentRepository;
-        this.userRepository = userRepository;
         this.userService = userService;
-        this.roleRepository = roleRepository;
         this.attendService = attendService;
+        this.specialtyService = specialtyService;
     }
 
     @Override
@@ -76,6 +75,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointmentRepository.save(appointment);
 
+        for (List<String> user_specialty : info.getUser_specialty()) {
+
+            User tmp_user = userService.findByIdentifier(user_specialty.get(0));
+
+            Specialty tmp_specialty = specialtyService.findByName(user_specialty.get(1));
+
+            attendService.create(appointment, tmp_specialty, tmp_user);
+        }
 
     }
 

@@ -1,6 +1,7 @@
 package org.example.parcial2ncapas.domain.dtos.appointment;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class AppointmentApproveRequestDTO {
     private String entryHour;
     @NotBlank
     private String estimatedTimeMinutes;
-    private List<String> doctors;
-    private List<String> specialties;
+
+    @NotEmpty
+    private List<List<String>> user_specialty;
 }

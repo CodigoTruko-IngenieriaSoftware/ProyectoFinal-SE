@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,24 @@ public class AppointmentController {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appoint not found");
         }
 
+        if (Objects.equals(appointment.getState(), "pending_execution")){
+            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "Appointment already approve");
+        }
+
+        for (List<String> user_specialty : info.getUser_specialty()) {
+            if (user_specialty.size() != 2) {
+                return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, "User and Specialty does not match");
+            }
+            User user = userService.findByIdentifier(user_specialty.get(0));
+            if(user == null){
+                return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
+            }
+
+            Specialty specialty = specialtyService.findByName(user_specialty.get(1));
+            if(specialty == null){
+                return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Specialty not found");
+            }
+        }
 
         /*
         if(appointment.getState()){
