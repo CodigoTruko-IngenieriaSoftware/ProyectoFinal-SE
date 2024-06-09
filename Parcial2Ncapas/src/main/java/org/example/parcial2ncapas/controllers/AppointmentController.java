@@ -106,16 +106,16 @@ public class AppointmentController {
 
     @PostMapping("/request")
     public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
-        System.out.println(info.getDate());
-        System.out.println(info.getReason());
-        List<Appointment> checkThisAppointment =  appointmentService.findAllByUserAndDone(user, false);
+
+        if (user == null) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
+        }
 
 /*
+        List<Appointment> checkThisAppointment =  appointmentService.findAllByUserAndDone(user, false);
         if (!checkThisAppointment.isEmpty()) {
             return GeneralResponse.getResponse(HttpStatus.CONFLICT, "The user has a pending appointment");
         }
-
-
  */
 
         appointmentService.create(user, info);

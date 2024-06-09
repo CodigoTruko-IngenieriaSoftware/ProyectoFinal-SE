@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class RecordUpdateRequestDTO {
-    private String description;
+    private String reason;
     private String username;
 }

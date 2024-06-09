@@ -5,6 +5,7 @@ import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -62,6 +63,8 @@ public class WebSecurityConfiguration {
                 auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/user/record").hasAuthority("ROLE_PTNT")
+                        .requestMatchers(HttpMethod.POST, "/api/user/record").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
                         .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_SUDO", "ROLE_PTNT")
                         .requestMatchers("/api/config/**").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/appointment/request").permitAll()
