@@ -69,6 +69,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/config/**").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/appointment/request").permitAll()
                         .requestMatchers("/api/appointment/own").hasAuthority("ROLE_PTNT")
+                        .requestMatchers("/api/appointment/finish").hasAuthority("ROLE_DCTR")
                         .requestMatchers("/api/appointment/**").hasAuthority("ROLE_ASST")
                         .requestMatchers("/api/specialty/**").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/attend/**").hasAuthority("ROLE_ASST")

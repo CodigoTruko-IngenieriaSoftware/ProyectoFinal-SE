@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import org.example.parcial2ncapas.domain.dtos.GeneralResponse;
 import org.example.parcial2ncapas.domain.dtos.appointment.*;
 import org.example.parcial2ncapas.domain.entities.Appointment;
+import org.example.parcial2ncapas.domain.entities.Attend;
 import org.example.parcial2ncapas.domain.entities.Specialty;
 import org.example.parcial2ncapas.domain.entities.User;
 import org.example.parcial2ncapas.services.AppointmentService;
+import org.example.parcial2ncapas.services.AttendService;
 import org.example.parcial2ncapas.services.SpecialtyService;
 import org.example.parcial2ncapas.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -17,18 +19,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/appointment")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    private final AttendService attendService;
     private final UserService userService;
     private final SpecialtyService specialtyService;
 
-    public AppointmentController(AppointmentService appointmentService, UserService userService, SpecialtyService specialtyService) {
+    public AppointmentController(AppointmentService appointmentService, AttendService attendService, UserService userService, SpecialtyService specialtyService) {
         this.appointmentService = appointmentService;
+        this.attendService = attendService;
         this.userService = userService;
         this.specialtyService = specialtyService;
     }
@@ -61,67 +64,33 @@ public class AppointmentController {
             }
         }
 
-        /*
-        if(appointment.getState()){
-            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "Appoint already authorized");
-        }
-
-
-
-
-        List<String> doctorUsername = info.getUser_specialty().keySet().stream().toList();
-
-        List<String> specialtiesNames = info.getUser_specialty().values().stream().toList();
-
-
-        List<User> doctors = userService.findAllByUsername(doctorUsername);
-
-        List<Specialty> specialties = specialtyService.findAllByName(specialtiesNames);
-
-         */
         appointmentService.approve(appointment, info);
-
-
-
         return GeneralResponse.getResponse(HttpStatus.OK, "Appointment validated");
 
     }
 
-    @PatchMapping("/toggle-pending")
-    public ResponseEntity<GeneralResponse> togglePending(@RequestBody @Valid AppointmentTogglePendingDTO info) {
+    @PostMapping("/finish")
+    public ResponseEntity<GeneralResponse> finishAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentFinishRequestDTO info) {
 
         Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
 
-        if(appointment == null){
+        if (appointment == null) {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appoint not found");
         }
 
-        appointmentService.togglePending(appointment);
-        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment validated");
+        if (Objects.equals(appointment.getState(), "finished")) {
+            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "Appointment already finished");
+        }
+
+        if(userService.isUserAssignedToThisAppointment(user, appointment)){
+            appointmentService.finish(appointment);
+            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment finished");
+        }
+
+        return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "User not assigned to this appointment");
+
     }
 
-    @PostMapping("/assist")
-    public ResponseEntity<GeneralResponse> assistToAppointment(@RequestBody @Valid AppointmentAssistRequestDTO info) {
-
-        Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
-        if(appointment == null){
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appoint not found");
-        }
-
-        /*
-        if(!appointment.getState()){
-            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "Appoint not authorized");
-        }
-
-         */
-
-        if(appointment.getDone()) {
-            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "The appointment has already been made");
-        }
-
-        appointmentService.done(appointment);
-        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment assisted ");
-    }
 
     @PostMapping("/request")
     public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
@@ -130,26 +99,10 @@ public class AppointmentController {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
         }
 
-/*
-        List<Appointment> checkThisAppointment =  appointmentService.findAllByUserAndDone(user, false);
-        if (!checkThisAppointment.isEmpty()) {
-            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "The user has a pending appointment");
-        }
- */
-
         appointmentService.create(user, info);
         return GeneralResponse.getResponse(HttpStatus.OK, "Appointment requested");
     }
 
-    @GetMapping("/{username}/{done}")
-    public ResponseEntity<GeneralResponse> getAll(@PathVariable String username, @PathVariable boolean done){
-        User user = userService.findByIdentifier(username);
-        if(user == null){
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
-        }
-
-        return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUserAndDone(user, done));
-    }
 
     @GetMapping("/own")
     public ResponseEntity<GeneralResponse> getAll(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentGetByStateRequestDTO info){

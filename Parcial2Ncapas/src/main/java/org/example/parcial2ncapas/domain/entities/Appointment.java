@@ -28,7 +28,6 @@ public class Appointment {
     private LocalTime estimatedEndHour;
     private String reason;
     private String state;
-    private Boolean done;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_code")

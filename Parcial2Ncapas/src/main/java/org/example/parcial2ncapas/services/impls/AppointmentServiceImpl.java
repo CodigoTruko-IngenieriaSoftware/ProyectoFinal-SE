@@ -1,5 +1,6 @@
 package org.example.parcial2ncapas.services.impls;
 
+import jakarta.validation.constraints.Null;
 import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentRequestRequestDTO;
 import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentApproveRequestDTO;
 import org.example.parcial2ncapas.domain.entities.Appointment;
@@ -38,7 +39,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = new Appointment();
         appointment.setUser(user);
         appointment.setState("pending_approval");
-        appointment.setDone(false);
         appointment.setDate(LocalDate.parse(info.getDate()));
         appointment.setReason(info.getReason());
 
@@ -87,27 +87,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void togglePending(Appointment appointment) {
-        appointment.setDone(!appointment.getDone());
+    public void finish(Appointment appointment) {
+        appointment.setState("finished");
+        appointment.setEndHour(LocalTime.now());
         appointmentRepository.save(appointment);
     }
-
-    @Override
-    public void done(Appointment appointment) {
-        appointment.setDone(true);
-        appointmentRepository.save(appointment);
-    }
-
-    @Override
-    public Integer countByUserAndDone(User user, Boolean done) {
-        return appointmentRepository.countByUserAndDone(user, done);
-    }
-
-    @Override
-    public List<Appointment> findAllByUserAndDone(User user, Boolean done) {
-        return appointmentRepository.findByUserAndDone(user, done);
-    }
-
 
     @Override
     public Appointment findById(UUID id) {

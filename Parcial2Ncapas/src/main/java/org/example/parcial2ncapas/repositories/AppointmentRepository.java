@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
-    List<Appointment> findByUserAndDone(User user, Boolean done);
     List<Appointment> findAllByUserAndState(User user, String state);
     List<Appointment> findAllByUser(User user);
-    Integer countByUserAndDone(User user, Boolean done);
 }
