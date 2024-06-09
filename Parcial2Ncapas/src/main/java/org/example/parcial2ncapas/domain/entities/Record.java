@@ -3,7 +3,7 @@ package org.example.parcial2ncapas.domain.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -14,8 +14,8 @@ public class Record {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String description;
-    private LocalDateTime creationDate;
+    private String reason;
+    private LocalDate creationDate;
 
     @ManyToOne(optional = false)
     private User user;

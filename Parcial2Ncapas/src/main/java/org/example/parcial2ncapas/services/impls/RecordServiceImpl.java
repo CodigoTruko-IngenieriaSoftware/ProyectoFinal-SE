@@ -9,8 +9,6 @@ import org.example.parcial2ncapas.services.RecordService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,8 +25,8 @@ public class RecordServiceImpl implements RecordService {
     public Record create(User user, RecordCreateRequestDTO info) {
         Record record = new Record();
         record.setUser(user);
-        record.setDescription(info.getDescription());
-        record.setCreationDate(LocalDateTime.now());
+        record.setReason(info.getReason());
+        record.setCreationDate(LocalDate.now());
         return recordRepository.save(record);
     }
 
@@ -54,7 +52,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public List<Record> findByUserRangDate(User user, String startDate, String endDate) {
-        return recordRepository.findByUser(user);
+        return recordRepository.findByUserAndDateBetween(user, LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
 
     @Override
@@ -62,8 +60,10 @@ public class RecordServiceImpl implements RecordService {
     public void updateRecordDetails(UUID recordId, String newDetails) {
         Record record = findById(recordId);
         if (record != null) {
-            record.setDescription(newDetails);
+            record.setReason(newDetails);
             recordRepository.save(record);
         }
     }
+
+
 }

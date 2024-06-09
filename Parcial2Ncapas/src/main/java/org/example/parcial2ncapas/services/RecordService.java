@@ -16,4 +16,6 @@ public interface RecordService {
     List<Record> findByUser(User user);
     List<Record> findByUserRangDate(User user, String startDate, String endDate);
     void updateRecordDetails(UUID recordId, String newDetails);
+
+
 }
