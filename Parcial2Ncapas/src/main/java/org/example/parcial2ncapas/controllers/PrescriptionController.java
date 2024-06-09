@@ -4,35 +4,41 @@ import jakarta.validation.Valid;
 import org.example.parcial2ncapas.domain.dtos.GeneralResponse;
 import org.example.parcial2ncapas.domain.dtos.prescription.PrescriptionCreateRequestDTO;
 import org.example.parcial2ncapas.domain.dtos.prescription.PrescriptionSearchRequestDTO;
+import org.example.parcial2ncapas.domain.dtos.prescription.schedule.*;
 import org.example.parcial2ncapas.domain.entities.Appointment;
-import org.example.parcial2ncapas.domain.entities.Prescription;
+import org.example.parcial2ncapas.domain.entities.Attend;
+import org.example.parcial2ncapas.domain.entities.Record;
 import org.example.parcial2ncapas.domain.entities.User;
-import org.example.parcial2ncapas.services.AppointmentService;
-import org.example.parcial2ncapas.services.PrescriptionService;
-import org.example.parcial2ncapas.services.UserService;
+import org.example.parcial2ncapas.services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/clinic/prescription")
+@RequestMapping("/api/clinic")
 public class PrescriptionController {
 
     private final PrescriptionService prescriptionService;
     private final AppointmentService appointmentService;
     private final UserService userService;
+    private final AttendService attendService;
+    private final RecordService recordService;
 
-    public PrescriptionController(PrescriptionService prescriptionService, AppointmentService appointmentService, UserService userService) {
+    public PrescriptionController(PrescriptionService prescriptionService, AppointmentService appointmentService, UserService userService, AttendService attendService, RecordService recordService) {
         this.prescriptionService = prescriptionService;
         this.appointmentService = appointmentService;
         this.userService = userService;
+        this.attendService = attendService;
+        this.recordService = recordService;
     }
 
-    @PostMapping("/")
+    @PostMapping("/prescription")
     public ResponseEntity<GeneralResponse> createPrescription(@AuthenticationPrincipal User user, @RequestBody @Valid PrescriptionCreateRequestDTO info){
 
         Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
@@ -59,12 +65,12 @@ public class PrescriptionController {
 
     }
 
-    @GetMapping("/")
+    @GetMapping("/prescription")
     public ResponseEntity<GeneralResponse> getAll(){
         return GeneralResponse.getResponse(HttpStatus.OK, prescriptionService.findAll());
     }
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/prescription/{user_id}")
     public ResponseEntity<GeneralResponse> getAllById(@PathVariable String user_id){
         User user = userService.findById(UUID.fromString(user_id));
         if(user == null){
@@ -75,7 +81,61 @@ public class PrescriptionController {
         return GeneralResponse.getResponse(HttpStatus.OK, prescriptionService.findAllByAppointments(appointments));
     }
 
-    @PostMapping("/search")
+    @PostMapping("/schedule")
+    public ResponseEntity<GeneralResponse> schedule(@AuthenticationPrincipal User user, @RequestBody @Valid ScheduleRequestDTO info){
+        List<Attend> attends = attendService.findByUser(user);
+
+        List<Appointment> appointments = appointmentService.findAllByDateAndAttends(LocalDate.parse(info.getDate()), attends);
+
+        ScheduleResponseDTO scheduleResponseDTO = new ScheduleResponseDTO();
+
+        List<ScheduleAppointmentDTO> scheduleAppointmentDTOList = new ArrayList<>();
+        for(Appointment appointment : appointments){
+
+            SchedulePatientDTO schedulePatientDTO = new SchedulePatientDTO();
+
+            //Assign Records
+            List<Record> records_list = recordService.findByUser(appointment.getUser());
+
+            List<ScheduleRecordDTO> scheduleRecordDTOList = new ArrayList<>();
+            for(Record record_tmp : records_list){
+                ScheduleRecordDTO record = new ScheduleRecordDTO();
+                record.setRecordId(record_tmp.getId());
+                record.setReason(record_tmp.getReason());
+                record.setDate(record_tmp.getCreationDate());
+                scheduleRecordDTOList.add(record);
+            }
+
+            schedulePatientDTO.setPatientId(appointment.getUser().getId());
+            schedulePatientDTO.setRecord(scheduleRecordDTOList);
+
+
+            List<User> doctors_list = attendService.findAllUsersByAppointment(appointment);
+            List<ScheduleDoctorDTO> scheduleDoctorDTOList = new ArrayList<>();
+            for(User user_tmp : doctors_list){
+                if(!user_tmp.getId().equals(user.getId())){
+                    ScheduleDoctorDTO scheduleDoctorDTO = new ScheduleDoctorDTO();
+                    scheduleDoctorDTO.setUserId(user_tmp.getId());
+                    scheduleDoctorDTO.setUsername(user_tmp.getUsername());
+                    scheduleDoctorDTOList.add(scheduleDoctorDTO);
+                }
+            }
+
+            //FinalDTO
+            ScheduleAppointmentDTO scheduleAppointmentDTO = new ScheduleAppointmentDTO();
+            scheduleAppointmentDTO.setAppointmentId(appointment.getId());
+            scheduleAppointmentDTO.setPatient(schedulePatientDTO);
+            scheduleAppointmentDTO.setDoctors(scheduleDoctorDTOList);
+
+
+            scheduleAppointmentDTOList.add(scheduleAppointmentDTO);
+        }
+
+        scheduleResponseDTO.setAppointments(scheduleAppointmentDTOList);
+        return GeneralResponse.getResponse(HttpStatus.OK, scheduleResponseDTO);
+    }
+
+    @PostMapping("/prescription/search")
     public ResponseEntity<GeneralResponse> getAllByAppointment(@RequestBody @Valid PrescriptionSearchRequestDTO info){
         Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
         if(appointment == null){

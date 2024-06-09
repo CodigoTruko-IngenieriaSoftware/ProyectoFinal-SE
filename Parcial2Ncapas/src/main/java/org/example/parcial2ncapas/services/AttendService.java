@@ -12,4 +12,5 @@ public interface AttendService {
     void create(Appointment appointment, Specialty specialty, User user);
     List<Attend> findAll();
     List<Attend> findByUser(User user);
+    List<User> findAllUsersByAppointment(Appointment appointment);
 }

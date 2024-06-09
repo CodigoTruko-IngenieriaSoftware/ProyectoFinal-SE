@@ -3,10 +3,7 @@ package org.example.parcial2ncapas.services.impls;
 import jakarta.validation.constraints.Null;
 import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentRequestRequestDTO;
 import org.example.parcial2ncapas.domain.dtos.appointment.AppointmentApproveRequestDTO;
-import org.example.parcial2ncapas.domain.entities.Appointment;
-import org.example.parcial2ncapas.domain.entities.Role;
-import org.example.parcial2ncapas.domain.entities.Specialty;
-import org.example.parcial2ncapas.domain.entities.User;
+import org.example.parcial2ncapas.domain.entities.*;
 import org.example.parcial2ncapas.repositories.AppointmentRepository;
 import org.example.parcial2ncapas.repositories.RoleRepository;
 import org.example.parcial2ncapas.services.AppointmentService;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -116,6 +114,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<Appointment> findAllByUser(User user) {
         return appointmentRepository.findAllByUser(user);
+    }
+
+    @Override
+    public List<Appointment> findAllByDateAndAttends(LocalDate date, List<Attend> attends) {
+        List<UUID> attendIds = attends.stream()
+                .map(Attend::getId)
+                .collect(Collectors.toList());
+
+        return appointmentRepository.findAllByDateAndAttendIds(date, attendIds);
+
     }
 
 }

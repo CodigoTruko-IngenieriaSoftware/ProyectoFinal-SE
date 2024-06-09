@@ -39,4 +39,9 @@ public class AttendServiceImpl implements AttendService {
     public List<Attend> findByUser(User user) {
         return attendRepository.findAttendsByUser(user);
     }
+
+    @Override
+    public List<User> findAllUsersByAppointment(Appointment appointment) {
+        return attendRepository.findAllUsersByAppointment(appointment);
+    }
 }
