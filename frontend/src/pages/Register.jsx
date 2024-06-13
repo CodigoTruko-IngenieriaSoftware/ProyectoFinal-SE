@@ -5,16 +5,15 @@ import "../assets/styles/Login.css";
 function Login() {
   const navigate = useNavigate();
 
-  const navToRegister = () => {
-    navigate("/Register");
+  const navToLogin = () => {
+    navigate("/Login");
   };
-
   return (
     <>
       <div className="main-container-sesion">
         <div className="column-img-l">
           <img
-            src="src/assets/images/doctor-1.png"
+            src="src/assets/images/doctor-2.png"
             alt="Imagen de un doctor"
             className="sesion-img"
           />
@@ -25,10 +24,14 @@ function Login() {
           </div>
         </div>
         <div className="column-info-s">
-          <p className="sesion-text">Iniciar sesión</p>
+          <p className="sesion-text">Regístrate</p>
           <div className="inputs-s">
             <p className="sesion-subtitle">Usuario</p>
             <input type="text" className="login-input" placeholder="Usuario" />
+          </div>
+          <div className="inputs-s">
+            <p className="sesion-subtitle">Email</p>
+            <input type="text" className="login-input" placeholder="Email" />
           </div>
           <div className="inputs-s">
             <p className="sesion-subtitle">Contraseña</p>
@@ -39,12 +42,10 @@ function Login() {
             />
           </div>
 
-          <button className="sesion-btn">Iniciar Sesión</button>
+          <button className="sesion-btn">Registrar</button>
           <div className="to-register">
-            <p className="x-small">¿No tienes una cuenta?</p>
-            <button className="link-btn" onClick={navToRegister}>
-              Registrate aquí.
-            </button>
+            <p className="x-small">¿Ya eres miembro?</p>
+            <button className="link-btn" onClick={navToLogin}>Inicia sesión aquí.</button>
           </div>
         </div>
       </div>
