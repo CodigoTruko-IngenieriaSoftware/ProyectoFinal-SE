@@ -1,7 +1,13 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
+
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import MainAssistant from './pages/assistant/MainAssistant';
+import AprobarCita from './pages/assistant/Citas';
+import Prescription from './pages/assistant/Prescription';
+
+
 import './App.css'
 
 function App() {
@@ -10,8 +16,11 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/Login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/Register" element={<Register />} />
+          <Route path="/Assistant" element={<MainAssistant />} />
+          <Route path="/Cita" element={<AprobarCita />} />
+          <Route path="/Prescripcion" element={<Prescription />} />
         </Routes>
       </Router>
     </>

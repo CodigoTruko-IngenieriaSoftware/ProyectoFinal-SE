@@ -1,12 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../assets/styles/Login.css";
+import "../../assets/styles/Login.css";
 
 function Login() {
   const navigate = useNavigate();
 
   const navToLogin = () => {
-    navigate("/Login");
+    navigate("/");
   };
   return (
     <>
