@@ -1,9 +1,18 @@
 import '../../assets/styles/assistant/Citas.css';
+import { useState } from "react";
 
-import React from 'react';
 import Layout from './Layout';
+import Overlay from './OverlayForm';
+
 
 function Citas() {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleOverlay = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <Layout>
             <div className="content">
@@ -24,7 +33,11 @@ function Citas() {
                         </div>
                         <div>
                             <p className="info-tittle">Estado</p>
-                            <button>Aprobar</button>
+                            <button onClick={ toggleOverlay }>Aprobar</button>
+                            
+                            <Overlay isOpen={isOpen} onClose={toggleOverlay}>
+                                <h2>Aprobar Cita</h2>
+                            </Overlay>
                         </div>
                     </div>
                 </div>
@@ -33,4 +46,4 @@ function Citas() {
     );
 };
 
-export default Citas
+export default Citas;
