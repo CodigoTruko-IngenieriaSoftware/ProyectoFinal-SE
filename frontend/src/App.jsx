@@ -7,6 +7,8 @@ import MainAssistant from './pages/assistant/MainAssistant';
 import AprobarCita from './pages/assistant/Citas';
 import Prescription from './pages/assistant/Prescription';
 import Record from './pages/assistant/Record'
+import MainDoctor from './pages/doctor/MainDoctor'
+import Historial from './pages/doctor/Historial';
 
 import './App.css'
 
@@ -22,6 +24,8 @@ function App() {
           <Route path="/Cita" element={<AprobarCita />} />
           <Route path="/Prescripcion" element={<Prescription />} />
           <Route path="/Record" element={<Record />} />
+          <Route path="/Doctor" element={<MainDoctor />} />
+          <Route path="/Historial" element={<Historial />} />
         </Routes>
       </Router>
     </>
