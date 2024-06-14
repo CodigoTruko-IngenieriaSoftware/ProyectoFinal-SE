@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/record")
-    public ResponseEntity<GeneralResponse> getMyRecord(@AuthenticationPrincipal User user, @RequestBody @Valid RecordSearchByDateRequestDTO info){
+    public ResponseEntity<GeneralResponse> getMyRecord(@AuthenticationPrincipal User user, @ModelAttribute @Valid RecordSearchByDateRequestDTO info){
 
         return GeneralResponse.getResponse(HttpStatus.OK, recordService.findByUserRangDate(user, info.getDateStart(), info.getDateEnd()));
     }
