@@ -61,16 +61,21 @@ public class AppointmentController {
                 return GeneralResponse.getResponse(HttpStatus.CONFLICT, "User is not available");
             }
 
+            //verificar los 15 minutos de descanso
+            if (!appointmentService.isValidDateAndHour(user, appointment.getDate(), info) )
+                return GeneralResponse.getResponse(HttpStatus.CONFLICT, user.getUsername() + " is not free");
+
+
             Specialty specialty = specialtyService.findByName(user_specialty.get(1));
             if(specialty == null){
                 return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Specialty not found");
             }
         }
 
-        //verificar los 15 minutos de descanso
+
 
         appointmentService.approve(appointment, info);
-        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment validated");
+        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment approve");
 
     }
 
@@ -81,6 +86,7 @@ public class AppointmentController {
         if(appointment == null){
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appoint not found");
         }
+
 
         appointmentService.start(appointment);
 

@@ -97,6 +97,30 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Boolean isValidDateAndHour(User medic, LocalDate date, AppointmentApproveRequestDTO info) {
+
+        LocalTime entryHour = LocalTime.parse(info.getEntryHour());
+        entryHour = entryHour.plusMinutes(-15);
+
+        LocalTime finalHour = LocalTime.parse(info.getEntryHour());
+        finalHour = finalHour.plusMinutes(Long.parseLong(info.getEstimatedTimeMinutes()));
+        finalHour = finalHour.plusMinutes(15);
+
+
+        List<Appointment> appointmentsInRange = appointmentRepository.findAllAppointmentsByDateAndEstimatedEndHourAfterAndEntryHourBefore(date, entryHour, finalHour);
+
+        for (Appointment appointment : appointmentsInRange) {
+            if(userService.isUserAssignedToThisAppointment(medic, appointment)){
+                return false;
+            }
+        }
+
+
+        return true;
+
+    }
+
+    @Override
     public Appointment findById(UUID id) {
         return appointmentRepository.findById(id).orElse(null);
     }
