@@ -2,7 +2,6 @@ package org.example.apitaller4.services;
 
 import org.example.apitaller4.domain.dtos.appointment.AppointmentRequestRequestDTO;
 import org.example.apitaller4.domain.dtos.appointment.AppointmentApproveRequestDTO;
-import org.example.apitaller4.domain.dtos.appointment.AppointmentStartRequestDTO;
 import org.example.apitaller4.domain.entities.Appointment;
 import org.example.apitaller4.domain.entities.Attend;
 import org.example.apitaller4.domain.entities.User;
@@ -16,6 +15,8 @@ public interface AppointmentService {
     void approve(Appointment appointment, AppointmentApproveRequestDTO info);
     void start(Appointment appointment);
     void finish(Appointment appointment);
+
+    Boolean isValidDateAndHour(User medic, LocalDate date, AppointmentApproveRequestDTO info);
 
     Appointment findById(UUID id);
     List<Appointment> findAll();
