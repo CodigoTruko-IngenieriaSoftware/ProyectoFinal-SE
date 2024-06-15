@@ -1,14 +1,9 @@
 import '../../assets/styles/assistant/Citas.css';
 import { useState } from "react";
-
-<<<<<<< HEAD
 import React from 'react';
-import Layout from './Layout.jsx';
-=======
 import Layout from './Layout';
 import Overlay from './OverlayForm';
 
->>>>>>> bbd48072a5d608cfce5f97f9381e4712281261c2
 
 function Citas() {
 
