@@ -5,6 +5,6 @@ function OverlayForm ({ isOpen, onClose, children }) {
 
         <></>
     );
-};
+}
 
 export default OverlayForm

@@ -1,7 +1,7 @@
 import '../../assets/styles/assistant/Citas.css';
 
 import React from 'react';
-import Layout from './Layout';
+import Layout from './Layout.jsx';
 
 function Citas() {
     return (
@@ -31,6 +31,6 @@ function Citas() {
             </div>
         </Layout>
     );
-};
+}
 
 export default Citas

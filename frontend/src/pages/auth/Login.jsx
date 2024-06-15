@@ -28,7 +28,7 @@ function Login() {
           <p className="sesion-text">Iniciar sesión</p>
           <div className="inputs-s">
             <p className="sesion-subtitle">Usuario</p>
-            <input type="text" className="login-input" placeholder="Usuario" />
+            <input type="text" className="sesion-input" placeholder="Usuario" />
           </div>
           <div className="inputs-s">
             <p className="sesion-subtitle">Contraseña</p>
