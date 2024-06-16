@@ -1,9 +1,9 @@
 package org.example.apitaller4.controllers;
 
 import jakarta.validation.Valid;
-import org.example.apitaller4.domain.dtos.ChangeRoleRequestDTO;
+import org.example.apitaller4.domain.dtos.user.ChangeRoleRequestDTO;
 import org.example.apitaller4.domain.dtos.GeneralResponse;
-import org.example.apitaller4.domain.dtos.UserChangesDTO;
+import org.example.apitaller4.domain.dtos.user.UserChangesDTO;
 import org.example.apitaller4.domain.entities.User;
 import org.example.apitaller4.services.UserService;
 import org.springframework.http.HttpStatus;

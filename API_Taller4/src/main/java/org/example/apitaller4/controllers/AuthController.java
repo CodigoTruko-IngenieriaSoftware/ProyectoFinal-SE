@@ -2,9 +2,9 @@ package org.example.apitaller4.controllers;
 
 import jakarta.validation.Valid;
 import org.example.apitaller4.domain.dtos.GeneralResponse;
-import org.example.apitaller4.domain.dtos.LoginDTO;
-import org.example.apitaller4.domain.dtos.TokenDTO;
-import org.example.apitaller4.domain.dtos.UserRegisterDTO;
+import org.example.apitaller4.domain.dtos.auth.LoginDTO;
+import org.example.apitaller4.domain.dtos.auth.TokenDTO;
+import org.example.apitaller4.domain.dtos.auth.UserRegisterDTO;
 import org.example.apitaller4.domain.entities.Token;
 import org.example.apitaller4.domain.entities.User;
 import org.example.apitaller4.services.UserService;

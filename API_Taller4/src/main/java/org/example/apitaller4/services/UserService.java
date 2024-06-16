@@ -1,6 +1,6 @@
 package org.example.apitaller4.services;
 
-import org.example.apitaller4.domain.dtos.UserRegisterDTO;
+import org.example.apitaller4.domain.dtos.auth.UserRegisterDTO;
 import org.example.apitaller4.domain.entities.Appointment;
 import org.example.apitaller4.domain.entities.Token;
 import org.example.apitaller4.domain.entities.User;
