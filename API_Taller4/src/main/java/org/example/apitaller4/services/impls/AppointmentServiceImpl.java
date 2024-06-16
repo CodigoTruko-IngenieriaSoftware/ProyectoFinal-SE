@@ -97,6 +97,26 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public void reject(Appointment appointment) {
+        appointment.setState("rejected");
+        appointmentRepository.save(appointment);
+
+    }
+
+    @Override
+    public void cancel(Appointment appointment) {
+        appointment.setState("cancelled");
+        appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public Boolean isUserHasThisAppointment(User user, Appointment appointment) {
+        List<Appointment> tmp =  appointmentRepository.findAllAppointmentsByIdAndUser(appointment.getId(), user);
+        System.out.println(tmp.isEmpty());
+        return !tmp.isEmpty();
+    }
+
+    @Override
     public Boolean isValidDateAndHour(User medic, LocalDate date, AppointmentApproveRequestDTO info) {
 
         LocalTime entryHour = LocalTime.parse(info.getEntryHour());
