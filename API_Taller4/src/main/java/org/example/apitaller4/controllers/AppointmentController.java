@@ -196,6 +196,19 @@ public class AppointmentController {
     }
 
 
+    @GetMapping("/{username}")
+    public ResponseEntity<GeneralResponse> getAppointmentsByUser(@PathVariable String username) {
+
+        User user = userService.findByIdentifier(username);
+        if(user == null){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUser(user));
+
+    }
+
+
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> getAll(){
         return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAll());
