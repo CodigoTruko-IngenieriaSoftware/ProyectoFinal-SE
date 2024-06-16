@@ -21,6 +21,6 @@ export function OverlayForm ({ isOpen, onClose, children }) {
         )}
         </Fragment>
     );
-};
+}
 
 export default OverlayForm;
