@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "./LayoutUser.jsx";
 import AddElement from "../components/AddElement.jsx";
-import axios from "axios";
 
 import "../../assets/styles/user/User.css";
 
@@ -34,36 +33,6 @@ function UserMain() {
     }
   }, [appointmentReason]);
 
-  const handleSubmit  = async () => {
-    console.log("Intentando agendar cita con:", appointmentDate, appointmentReason);
-
-    const data = {
-      date : appointmentDate,
-      reason :  appointmentReason,
-      };
-
-       try {
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-          console.error('No token found');
-          return;
-        }
-
-        const response = await axios.post("http://localhost:8080/api/appointment/request", data, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-      });
-
-      console.log("Cita registrada:", response.data);
-      
-       }
-       catch (error){
-        console.error('Error para registrar la cita:', error.response ? error.response.data.message : 'Error sin respuesta');
-       }
-  };
-
   return (
     <>
       <Layout>
@@ -88,10 +57,10 @@ function UserMain() {
                     <div className="elements-popup">
                       <p className="appointment-title">Agenda una cita</p>
                       <p className="appointment-text">
-                        Escoge una fecha
+                        Escoge una fecha y hora
                       </p>
                       <input
-                        type="date"
+                        type="datetime-local"
                         value={appointmentDate}
                         onChange={(e) => setAppointmentDate(e.target.value)}
                       />
@@ -136,7 +105,7 @@ function UserMain() {
                     <div className="summary">
                     {appointmentReason}
                     </div>
-                    <button className="setAppointment" onClick={handleSubmit}>AGENDAR CITA</button>
+                    <button className="setAppointment">AGENDAR CITA</button>
                     </div>
                   </div>
                 )}

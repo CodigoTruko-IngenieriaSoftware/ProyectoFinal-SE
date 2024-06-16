@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
             case '/Cita':
                 return 'Citas';
             case '/Prescripcion':
-                return 'Prescripción';
+                return 'Historial Medico';
             default:
                 return 'Inicio';
         }
@@ -34,8 +34,8 @@ const Layout = ({ children }) => {
                             onClick={() => navigateTo('/Assistant')}>Inicio</li>
                         <li className={`navElement ${getActiveNav() === 'Citas' ? 'active' : ''}`}
                             onClick={() => navigateTo('/Cita')}>Citas</li>
-                        <li className={`navElement ${getActiveNav() === 'Prescripción' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Prescripcion')}>Prescripción</li>
+                        <li className={`navElement ${getActiveNav() === 'Historial Medico' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/Prescripcion')}>Historial Medico</li>
                     </ul>
                 </nav>
             </header>
