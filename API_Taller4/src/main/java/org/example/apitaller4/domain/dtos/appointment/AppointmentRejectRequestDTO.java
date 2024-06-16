@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class AppointmentGetByStateRequestDTO {
+public class AppointmentRejectRequestDTO {
     @NotBlank
-    private String state;
+    private String appointmentId;
 }
