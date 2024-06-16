@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Layout from "./LayoutUser.jsx";
+import Layout from "./LayoutPatient.jsx";
 import AddElement from "../components/AddElement.jsx";
 import axios from "axios";
 

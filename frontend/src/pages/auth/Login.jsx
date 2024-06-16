@@ -25,7 +25,7 @@ function Login() {
       const response = await axios.post("http://localhost:8080/api/auth/login", data);
       console.log("Token:", response.data.data.token);
       localStorage.setItem('token', response.data.data.token);
-      navigate('/record');
+      navigate('/user');
 
     } catch (error) {
       console.error('Error en el login:', error.response ? error.response.data.message : 'Error sin respuesta');

@@ -117,16 +117,16 @@ public class AppointmentController {
     }
 
 
-    @PostMapping("/request")
-    public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
+        @PostMapping("/request")
+        public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
 
-        if (user == null) {
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
+            if (user == null) {
+                return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
+            }
+
+            appointmentService.create(user, info);
+            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment requested");
         }
-
-        appointmentService.create(user, info);
-        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment requested");
-    }
 
 
     @GetMapping("/own")
