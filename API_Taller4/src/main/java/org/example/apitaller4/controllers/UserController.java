@@ -1,10 +1,11 @@
 package org.example.apitaller4.controllers;
 
 import jakarta.validation.Valid;
-import org.example.apitaller4.domain.dtos.ChangePasswordRequestDTO;
+import org.example.apitaller4.domain.dtos.user.ChangePasswordRequestDTO;
 import org.example.apitaller4.domain.dtos.GeneralResponse;
 import org.example.apitaller4.domain.dtos.record.RecordCreateRequestDTO;
 import org.example.apitaller4.domain.dtos.record.RecordSearchByDateRequestDTO;
+import org.example.apitaller4.domain.dtos.user.UserInfoResponseDTO;
 import org.example.apitaller4.domain.entities.User;
 import org.example.apitaller4.services.RecordService;
 import org.example.apitaller4.services.UserService;
@@ -28,8 +29,15 @@ public class UserController {
 
 
     @GetMapping("/")
-    public ResponseEntity<GeneralResponse> getAll(@AuthenticationPrincipal User user) {
-        return GeneralResponse.getResponse(HttpStatus.OK, userService.findAll());
+    public ResponseEntity<GeneralResponse> getInfo(@AuthenticationPrincipal User user) {
+        if (user == null) {
+            return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+        UserInfoResponseDTO responseDTO = new UserInfoResponseDTO();
+        responseDTO.setUsername(user.getUsername());
+        responseDTO.setEmail(user.getEmail());
+        responseDTO.setRole(user.getRoles());
+        return GeneralResponse.getResponse(HttpStatus.OK, responseDTO);
     }
 
 
