@@ -15,10 +15,10 @@ const DoctorLayout = ({ children }) => {
         switch (location.pathname) {
             case '/Doctor':
                 return 'Inicio';
-            case '/Cita':
-                return 'Citas';
-            case '/Prescripcion':
-                return 'Prescripción';
+            case '/appointment':
+                return 'appointment';
+            case '/Records':
+                return 'Records';
             default:
                 return 'Inicio';
         }
@@ -32,10 +32,10 @@ const DoctorLayout = ({ children }) => {
                     <ul className="menu">
                         <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
                             onClick={() => navigateTo('/Doctor')}>Doctor</li>
-                        <li className={`navElement ${getActiveNav() === 'Citas' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Cita')}>Citas</li>
-                        <li className={`navElement ${getActiveNav() === 'Prescripción' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Prescripcion')}>Prescripción</li>
+                        <li className={`navElement ${getActiveNav() === 'appointment' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/appointment')}>Citas</li>
+                        <li className={`navElement ${getActiveNav() === 'Records' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/Records')}>Historiales</li>
                     </ul>
                 </nav>
             </header>
