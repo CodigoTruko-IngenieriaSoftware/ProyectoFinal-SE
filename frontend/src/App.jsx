@@ -7,9 +7,11 @@ import MainAssistant from './pages/assistant/MainAssistant';
 import AprobarCita from './pages/assistant/Citas';
 import Prescription from './pages/assistant/Prescription';
 import UserMain from './pages/user/UserMain';
-
-import Record from './pages/assistant/Record'
-import Patient from './pages/patient/Patient'
+import Record from './pages/assistant/Record';
+import MainDoctor from './pages/doctor/MainDoctor';
+import Historial from './pages/doctor/Historial';
+import Citas from './pages/doctor/Citas';
+import Patient from './pages/patient/Patient';
 
 import './App.css'
 
@@ -26,6 +28,9 @@ function App() {
           <Route path="/Prescripcion" element={<Prescription />} />
           <Route path="/User" element={<UserMain />} />
           <Route path="/Record" element={<Record />} />
+          <Route path="/Doctor" element={<MainDoctor />} />
+          <Route path="/Records" element={<Historial />} />
+          <Route path="/Appointment" element={<Citas />} />
           <Route path="/Patient" element={<Patient />} />
         </Routes>
       </Router>
