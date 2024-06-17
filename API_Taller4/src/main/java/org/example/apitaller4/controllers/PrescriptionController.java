@@ -80,8 +80,8 @@ public class PrescriptionController {
         return GeneralResponse.getResponse(HttpStatus.OK, prescriptionService.findAllByUser(user));
     }
 
-    @PostMapping("/schedule")
-    public ResponseEntity<GeneralResponse> schedule(@AuthenticationPrincipal User user, @RequestBody @Valid ScheduleRequestDTO info){
+    @GetMapping("/schedule")
+    public ResponseEntity<GeneralResponse> schedule(@AuthenticationPrincipal User user, @ModelAttribute @Valid ScheduleRequestDTO info){
         List<Attend> attends = attendService.findByUser(user);
 
         List<Appointment> appointments = appointmentService.findAllByDateAndAttends(LocalDate.parse(info.getDate()), attends);
@@ -106,6 +106,7 @@ public class PrescriptionController {
             }
 
             schedulePatientDTO.setPatientId(appointment.getUser().getId());
+            schedulePatientDTO.setPatientUsername(appointment.getUser().getUsername());
             schedulePatientDTO.setRecord(scheduleRecordDTOList);
 
 
