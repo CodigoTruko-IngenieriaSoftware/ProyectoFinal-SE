@@ -93,7 +93,7 @@ function Citas() {
     return (
         <Layout>
             <div className="content">
-                <p className="tittle">Citas Pendientes de Aprobación</p>
+                <h2 className="tittle">Citas Pendientes de Aprobación</h2>
                 <div className="citas-container">
                 {citas.map((cita, index) => (
                     <div key={ index } className="paciente">

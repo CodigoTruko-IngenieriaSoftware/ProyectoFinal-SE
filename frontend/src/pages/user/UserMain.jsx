@@ -215,10 +215,10 @@ function UserMain() {
                     <div className="elements-popup">
                       <p className="appointment-title">Agenda una cita</p>
                       <p className="appointment-text">
-                        Escoge una fecha
+                        Escoge una fecha y hora
                       </p>
                       <input
-                        type="date"
+                        type="datetime-local"
                         value={appointmentDate}
                         onChange={(e) => setAppointmentDate(e.target.value)}
                       />
@@ -264,6 +264,16 @@ function UserMain() {
                         {appointmentReason}
                       </div>
                       <button className="setAppointment" onClick={handleSubmit}>AGENDAR CITA</button>
+                    <p className="appointment-title">Resumen</p>
+                    <p className="reason"><strong>Fecha y hora:</strong></p>
+                    <div className="summary">
+                    {appointmentDate}
+                    </div>
+                    <p className="reason"><strong>Razón de cita:</strong></p>
+                    <div className="summary">
+                    {appointmentReason}
+                    </div>
+                    <button className="setAppointment">AGENDAR CITA</button>
                     </div>
                   </div>
                 )}

@@ -41,6 +41,8 @@ function Login() {
   
       const userRoles = userInfoResponse.data.data.role;
       const hasEmptyRole = userRoles.some(role => !role.name);
+      localStorage.setItem('token', response.data.data.token);
+      navigate('/record');
 
       if (hasEmptyRole) {
         console.warn('User role is empty');

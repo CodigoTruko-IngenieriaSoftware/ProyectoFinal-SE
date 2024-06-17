@@ -1,5 +1,6 @@
 package org.example.apitaller4.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class Record {
     private String reason;
     private LocalDate creationDate;
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     private User user;
 }
