@@ -8,5 +8,6 @@ import java.util.UUID;
 @Data
 public class SchedulePatientDTO {
     private UUID patientId;
+    private String patientUsername;
     private List<ScheduleRecordDTO> record;
 }
