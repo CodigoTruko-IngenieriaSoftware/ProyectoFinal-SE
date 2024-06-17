@@ -65,6 +65,8 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/user/").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/user/record").hasAuthority("ROLE_PTNT")
                         .requestMatchers(HttpMethod.POST, "/api/user/record").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
+                        .requestMatchers("/api/user/all-patients").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
+                        .requestMatchers("/api/user/all-doctors").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
                         .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_SUDO", "ROLE_PTNT")
                         .requestMatchers("/api/config/**").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/appointment/").permitAll()
