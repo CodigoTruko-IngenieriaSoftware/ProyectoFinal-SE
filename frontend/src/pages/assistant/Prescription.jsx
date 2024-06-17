@@ -1,60 +1,89 @@
 import React, { useEffect, useState } from "react";
-import Layout from './Layout.jsx';
-import Overlay from './OverlayForm';
 import axios from 'axios';
-
+import Layout from './Layout';
+import Overlay from './OverlayForm';
 import '../../assets/styles/assistant/Prescription.css';
 
 function Prescription() {
-
-    // LOGICA DE CONEXIÓN CON API
-    // Obtener Usuarios.
-    const [user, setUsers] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [activeForm, setActiveForm] = useState(null);
+    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [selectedPatientRecords, setSelectedPatientRecords] = useState([]);
+    const [newRecordReason, setNewRecordReason] = useState('');
 
     useEffect(() => {
         handleGetUser();
     }, []);
 
     const handleGetUser = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/api/user/");
-            console.log("Data:", response.data);
-
-            // Filtrar usuarios con rol "ROLE_PCNT"
-            const filteredUsers = response.data.data.filter(user => 
-                user.authorities.some(auth => auth.authority === "ROLE_PCNT")
-            );
-
-            setUsers(filteredUsers);
-
-        } catch (error) {
-            console.error('Error al obtener citas:', error.response ? error.response.data : 'Error sin respuesta');
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            return;
         }
-    }
-
-    // Filtrar Historial de cada User.
-    const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-    const [selectedPatientRecords, setSelectedPatientRecords] = useState([]);
-    const [selectedPatient, setSelectedPatient] = useState(null);
-
-    const handleGetRecords = async (user) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc3Npc3RhbnQxQGdtYWlsLmNvbSIsImlhdCI6MTcxODU2MjgyNiwiZXhwIjoxNzE5ODU4ODI2fQ.qRsZd-U_JChw4Tk-zr1NV7NYKnUgTYaFKrVFb5_SOlk";
-            const response = await axios.get(`http://localhost:8080/api/record/`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+            const response = await axios.get("http://localhost:8080/api/user/all-patients", {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-            console.log("Registros:", response.data);
-            setSelectedPatientRecords(response.data.data);
-            setSelectedPatient(user);
-            setIsOverlayOpen(true);
+            const filteredUsers = response.data.data.filter(user =>
+                user.authorities.some(auth => auth.authority === "ROLE_PTNT")
+            );
+            setUsers(filteredUsers);
         } catch (error) {
-            console.error('Error al obtener registros:', error.response ? error.response.data : 'Error sin respuesta');
-            setIsOverlayOpen(false);
+            console.error('Error al obtener usuarios:', error.toString());
         }
     };
-    
+
+    const handleGetRecords = async (user) => {
+        setSelectedPatient(user);
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.get(`http://localhost:8080/api/record/${user.username}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setSelectedPatientRecords(response.data.data.records);
+            setActiveForm("RecordHistory");
+            setIsOpen(true);
+        } catch (error) {
+            console.error('Error al obtener registros:', error.toString());
+            setIsOpen(false);
+        }
+    };
+
+    const handleAddRecord = () => {
+        setNewRecordReason('');
+        setActiveForm("AddNewRecord");
+    };
+
+    const handleSubmitNewRecord = async () => {
+
+        const data = {
+            username: selectedPatient.username,
+            reason: newRecordReason
+        }
+
+        try {
+
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                console.error('No token found');
+                return;
+            }
+
+            const response = await axios.post(`http://localhost:8080/api/user/record`, data,{
+                headers: { 
+                    'Authorization': `Bearer ${token}` 
+                }
+            });
+            console.log("Respuesta de cancelación:", response.data);
+            setIsOpen(false);
+            handleGetRecords(selectedPatient);
+        } catch (error) {
+            console.error('Error al cancelar la cita:', error.response ? error.response.data : 'Error sin respuesta');
+        }
+    };
 
     return (
         <Layout>
@@ -66,33 +95,53 @@ function Prescription() {
                         <p className="info-tittle">Email</p>
                         <p className="info-tittle">Historial</p>
                     </div>
-                    {user.map((user, index) => (
+                    {users.map((user, index) => (
                         <div key={index} className="user-info">
-                                <p>{user.username}</p>
-                                <p>{user.email}</p>
+                            <p>{user.username}</p>
+                            <p>{user.email}</p>
                             <div>
-                            <button onClick={() => handleGetRecords(user)}>Acceder</button>
+                                <button onClick={() => handleGetRecords(user)}>Acceder</button>
                             </div>
                         </div>
                     ))}
                 </div>
-                {isOverlayOpen && (
-                <Overlay isOpen={isOverlayOpen} onClose={() => setIsOverlayOpen(false)}>
-                    <div>
-                        <h2>Historial de {selectedPatient.username}</h2>
-                        {selectedPatientRecords.length > 0 ? (
-                            selectedPatientRecords.map((record, index) => (
-                                <div key={index}>
-                                    <p>Fecha: {record.creationDate}</p>
-                                    <p>Razón: {record.reason}</p>
+                {isOpen && (
+                    <Overlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
+                        {activeForm === "RecordHistory" && selectedPatient && (
+                            <div className="record-container">
+                                <h2>Historial de {selectedPatient.username}</h2>
+                                {selectedPatientRecords.length > 0 ? (
+                                    <div className="record-data-container">
+                                        {selectedPatientRecords.map((record, index) => (
+                                            <div key={index} className="data-container">
+                                                <p>{index + 1}</p>
+                                                <p>{record.creationDate}</p>
+                                                <p>{record.reason}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p>No hay registros disponibles para {selectedPatient.username} en este momento.</p>
+                                )}
+                                <div>
+                                    <button onClick={handleAddRecord}>Agregar Nueva Entrada</button>
                                 </div>
-                            ))
-                        ) : (
-                            <p>No hay registros disponibles.</p>
+                            </div>
                         )}
-                    </div>
-                </Overlay>
-            )}
+                        {activeForm === "AddNewRecord" && (
+                            <div className="add-reason-container">
+                                <h2>Agregar Nueva Entrada para {selectedPatient.username}</h2>
+                                <div className="reason-container">
+                                    <p>Razon:</p>
+                                    <input type="text" onChange={e => setNewRecordReason(e.target.value)} />
+                                </div>
+                                <div>
+                                    <button onClick={handleSubmitNewRecord}>Guardar Entrada</button>
+                                </div>
+                            </div>
+                        )}
+                    </Overlay>
+                )}
             </div>
         </Layout>
     );

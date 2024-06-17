@@ -12,19 +12,28 @@ function Citas() {
     const [isOpen, setIsOpen] = useState(false);
     const [activeForm, setActiveForm] = useState("HourForm");
 
-    const [selectedDoctor, setSelectedDoctor] = useState("Selecciona un doctor");
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [doctors, setDoctors] = useState([{ doctor: "Selecciona un doctor", specialty: "Selecciona una especialidad" }]);
+    const [selectedDoctors, setSelectedDoctors] = useState(["Selecciona un doctor"]);
     const [selectedSpecialty, setSelectedSpecialty] = useState("Selecciona una especialidad");
+    const [dropdownOpen, setDropdownOpen] = useState(null);
     const [specialtyDropdownOpen, setSpecialtyDropdownOpen] = useState(false);
 
-    const [doctorCount, setDoctorCount] = useState(1); // Nuevo estado para contar doctores
-    const [doctors, setDoctors] = useState([{ doctor: "Selecciona un doctor", specialty: "Selecciona una especialidad" }]);
+    const [doctorCount, setDoctorCount] = useState(1); // Para manejar múltiples selecciones de doctores si necesario
+    const [rejectInfo, setRejectInfo] = useState({ isOpen: false, index: null });
+    const [citas, setCitas] = useState([]);
+
+    useEffect(() => {
+        fetchDoctors();
+        handleGetList();
+    }, []);
 
     const toggleOverlay = () => {
-        setIsOpen(!isOpen);
-        if (!isOpen) setActiveForm("HourForm");
+        setIsOpen(prev => !prev);
+        if (!isOpen) {
+            setActiveForm("HourForm");
+        }
     };
-
+    
     const handleNext = () => {
         setActiveForm("DoctorForm");  // Cambiar al siguiente formulario.
     };
@@ -32,54 +41,67 @@ function Citas() {
     const handleReject = (index) => {
         setActiveForm("RejectForm");
         setIsOpen(true);
-        // Puedes guardar el índice o cualquier otro identificador necesario para manejar el rechazo
         setRejectInfo({ index: index });
     };
 
-    const confirmRejection = (index) => {
-        console.log("Cita rechazada:", citas[index]);
-        // Implementa la lógica para actualizar el estado en el backend
-        setIsOpen(false);
-        setActiveForm(null);
-    };    
-
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
+    const toggleDropdown = (index) => {
+        setDropdownOpen(dropdownOpen === index ? null : index);
     };
-
-    const handleDoctorSelect = (doctor) => {
-        setSelectedDoctor(doctor);
-        setDropdownOpen(false);
+    
+    const handleDoctorSelect = (doctor, index) => {
+        const updatedDoctors = [...selectedDoctors];
+        updatedDoctors[index] = doctor.username;
+        setSelectedDoctors(updatedDoctors);
+        setDropdownOpen(null);
     };
+    
+    const getAvailableDoctors = () => {
+        return doctors.filter(doc => !selectedDoctors.includes(doc.username));
+    };
+    
+    
 
     const toggleSpecialtyDropdown = () => {
         setSpecialtyDropdownOpen(!specialtyDropdownOpen);
     };
 
-    const handleSpecialtySelect = (specialty) => {
+    const handleSpecialtySelect = (specialty, index) => {
         setSelectedSpecialty(specialty);
         setSpecialtyDropdownOpen(false);
     };
     
     const addDoctor = () => {
-        const newDoctor = { doctor: "Selecciona un doctor", specialty: "Selecciona una especialidad" };
-        setDoctors([...doctors, newDoctor]);
-        setDoctorCount(doctorCount + 1);
-    };
-
-    const removeDoctor = () => {
-        if (doctorCount > 1) {
-            setDoctors(doctors.slice(0, -1));
-            setDoctorCount(doctorCount - 1);
+        if (doctorCount < doctors.length) {
+            const newDoctor = "Selecciona un doctor";
+            setSelectedDoctors([...selectedDoctors, newDoctor]);
+            setDoctorCount(doctorCount + 1);
         }
     };
+    
+    
+    const removeDoctor = () => {
+        if (doctorCount > 1) {
+            setSelectedDoctors(selectedDoctors.slice(0, -1));
+            setDoctorCount(doctorCount - 1);
+        }
+    };    
 
     // LOGICA DE CONEXIÓN CON API
-    const [citas, setCitas] = useState([]);
-
-    useEffect(() => {
-        handleGetList();
-    }, []);
+    const fetchDoctors = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get("http://localhost:8080/api/user/all-doctors", {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setDoctors(response.data.data.map(doc => ({
+                username: doc.username,
+                specialty: 'Especialidad' // Asumiendo que necesitas añadir esto
+            })));
+        } catch (error) {
+            console.error('Error al obtener doctores:', error);
+        }
+    };
+    
 
     const handleGetList = async () => {
         try {
@@ -90,6 +112,38 @@ function Citas() {
             console.error('Error al obtener citas:', error.response ? error.response.data : 'Error sin respuesta');
         }
     }
+
+    const handleConfirmRejection = async (index) => {
+
+        const appointmentId = citas[index].id;
+
+        const data = {
+            appointmentId: appointmentId
+        }
+    
+        try {
+
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                console.error('No token found');
+                return;
+            }
+
+            const response = await axios.post('http://localhost:8080/api/appointment/reject', data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("Respuesta de cancelación:", response.data);
+            setIsOpen(false);
+            setActiveForm(null);
+            // Aquí podrías también querer actualizar el estado local para reflejar que la cita ha sido cancelada
+            handleGetList(); // Para recargar la lista de citas y reflejar el cambio
+        } catch (error) {
+            console.error('Error al cancelar la cita:', error.response ? error.response.data : 'Error sin respuesta');
+        }
+    };
     
     return (
         <Layout>
@@ -136,20 +190,31 @@ function Citas() {
                                     <div>
                                         <h2>Seleccionar Doctores</h2>
                                         <div className="doctors-container">
-                                            {doctors.map((doctor, index) => (
-                                                <div key={index} className="doc-det-container">
-                                                    <p>Doctor:</p>
-                                                    <button onClick={() => toggleDropdown(index)}>{doctor.doctor} &#9660;</button>
-                                                    <p>Especialidad:</p>
-                                                    <button onClick={() => toggleSpecialtyDropdown(index)}>{doctor.specialty} &#9660;</button>
-                                                </div>
-                                            ))}
+                                        {selectedDoctors.map((selectedDoctor, index) => (
+                                            <div key={index} className="doc-det-container">
+                                                <p>Doctor:</p>
+                                                <button onClick={() => toggleDropdown(index)}>
+                                                    {selectedDoctor} &#9660;
+                                                </button>
+                                                {dropdownOpen === index && (
+                                                    <ul style={{ listStyleType: "none", padding: 0 }}>
+                                                        {getAvailableDoctors().map((doc, idx) => (
+                                                            <li key={idx} onClick={() => handleDoctorSelect(doc, index)}>
+                                                                {doc.username}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                                <p>Especialidad:</p>
+                                                <button onClick={() => toggleSpecialtyDropdown(index)}>{selectedDoctor === index ? doctor.username : 'Selecciona un doctor'}&#9660;</button>
+                                            </div>
+                                        ))}
                                         </div>
                                         <div className="btn-container">
                                             <div className="doc-num-container">
                                                 <button id="add-doc-btn" onClick={removeDoctor} disabled={doctorCount <= 1}>-</button>
                                                 <p>{ doctorCount }</p>
-                                                <button id="add-doc-btn" onClick={addDoctor}>+</button>
+                                                <button id="add-doc-btn" onClick={addDoctor} disabled={doctorCount >= doctors.length}>+</button>
                                             </div>
                                             <button onClick={toggleOverlay} className="aprove-btn">Finalizar</button>
                                         </div>
@@ -161,7 +226,7 @@ function Citas() {
                                         <p>¿Estás seguro de que quieres rechazar esta cita?</p>
 
                                         <div className="btns-container">
-                                            <button onClick={() => confirmRejection(rejectInfo.index)} className="aprove-btn">Confirmar</button>
+                                            <button onClick={() => handleConfirmRejection(rejectInfo.index)} className="aprove-btn">Confirmar</button>
                                             <button onClick={toggleOverlay} className="reject-btn">Cancelar</button>
                                         </div>
 
