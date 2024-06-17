@@ -41,6 +41,15 @@
     justify-content: flex-start;
     flex-direction: column;
   }
+
+  .appointment-item-text p{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    margin: 1% 0;
+  }
   
   .toggle-button {
     padding: 5px 10px;

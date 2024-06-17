@@ -5,7 +5,7 @@ import '../../assets/styles/assistant/Layout.css';
 
 const DoctorLayout = ({ children }) => {
     const nav = useNavigate();
-    const location = useLocation(); // Para saber en que ruta esta actualmente.
+    const location = useLocation(); // Para saber en que ruta está actualmente.
 
     const navigateTo = (path) => {
         nav(path);
@@ -24,6 +24,11 @@ const DoctorLayout = ({ children }) => {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+        nav('/');
+    };
+
     return (
         <div className="main-container">
             <header>
@@ -36,6 +41,7 @@ const DoctorLayout = ({ children }) => {
                             onClick={() => navigateTo('/appointment')}>Citas</li>
                         <li className={`navElement ${getActiveNav() === 'Records' ? 'active' : ''}`}
                             onClick={() => navigateTo('/Records')}>Historiales</li>
+                        <li className="navElement logout" onClick={handleLogout}>Logout</li>
                     </ul>
                 </nav>
             </header>
