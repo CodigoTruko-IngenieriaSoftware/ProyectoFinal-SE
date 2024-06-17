@@ -73,6 +73,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllUsersByRole(List<Role> roles) {
+
+        return userRepository.findAllUsersByRoles(roles);
+    }
+
+    @Override
     public boolean checkPassword(User user, String password){
         return passwordEncoder.matches(password, user.getPassword());
     }

@@ -6,8 +6,10 @@ import org.example.apitaller4.domain.dtos.GeneralResponse;
 import org.example.apitaller4.domain.dtos.record.RecordCreateRequestDTO;
 import org.example.apitaller4.domain.dtos.record.RecordSearchByDateRequestDTO;
 import org.example.apitaller4.domain.dtos.user.UserInfoResponseDTO;
+import org.example.apitaller4.domain.entities.Role;
 import org.example.apitaller4.domain.entities.User;
 import org.example.apitaller4.services.RecordService;
+import org.example.apitaller4.services.RoleService;
 import org.example.apitaller4.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +17,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @PreAuthorize("hasAuthority('ROLE_USER')")
 public class UserController {
     private final UserService userService;
     private final RecordService recordService;
+    private final RoleService roleService;
 
-    public UserController(UserService userService, RecordService recordService) {
+    public UserController(UserService userService, RecordService recordService, RoleService roleService) {
         this.userService = userService;
         this.recordService = recordService;
+        this.roleService = roleService;
     }
 
 
@@ -39,6 +46,47 @@ public class UserController {
         responseDTO.setRole(user.getRoles());
         return GeneralResponse.getResponse(HttpStatus.OK, responseDTO);
     }
+
+    @GetMapping("/all-patients")
+    public ResponseEntity<GeneralResponse> getAllPatients(@AuthenticationPrincipal User user) {
+
+        if (user == null) {
+            return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+
+        Role role = roleService.findById("PTNT");
+
+        if (role == null) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Role Not Found");
+        }
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+
+        return GeneralResponse.getResponse(HttpStatus.OK, userService.findAllUsersByRole(roles));
+    }
+
+
+    @GetMapping("/all-doctors")
+    public ResponseEntity<GeneralResponse> getAllDoctors(@AuthenticationPrincipal User user) {
+
+        if (user == null) {
+            return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+
+        Role role = roleService.findById("DCTR");
+
+        if (role == null) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Role Not Found");
+        }
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+
+        return GeneralResponse.getResponse(HttpStatus.OK, userService.findAllUsersByRole(roles));
+    }
+
+
 
 
     @PatchMapping("/change-password")
