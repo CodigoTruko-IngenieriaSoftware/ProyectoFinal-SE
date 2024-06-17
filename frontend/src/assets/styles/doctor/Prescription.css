@@ -1,0 +1,205 @@
+
+:root{
+  --bgColor: #E3F2FF;
+  --fontColor: #0C0910;
+  --Color: #2E6171;
+}
+
+.prescription-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.prescriptions-list{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 10px;
+  width: 40%;
+}
+
+.prescriptions-list TABLE{
+  width: 100%;
+}
+
+/* Prescription.css */
+.modal-overlay-pre {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-pre {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.prescription-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.prescription-inputs{
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  width: 80%;
+}
+
+.prescription-inputs input {
+  padding: 1% 0;
+}
+
+.modal-btn {
+  background-color: var(--Color);
+  color: white;
+  border: none;
+  padding: 1% 0;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 50%;
+  border-radius: 50px;
+}
+
+.modal-btn-save {
+  background-color: var(--Color);
+  color: white;
+  border: none;
+  padding: 2% 1%;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 90%;
+  margin-right: 5%;
+  border-radius: 50px;
+}
+
+.action-btns-modal{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+}
+
+.modal-btn:hover {
+  background-color: var(--fontColor);
+}
+
+.modal-btn-save:hover {
+  background-color: var(--fontColor);
+}
+
+.id-input{
+  width: 80%;
+  padding: 1% 0;
+}
+
+.close-modal-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 2% 1%;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 50px;
+}
+
+.close-modal-btn:hover {
+  background-color: #da190b;
+}
+
+
+.search-btn{
+  width: 25%;
+  margin: 1% 0;
+  padding: 0.5% 0;
+  border-radius: 50px;
+  background-color: var(--Color);
+  color: white;
+  font-weight: bold;
+}
+
+.search-input{
+  width: 50%;
+  padding: 0.25% 0;
+}
+
+.historial-item {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.historial-item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.historial-item-text {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.edit-button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background: #0056b3;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-form button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-form button:hover {
+  background: #0056b3;
+}
+
+.prescription-table{
+  border-color: black ;
+}

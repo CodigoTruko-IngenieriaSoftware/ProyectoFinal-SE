@@ -17,7 +17,7 @@ function Citas() {
     pending_approval: "Pendiente de aprobación",
     pending_execution: "Pendiente de ejecución",
     in_execution: "En ejecución",
-    completed: "Finalizada",
+    finished: "Finalizada",
     rejected: "Rechazada",
     cancelled: "Cancelada",
   };

@@ -36,19 +36,14 @@
   
   .appointment-item-text {
     flex: 1;
-    display: flex;
-    align-items: left;
-    justify-content: flex-start;
-    flex-direction: column;
   }
 
   .appointment-item-text p{
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
-    flex-direction: column;
-    margin: 1% 0;
+    margin: 2% 0;
   }
   
   .toggle-button {
@@ -72,3 +67,13 @@
     opacity: 0.8;
   }
   
+.prescripciones{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin: 2% 0;
+    max-height: 300px;
+    overflow-y: auto;
+}

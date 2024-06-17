@@ -9,7 +9,7 @@ import Prescription from './pages/assistant/Prescription';
 import UserMain from './pages/user/UserMain';
 import Record from './pages/assistant/Record';
 import MainDoctor from './pages/doctor/MainDoctor';
-import Historial from './pages/doctor/Historial';
+import PrescriptionDoctor from './pages/doctor/Prescription';
 import Citas from './pages/doctor/Citas';
 import Patient from './pages/patient/Patient';
 
@@ -31,7 +31,7 @@ function App() {
           <Route path="/User" element={<UserMain />} />
           <Route path="/Record" element={<Record />} />
           <Route path="/Doctor" element={<MainDoctor />} />
-          <Route path="/Records" element={<Historial />} />
+          <Route path="/PrescriptionDoctor" element={<PrescriptionDoctor />} />
           <Route path="/Appointment" element={<Citas />} />
           <Route path="/Patient" element={<Patient />} />
           <Route path="/CitasPatient" element={<CitasPatient />} />
