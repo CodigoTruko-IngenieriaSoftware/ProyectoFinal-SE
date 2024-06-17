@@ -17,6 +17,7 @@ public class Record {
 
     private String reason;
     private LocalDate creationDate;
+    private LocalDate updateDate;
 
     @JsonIgnore
     @ManyToOne(optional = false)

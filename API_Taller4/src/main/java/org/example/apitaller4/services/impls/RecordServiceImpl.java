@@ -2,6 +2,7 @@ package org.example.apitaller4.services.impls;
 
 import jakarta.transaction.Transactional;
 import org.example.apitaller4.domain.dtos.record.RecordCreateRequestDTO;
+import org.example.apitaller4.domain.dtos.record.RecordUpdateRequestDTO;
 import org.example.apitaller4.domain.entities.Record;
 import org.example.apitaller4.domain.entities.User;
 import org.example.apitaller4.repositories.RecordRepository;
@@ -22,12 +23,20 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Record create(User user, RecordCreateRequestDTO info) {
+    public void create(User user, RecordCreateRequestDTO info) {
         Record record = new Record();
         record.setUser(user);
         record.setReason(info.getReason());
         record.setCreationDate(LocalDate.now());
-        return recordRepository.save(record);
+        record.setUpdateDate(LocalDate.now());
+        recordRepository.save(record);
+    }
+
+    @Override
+    public void update(Record record, RecordUpdateRequestDTO info) {
+        record.setReason(info.getReason());
+        record.setUpdateDate(LocalDate.now());
+        recordRepository.save(record);
     }
 
     @Override
