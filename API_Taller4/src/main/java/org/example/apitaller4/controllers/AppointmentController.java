@@ -94,13 +94,17 @@ public class AppointmentController {
 
     }
 
-        @PostMapping("/finish")
+    @PostMapping("/finish")
     public ResponseEntity<GeneralResponse> finishAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentFinishRequestDTO info) {
 
         Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
 
         if (appointment == null) {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appoint not found");
+        }
+
+        if (!Objects.equals(appointment.getState(), "in_execution")) {
+            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "Appointment is not in execution");
         }
 
         if (Objects.equals(appointment.getState(), "finished")) {
@@ -116,25 +120,92 @@ public class AppointmentController {
 
     }
 
+    @PostMapping("/reject")
+    public ResponseEntity<GeneralResponse> rejectAppointment(@RequestBody @Valid AppointmentRejectRequestDTO info) {
 
-    @PostMapping("/request")
-    public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
+        Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
 
-        if (user == null) {
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
+        if (appointment == null) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appoint not found");
         }
 
-        appointmentService.create(user, info);
-        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment requested");
+        if (Objects.equals(appointment.getState(), "rejected")) {
+            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment already rejected");
+        }
+
+        if (Objects.equals(appointment.getState(), "pending_approval")) {
+            appointmentService.reject(appointment);
+            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment rejected");
+        }
+        else{
+            return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Appointment already approve");
+        }
+
     }
 
 
+    @PostMapping("/cancel")
+    public ResponseEntity<GeneralResponse> cancelAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentCancelRequestDTO info) {
+
+        Appointment appointment = appointmentService.findById(UUID.fromString(info.getAppointmentId()));
+
+        if (appointment == null) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Appointment not found");
+        }
+
+        if (user == null) {
+            return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "User unauthorized");
+        }
+
+
+        if(!appointmentService.isUserHasThisAppointment(user, appointment)){
+            return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "User unauthorized");
+        }
+
+        if (Objects.equals(appointment.getState(), "cancelled")) {
+            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment already cancelled");
+        }
+
+        if (!Objects.equals(appointment.getState(), "pending_approve")) {
+            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment already approve");
+        }
+
+        appointmentService.cancel(appointment);
+        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment cancelled");
+    }
+
+
+        @PostMapping("/request")
+        public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
+
+            if (user == null) {
+                return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
+            }
+
+            appointmentService.create(user, info);
+            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment requested");
+        }
+
+
     @GetMapping("/own")
-    public ResponseEntity<GeneralResponse> getAll(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentGetByStateRequestDTO info){
+    public ResponseEntity<GeneralResponse> getAll(@AuthenticationPrincipal User user, @ModelAttribute @Valid AppointmentGetByStateRequestDTO info){
         if(info.getState() == null){
             return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUser(user));
         }
         return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUserAndState(user, info.getState()));
+    }
+
+
+    @GetMapping("/{username}")
+    public ResponseEntity<GeneralResponse> getAppointmentsByUser(@PathVariable String username) {
+
+        User user = userService.findByIdentifier(username);
+        if(user == null){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUser(user));
+
     }
 
 

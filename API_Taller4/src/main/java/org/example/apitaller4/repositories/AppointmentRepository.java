@@ -18,4 +18,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findAllByDateAndAttendIds(@Param("date") LocalDate date, @Param("attendIds") List<UUID> attendIds);
 
     List<Appointment> findAllAppointmentsByDateAndEstimatedEndHourAfterAndEntryHourBefore(LocalDate date, LocalTime entryHour, LocalTime estimatedEndHour);
+
+    List<Appointment> findAllAppointmentsByIdAndUser(UUID id, User user);
 }

@@ -1,4 +1,4 @@
-package org.example.apitaller4.domain.dtos;
+package org.example.apitaller4.domain.dtos.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

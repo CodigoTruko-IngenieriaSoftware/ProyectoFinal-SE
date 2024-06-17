@@ -13,12 +13,12 @@ const Layout = ({ children }) => {
 
     const getActiveNav = () => {
         switch (location.pathname) {
-            case '/Assistant':
+            case '/User ':
                 return 'Inicio';
             case '/Cita':
                 return 'Citas';
             case '/Prescripcion':
-                return 'Historial Medico';
+                return 'Prescripción';
             default:
                 return 'Inicio';
         }
@@ -31,11 +31,7 @@ const Layout = ({ children }) => {
                 <nav className="nav">
                     <ul className="menu">
                         <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Assistant')}>Inicio</li>
-                        <li className={`navElement ${getActiveNav() === 'Citas' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Cita')}>Citas</li>
-                        <li className={`navElement ${getActiveNav() === 'Historial Medico' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Prescripcion')}>Historial Medico</li>
+                            onClick={() => navigateTo('/User')}>Inicio</li>
                     </ul>
                 </nav>
             </header>

@@ -2,7 +2,7 @@ package org.example.apitaller4.services.impls;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.example.apitaller4.domain.dtos.UserRegisterDTO;
+import org.example.apitaller4.domain.dtos.auth.UserRegisterDTO;
 import org.example.apitaller4.domain.entities.*;
 import org.example.apitaller4.repositories.AttendRepository;
 import org.example.apitaller4.repositories.RoleRepository;
@@ -70,6 +70,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAllByUsername(List<String> usernames) {
         return userRepository.findAllByUsernameIn(usernames);
+    }
+
+    @Override
+    public List<User> findAllUsersByRole(List<Role> roles) {
+
+        return userRepository.findAllUsersByRoles(roles);
     }
 
     @Override

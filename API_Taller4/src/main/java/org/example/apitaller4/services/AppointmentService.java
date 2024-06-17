@@ -15,6 +15,10 @@ public interface AppointmentService {
     void approve(Appointment appointment, AppointmentApproveRequestDTO info);
     void start(Appointment appointment);
     void finish(Appointment appointment);
+    void reject(Appointment appointment);
+    void cancel(Appointment appointment);
+
+    Boolean isUserHasThisAppointment(User user, Appointment appointment);
 
     Boolean isValidDateAndHour(User medic, LocalDate date, AppointmentApproveRequestDTO info);
 

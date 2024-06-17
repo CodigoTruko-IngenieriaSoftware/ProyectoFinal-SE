@@ -1,4 +1,4 @@
-package org.example.apitaller4.domain.dtos;
+package org.example.apitaller4.domain.dtos.auth;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
