@@ -12,11 +12,15 @@ function Citas() {
     const [isOpen, setIsOpen] = useState(false);
     const [activeForm, setActiveForm] = useState("HourForm");
 
+    const [entryHour, setEntryHour] = useState("");
+    const [estimatedTimeMinutes, setEstimatedTimeMinutes] = useState("");
+
     const [doctors, setDoctors] = useState([{ doctor: "Selecciona un doctor", specialty: "Selecciona una especialidad" }]);
     const [selectedDoctors, setSelectedDoctors] = useState(["Selecciona un doctor"]);
-    const [selectedSpecialty, setSelectedSpecialty] = useState("Selecciona una especialidad");
+    const [specialties, setSpecialties] = useState([{ name: "Selecciona una especialidad" }]);
+    const [selectedSpecialties, setSelectedSpecialties] = useState(["Selecciona una especialidad"]);
     const [dropdownOpen, setDropdownOpen] = useState(null);
-    const [specialtyDropdownOpen, setSpecialtyDropdownOpen] = useState(false);
+    const [specialtyDropdownOpen, setSpecialtyDropdownOpen] = useState(null);
 
     const [doctorCount, setDoctorCount] = useState(1); // Para manejar múltiples selecciones de doctores si necesario
     const [rejectInfo, setRejectInfo] = useState({ isOpen: false, index: null });
@@ -24,6 +28,7 @@ function Citas() {
 
     useEffect(() => {
         fetchDoctors();
+        fetchSpecialties();
         handleGetList();
     }, []);
 
@@ -33,6 +38,11 @@ function Citas() {
             setActiveForm("HourForm");
         }
     };
+
+    const isFormValid = () => {
+        return entryHour.trim() !== "" && estimatedTimeMinutes > 0;
+    };
+    
     
     const handleNext = () => {
         setActiveForm("DoctorForm");  // Cambiar al siguiente formulario.
@@ -58,30 +68,36 @@ function Citas() {
     const getAvailableDoctors = () => {
         return doctors.filter(doc => !selectedDoctors.includes(doc.username));
     };
-    
-    
 
-    const toggleSpecialtyDropdown = () => {
-        setSpecialtyDropdownOpen(!specialtyDropdownOpen);
-    };
+    const toggleSpecialtyDropdown = (index) => {
+        setSpecialtyDropdownOpen(specialtyDropdownOpen === index ? null : index);
+    };    
 
     const handleSpecialtySelect = (specialty, index) => {
-        setSelectedSpecialty(specialty);
-        setSpecialtyDropdownOpen(false);
-    };
+        const updatedSpecialties = [...selectedSpecialties];
+        updatedSpecialties[index] = specialty.name;
+        setSelectedSpecialties(updatedSpecialties);
+        setSpecialtyDropdownOpen(null);
+    };    
     
+    const getAvailableSpecialties = () => {
+        return specialties.filter(specialty => !selectedSpecialties.includes(specialty.name));
+    };
+
     const addDoctor = () => {
         if (doctorCount < doctors.length) {
             const newDoctor = "Selecciona un doctor";
+            const newSpecialty = "Selecciona una especialidad";
             setSelectedDoctors([...selectedDoctors, newDoctor]);
+            setSelectedSpecialties([...selectedSpecialties, newSpecialty]);
             setDoctorCount(doctorCount + 1);
         }
     };
     
-    
     const removeDoctor = () => {
         if (doctorCount > 1) {
-            setSelectedDoctors(selectedDoctors.slice(0, -1));
+            setSelectedDoctors([...selectedDoctors]);
+            setSelectedSpecialties([...selectedSpecialties]);
             setDoctorCount(doctorCount - 1);
         }
     };    
@@ -94,14 +110,28 @@ function Citas() {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setDoctors(response.data.data.map(doc => ({
-                username: doc.username,
-                specialty: 'Especialidad' // Asumiendo que necesitas añadir esto
+                username: doc.username
             })));
         } catch (error) {
             console.error('Error al obtener doctores:', error);
         }
     };
     
+    const fetchSpecialties = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get("http://localhost:8080/api/specialty/", {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            console.log(response);
+            setSpecialties(response.data.data.map(specialty => ({
+                name: specialty.name
+            })));
+        } catch (error) {
+            console.error('Error al obtener especialidades:', error);
+        }
+    };
 
     const handleGetList = async () => {
         try {
@@ -112,6 +142,33 @@ function Citas() {
             console.error('Error al obtener citas:', error.response ? error.response.data : 'Error sin respuesta');
         }
     }
+
+    const handleApprove = async (appointmentId) => {
+        const userSpecialty = selectedDoctors.map((doctor, index) => [doctor, selectedSpecialties[index]]);
+    
+        const data = {
+            appointmentId: appointmentId,
+            entryHour: entryHour,
+            estimatedTimeMinutes: estimatedTimeMinutes,
+            user_specialty: userSpecialty
+        };
+    
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post("http://localhost:8080/api/appointment/approve", data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("Respuesta de la aprobación:", response.data);
+            handleGetList();
+            setIsOpen(false);
+            setActiveForm(null);
+        } catch (error) {
+            console.error('Error al aprobar la cita:', error.response ? error.response.data : 'Error sin respuesta');
+        }
+    };
+    
 
     const handleConfirmRejection = async (index) => {
 
@@ -138,7 +195,6 @@ function Citas() {
             console.log("Respuesta de cancelación:", response.data);
             setIsOpen(false);
             setActiveForm(null);
-            // Aquí podrías también querer actualizar el estado local para reflejar que la cita ha sido cancelada
             handleGetList(); // Para recargar la lista de citas y reflejar el cambio
         } catch (error) {
             console.error('Error al cancelar la cita:', error.response ? error.response.data : 'Error sin respuesta');
@@ -167,8 +223,18 @@ function Citas() {
                         <div>
                             <p className="info-tittle">Estado</p>
                             <div className="btns-container">
-                                <button onClick={ toggleOverlay } className="aprove-btn">Aprobar</button>
-                                <button onClick={() => handleReject(index)} className="reject-btn">Rechazar</button>
+                                {cita.state === "pending_execution" && (
+                                    <p>Aprobada</p>
+                                )}
+                                {cita.state === "rejected" && (
+                                    <p>Rechazada</p>
+                                )}
+                                {cita.state === "pending_approval" && (
+                                    <>
+                                        <button onClick={() => toggleOverlay()} className="aprove-btn">Aprobar</button>
+                                        <button onClick={() => handleReject(index)} className="reject-btn">Rechazar</button>
+                                    </>
+                                )}
                             </div>
                             
                             <Overlay isOpen={isOpen} onClose={toggleOverlay}>
@@ -177,38 +243,50 @@ function Citas() {
                                         <h2>Aprobar Cita</h2>
                                         <div className="time-container">
                                             <p>Hora que se aprobara:</p>
-                                            <input type="time" placeholder="Hora" />
+                                            <input type="time" value={entryHour} onChange={e => setEntryHour(e.target.value)} placeholder="Hora de entrada" />
                                         </div>
                                         <div className="time-container">
                                             <p>Duración estimada:</p>
-                                            <input type="number" placeholder="Minutos" />
+                                            <input type="number" value={estimatedTimeMinutes} onChange={e => setEstimatedTimeMinutes(e.target.value)} placeholder="Duración estimada en minutos" />
                                         </div>
-                                        <button onClick={handleNext} className="aprove-btn">Siguiente</button>
+                                        <button onClick={handleNext} className="aprove-btn" disabled={!isFormValid()}>Siguiente</button>
+
                                     </div>
                                 )}
                                 {activeForm === "DoctorForm" && (
                                     <div>
                                         <h2>Seleccionar Doctores</h2>
                                         <div className="doctors-container">
-                                        {selectedDoctors.map((selectedDoctor, index) => (
-                                            <div key={index} className="doc-det-container">
-                                                <p>Doctor:</p>
-                                                <button onClick={() => toggleDropdown(index)}>
-                                                    {selectedDoctor} &#9660;
-                                                </button>
-                                                {dropdownOpen === index && (
-                                                    <ul style={{ listStyleType: "none", padding: 0 }}>
-                                                        {getAvailableDoctors().map((doc, idx) => (
-                                                            <li key={idx} onClick={() => handleDoctorSelect(doc, index)}>
-                                                                {doc.username}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
-                                                <p>Especialidad:</p>
-                                                <button onClick={() => toggleSpecialtyDropdown(index)}>{selectedDoctor === index ? doctor.username : 'Selecciona un doctor'}&#9660;</button>
-                                            </div>
-                                        ))}
+                                            {selectedDoctors.map((selectedDoctor, index) => (
+                                                <div key={index} className="doc-det-container">
+                                                    <p>Doctor:</p>
+                                                    <button onClick={() => toggleDropdown(index)}>
+                                                        {selectedDoctor} &#9660;
+                                                    </button>
+                                                    {dropdownOpen === index && (
+                                                        <ul style={{ listStyleType: "none", padding: 0 }}>
+                                                            {getAvailableDoctors().map((doc, idx) => (
+                                                                <li key={idx} onClick={() => handleDoctorSelect(doc, index)}>
+                                                                    {doc.username}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                    <p>Especialidad:</p>
+                                                    <button onClick={() => toggleSpecialtyDropdown(index)}>
+                                                    {selectedSpecialties[index]} &#9660;
+                                                    </button>
+                                                    {specialtyDropdownOpen === index && (
+                                                        <ul style={{ listStyleType: "none", padding: 0 }}>
+                                                            {getAvailableSpecialties().map((specialty, idx) => (
+                                                                <li key={idx} onClick={() => handleSpecialtySelect(specialty, index)}>
+                                                                    {specialty.name}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                            ))}
                                         </div>
                                         <div className="btn-container">
                                             <div className="doc-num-container">
@@ -216,7 +294,7 @@ function Citas() {
                                                 <p>{ doctorCount }</p>
                                                 <button id="add-doc-btn" onClick={addDoctor} disabled={doctorCount >= doctors.length}>+</button>
                                             </div>
-                                            <button onClick={toggleOverlay} className="aprove-btn">Finalizar</button>
+                                            <button onClick={handleApprove} className="aprove-btn">Finalizar</button>
                                         </div>
                                     </div>
                                 )}
