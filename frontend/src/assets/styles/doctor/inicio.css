@@ -1,0 +1,49 @@
+/* src/assets/styles/doctor/inicio.css */
+.inicio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .doctores-image {
+    width: 60%; /* Ajustamos el tamaño de la imagen */
+    height: auto;
+    margin-right: 20px;
+  }
+  
+  .main-content {
+    display: flex;
+    align-items: center;
+    
+  
+  .text-container {
+    width: 40%;
+    text-align: justify; /* Justificamos el texto */
+  }
+  
+  .text-container h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+  
+  .text-container p {
+    font-size: 1.2em;
+    color: #333;
+  }
+  
+  .testimonials {
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  .testimonials h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+  }
+  
+  .testimonials p {
+    font-size: 1.2em;
+    color: #555;
+  }
+  
