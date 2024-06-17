@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';  // Importa axios
-
-import React from 'react';
 import Layout from './Layout';
 import Overlay from './OverlayForm';
 

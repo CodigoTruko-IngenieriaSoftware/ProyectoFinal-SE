@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';  // Importa axios
+import axios from "axios"; // Importa axios
 import "../../assets/styles/Login.css";
 
 function Login() {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const navToRegister = () => {
     navigate("/Register");
@@ -18,21 +18,85 @@ function Login() {
 
     const data = {
       identifier: username,
-      password: password
-    }
+      password: password,
+    };
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", data);
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        data
+      );
+      const token = response.data.data.token;
+      await fetchUserData(token);
+
       console.log("Token:", response.data.data.token);
-      localStorage.setItem('token', response.data.data.token);
-      navigate('/user');
+      localStorage.setItem("token", response.data.data.token);
 
-    } catch (error) {
-      console.error('Error en el login:', error.response ? error.response.data.message : 'Error sin respuesta');
+      const userInfoResponse = await axios.get("http://localhost:8080/api/user/", {
+        headers: {
+          'Authorization': `Bearer ${response.data.data.token}`
+        }
+      });
+
+  
+      const userRoles = userInfoResponse.data.data.role;
+      const hasEmptyRole = userRoles.some(role => !role.name);
+
+      if (hasEmptyRole) {
+        console.warn('User role is empty');
+        navigate('/User');
+      }else{
+        const roleNames = userRoles.map(role => role.name.toLowerCase());
+        if(roleNames.includes('admin')){
+          navigate('/Admin');
+      } else if (roleNames.includes('doctor')){
+          navigate('/doctor');
+      } else if (roleNames.includes('patient')){
+          navigate('/patient');
+      } else {
+          console.error('Unknown role:', userRoles);
+          navigate('/User');
+      }
     }
-
-
+    } catch (error) {
+      console.error(
+        "Error en el login:",
+        error.response ? error.response.data.message : "Error sin respuesta"
+      );
+      setMessage("Error al iniciar sesión, intente nuevamente");
+      setShowMessage(true);
+    }
   };
+
+  const fetchUserData = async (token) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/user/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userData = response.data.data;
+      localStorage.setItem("userData", JSON.stringify(userData));
+      console.log("Datos de usuario:", userData);
+    } catch (error) {
+      console.error(
+        "Error al obtener datos de usuario:",
+        error.response ? error.response.data.message : "Error sin respuesta"
+      );
+    }
+  };
+
+  const [message, setMessage] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
+
+  useEffect(() => {
+    if (showMessage) {
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showMessage]);
 
   return (
     <>
@@ -55,7 +119,7 @@ function Login() {
             <p className="sesion-subtitle">Usuario</p>
             <input
               type="text"
-              className="login-input"
+              className="sesion-input"
               placeholder="Usuario"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -82,6 +146,7 @@ function Login() {
             </button>
           </div>
         </div>
+        {showMessage && <div className="message-popup">{message}</div>}
       </div>
     </>
   );

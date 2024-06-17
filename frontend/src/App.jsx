@@ -9,6 +9,7 @@ import Prescription from './pages/assistant/Prescription';
 import UserMain from './pages/user/UserMain';
 
 import Record from './pages/assistant/Record'
+import Patient from './pages/patient/Patient'
 
 import './App.css'
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/Prescripcion" element={<Prescription />} />
           <Route path="/User" element={<UserMain />} />
           <Route path="/Record" element={<Record />} />
+          <Route path="/Patient" element={<Patient />} />
         </Routes>
       </Router>
     </>
