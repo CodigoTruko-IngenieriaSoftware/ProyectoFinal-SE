@@ -125,6 +125,9 @@ public class PrescriptionController {
             ScheduleAppointmentDTO scheduleAppointmentDTO = new ScheduleAppointmentDTO();
             scheduleAppointmentDTO.setAppointmentId(appointment.getId());
             scheduleAppointmentDTO.setPatient(schedulePatientDTO);
+            scheduleAppointmentDTO.setAppointmentState(appointment.getState());
+            scheduleAppointmentDTO.setAppointmentEntryHour(appointment.getEntryHour());
+            scheduleAppointmentDTO.setAppointmentEstimatedEndHour(appointment.getEstimatedEndHour());
             scheduleAppointmentDTO.setDoctors(scheduleDoctorDTOList);
 
 
