@@ -37,3 +37,43 @@
     justify-content: center;
     gap: 1rem;
 }
+
+.record-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.record-data-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    justify-items: center;
+    align-items: center;
+}
+
+.data-container {
+    display: contents;
+}
+
+.data-container > p {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.add-reason-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.reason-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reason-container input {
+    width: 80%;
+}
