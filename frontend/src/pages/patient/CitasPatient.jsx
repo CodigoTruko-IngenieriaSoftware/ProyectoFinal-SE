@@ -20,7 +20,6 @@ function Citas() {
     completed: "Finalizada",
     rejected: "Rechazada",
     cancelled: "Cancelada",
-    approved: "Aprobado"
   };
 
   const fetchAppointments = async () => {

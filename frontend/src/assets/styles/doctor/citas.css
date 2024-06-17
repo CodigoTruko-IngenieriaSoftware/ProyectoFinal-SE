@@ -10,8 +10,8 @@
   
   .appointment-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-start;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -36,6 +36,10 @@
   
   .appointment-item-text {
     flex: 1;
+    display: flex;
+    align-items: left;
+    justify-content: flex-start;
+    flex-direction: column;
   }
   
   .toggle-button {
