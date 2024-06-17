@@ -31,7 +31,11 @@ const Layout = ({ children }) => {
                 <nav className="nav">
                     <ul className="menu">
                         <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/User')}>Inicio</li>
+                            onClick={() => navigateTo('/Patient')}>Inicio</li>
+                            <li className={`navElement ${getActiveNav() === 'Citas' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/CitasPatient')}>Citas</li>
+                        <li className={`navElement ${getActiveNav() === 'Historial Medico' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/Prescripcion')}>Historial Medico</li>
                     </ul>
                 </nav>
             </header>

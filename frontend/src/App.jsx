@@ -11,6 +11,8 @@ import UserMain from './pages/user/UserMain';
 import Record from './pages/assistant/Record'
 import Patient from './pages/patient/Patient'
 
+import CitasPatient from './pages/patient/CitasPatient'
+
 import './App.css'
 
 function App() {
@@ -27,6 +29,7 @@ function App() {
           <Route path="/User" element={<UserMain />} />
           <Route path="/Record" element={<Record />} />
           <Route path="/Patient" element={<Patient />} />
+          <Route path="/CitasPatient" element={<CitasPatient />} />
         </Routes>
       </Router>
     </>

@@ -44,8 +44,7 @@ function UserMain() {
     "in_execution": "En ejecución",
     "completed": "Finalizada",
     "rejected": "Rechazada",
-    "cancelled": "Cancelada",
-    "approved": "Aprobada"
+    "cancelled": "Cancelada"
   };
 
   useEffect(() => {
@@ -66,55 +65,19 @@ function UserMain() {
       }
 
       const response = await axios.get('http://localhost:8080/api/appointment/own', {
+        params: { state: 'pending_approval' },
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
       });
 
-      const appointmentsData = response.data.data;
-      setAppointments(appointmentsData);
-
-      const appointment = appointmentsData.find(appointment => appointment.state === 'pending_approval' || appointment.state === 'approved');
+      const appointment = response.data.data.find(appointment => appointment.state === 'pending_approval');
+      setAppointments(response.data.data);
       setAppointmentState(appointment ? appointment.state : '');
-
-      if (appointment && appointment.state === 'approved') {
-        navigate('/Patient');
-      }
 
     } catch (error) {
       console.error('Error fetching appointment state:', error.response ? error.response.data.message : 'Error sin respuesta');
-    }
-  };
-
-  const handleCancelAppointment = async (appointmentId) => {
-    try {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        console.error('No token found');
-        navigate('/');
-        return;
-      }
-
-      await axios.post(`http://localhost:8080/api/appointment/cancel`, { id: appointmentId }, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
-
-      console.log("Cita cancelada");
-      setMessage('Cita cancelada con éxito');
-      setShowMessage(true);
-
-      // Fetch appointments after cancelling
-      fetchAppointments();
-
-    } catch (error) {
-      console.error('Error al cancelar la cita:', error.response ? error.response.data.message : 'Error sin respuesta');
-      setMessage('Error al cancelar la cita');
-      setShowMessage(true);
     }
   };
 
@@ -137,8 +100,7 @@ function UserMain() {
 
       const response = await axios.post("http://localhost:8080/api/appointment/request", data, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${token}`
         },
       });
 
@@ -202,7 +164,6 @@ function UserMain() {
               <div className="appointment-status">
                 <p className="status-text">Estado de la cita:</p>
                 <p>{stateMapping[appointmentState] || 'Desconocido'}</p>
-                <button onClick={() => handleCancelAppointment(appointments[0].id)}>Cancelar cita</button>
               </div>
             )}
 
@@ -215,10 +176,10 @@ function UserMain() {
                     <div className="elements-popup">
                       <p className="appointment-title">Agenda una cita</p>
                       <p className="appointment-text">
-                        Escoge una fecha y hora
+                        Escoge una fecha
                       </p>
                       <input
-                        type="datetime-local"
+                        type="date"
                         value={appointmentDate}
                         onChange={(e) => setAppointmentDate(e.target.value)}
                       />
@@ -264,16 +225,6 @@ function UserMain() {
                         {appointmentReason}
                       </div>
                       <button className="setAppointment" onClick={handleSubmit}>AGENDAR CITA</button>
-                    <p className="appointment-title">Resumen</p>
-                    <p className="reason"><strong>Fecha y hora:</strong></p>
-                    <div className="summary">
-                    {appointmentDate}
-                    </div>
-                    <p className="reason"><strong>Razón de cita:</strong></p>
-                    <div className="summary">
-                    {appointmentReason}
-                    </div>
-                    <button className="setAppointment">AGENDAR CITA</button>
                     </div>
                   </div>
                 )}
