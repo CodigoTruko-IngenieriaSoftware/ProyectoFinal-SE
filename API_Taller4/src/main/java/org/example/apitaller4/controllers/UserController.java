@@ -47,6 +47,11 @@ public class UserController {
         return GeneralResponse.getResponse(HttpStatus.OK, responseDTO);
     }
 
+    @GetMapping("/all-users")
+    public ResponseEntity<GeneralResponse> getAll(@AuthenticationPrincipal User user) {
+        return GeneralResponse.getResponse(HttpStatus.OK, userService.findAll());
+    }
+
     @GetMapping("/all-patients")
     public ResponseEntity<GeneralResponse> getAllPatients(@AuthenticationPrincipal User user) {
 

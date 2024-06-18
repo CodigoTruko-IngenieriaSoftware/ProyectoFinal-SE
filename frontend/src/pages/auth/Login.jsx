@@ -37,25 +37,25 @@ function Login() {
           'Authorization': `Bearer ${response.data.data.token}`
         }
       });
-
   
       const userRoles = userInfoResponse.data.data.role;
       const hasEmptyRole = userRoles.some(role => !role.name);
       localStorage.setItem('token', response.data.data.token);
-      navigate('/record');
 
       if (hasEmptyRole) {
         console.warn('User role is empty');
         navigate('/User');
       }else{
         const roleNames = userRoles.map(role => role.name.toLowerCase());
-        if(roleNames.includes('admin')){
-          navigate('/Admin');
-      } else if (roleNames.includes('doctor')){
+        if(roleNames.includes('sysadmin')){
+          navigate('/ChangeRole');
+        } else if (roleNames.includes('doctor')){
           navigate('/doctor');
-      } else if (roleNames.includes('patient')){
+        } else if (roleNames.includes('assistant')){
+          navigate('/Assistant');
+        } else if (roleNames.includes('patient')){
           navigate('/patient');
-      } else {
+        } else {
           console.error('Unknown role:', userRoles);
           navigate('/User');
       }

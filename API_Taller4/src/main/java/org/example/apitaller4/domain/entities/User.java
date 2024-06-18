@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @JsonIgnore
     private UUID id;
 
     @NotBlank(message = "El nombre de usuario no puede estar vacío")
