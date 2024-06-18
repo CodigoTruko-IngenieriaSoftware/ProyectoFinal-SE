@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+
+import ChangeRole from './pages/admin/ChangeRole';
+
 import MainAssistant from './pages/assistant/MainAssistant';
 import AprobarCita from './pages/assistant/Citas';
 import Prescription from './pages/assistant/Prescription';
@@ -13,7 +16,7 @@ import PrescriptionDoctor from './pages/doctor/Prescription';
 import Citas from './pages/doctor/Citas';
 import Patient from './pages/patient/Patient';
 
-import CitasPatient from './pages/patient/CitasPatient'
+import CitasPatient from './pages/patient/CitasPatient';
 
 import './App.css'
 
@@ -25,6 +28,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/Register" element={<Register />} />
+
+          <Route path="/ChangeRole" element={<ChangeRole />} />
+
           <Route path="/Assistant" element={<MainAssistant />} />
           <Route path="/Cita" element={<AprobarCita />} />
           <Route path="/Prescripcion" element={<Prescription />} />

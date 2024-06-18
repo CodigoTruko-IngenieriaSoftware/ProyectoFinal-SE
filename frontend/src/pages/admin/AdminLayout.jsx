@@ -3,30 +3,30 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import '../../assets/styles/assistant/Layout.css';
 
-const Layout = ({ children }) => {
+const AdminLayout = ({ children }) => {
     const nav = useNavigate();
-    const location = useLocation(); // Para saber en que ruta esta actualmente.
+    const location = useLocation();
 
     const navigateTo = (path) => {
         nav(path);
     };
 
-    const handleLogout = () => {
-        localStorage.clear();
-        nav('/');
-    };
-
     const getActiveNav = () => {
         switch (location.pathname) {
-            case '/User ':
-                return 'Inicio';
+            case '/Change Role':
+                return 'Roles';
             case '/Cita':
                 return 'Citas';
             case '/Prescripcion':
-                return 'Prescripción';
+                return 'Historial Medico';
             default:
-                return 'Inicio';
+                return 'Roles';
         }
+    };
+
+    const handleLogout = () => {
+        localStorage.clear();
+        nav('/');
     };
 
     return (
@@ -35,8 +35,8 @@ const Layout = ({ children }) => {
                 <div className="logo">Clinica Ya Merito</div>
                 <nav className="nav">
                     <ul className="menu">
-                        <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/User')}>Inicio</li>
+                        <li className={`navElement ${getActiveNav() === 'Roles' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/ChangeRole')}>Roles</li>
                         <li className="navElement logout" onClick={handleLogout}>Logout</li>
                     </ul>
                 </nav>
@@ -48,4 +48,4 @@ const Layout = ({ children }) => {
     );
 };
 
-export default Layout;
+export default AdminLayout;

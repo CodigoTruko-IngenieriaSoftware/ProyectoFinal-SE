@@ -24,6 +24,11 @@ const Layout = ({ children }) => {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+        nav('/');
+    };
+
     return (
         <div className="main-container">
             <header>
@@ -36,6 +41,7 @@ const Layout = ({ children }) => {
                             onClick={() => navigateTo('/Cita')}>Citas</li>
                         <li className={`navElement ${getActiveNav() === 'Historial Medico' ? 'active' : ''}`}
                             onClick={() => navigateTo('/Prescripcion')}>Historial Medico</li>
+                        <li className="navElement logout" onClick={handleLogout}>Logout</li>
                     </ul>
                 </nav>
             </header>

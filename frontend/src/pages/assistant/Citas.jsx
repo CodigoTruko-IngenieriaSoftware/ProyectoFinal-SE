@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';  // Importa axios
+import axios from 'axios';
 import Layout from './Layout';
 import Overlay from './OverlayForm';
 
@@ -23,6 +23,7 @@ function Citas() {
 
     const [doctorCount, setDoctorCount] = useState(1); // Para manejar múltiples selecciones de doctores si necesario
     const [rejectInfo, setRejectInfo] = useState({ isOpen: false, index: null });
+    const [aproveInfo, setAproveInfo] = useState({ isOpen: false, index: null });
     const [citas, setCitas] = useState([]);
 
     useEffect(() => {
@@ -39,18 +40,12 @@ function Citas() {
     };
 
     const isFormValid = () => {
-        return entryHour.trim() !== "" && estimatedTimeMinutes > 0;
+        const minutes = parseInt(estimatedTimeMinutes, 10);
+        return entryHour.trim() !== "" && !isNaN(minutes) && minutes >= 0 && minutes <= 240;
     };
-    
     
     const handleNext = () => {
-        setActiveForm("DoctorForm");  // Cambiar al siguiente formulario.
-    };
-    
-    const handleReject = (index) => {
-        setActiveForm("RejectForm");
-        setIsOpen(true);
-        setRejectInfo({ index: index });
+        setActiveForm("DoctorForm");
     };
 
     const toggleDropdown = (index) => {
@@ -65,8 +60,8 @@ function Citas() {
     };
     
     const getAvailableDoctors = () => {
-        return doctors.filter(doc => !selectedDoctors.includes(doc.username));
-    };
+        return doctors.filter(doc => doc.available && !selectedDoctors.includes(doc.username));
+    };    
 
     const toggleSpecialtyDropdown = (index) => {
         setSpecialtyDropdownOpen(specialtyDropdownOpen === index ? null : index);
@@ -95,6 +90,8 @@ function Citas() {
     
     const removeDoctor = () => {
         if (doctorCount > 1) {
+            const removedDoctor = selectedDoctors.pop();
+            const removedSpecialty = selectedSpecialties.pop();
             setSelectedDoctors([...selectedDoctors]);
             setSelectedSpecialties([...selectedSpecialties]);
             setDoctorCount(doctorCount - 1);
@@ -109,12 +106,13 @@ function Citas() {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setDoctors(response.data.data.map(doc => ({
-                username: doc.username
+                username: doc.username,
+                available: doc.available // Asegúrate de que esta propiedad viene del backend
             })));
         } catch (error) {
             console.error('Error al obtener doctores:', error);
         }
-    };
+    };    
     
     const fetchSpecialties = async () => {
         try {
@@ -142,15 +140,19 @@ function Citas() {
         }
     }
 
-    const handleApprove = async (appointmentId) => {
-        const userSpecialty = selectedDoctors.map((doctor, index) => [doctor, selectedSpecialties[index]]);
-    
+    const handleConfirmApprove = async (index) => {
+
+        const appointmentId = citas[index].id;
+        const userSpecialty = selectedDoctors.map((doctor, idx) => [doctor, selectedSpecialties[idx]]);
+
         const data = {
             appointmentId: appointmentId,
             entryHour: entryHour,
             estimatedTimeMinutes: estimatedTimeMinutes,
             user_specialty: userSpecialty
         };
+
+        console.log(data);
     
         try {
             const token = localStorage.getItem('token');
@@ -159,15 +161,38 @@ function Citas() {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            if (response.status === 200) {
+
+                const updatedDoctors = doctors.map(doc => {
+                    if (userSpecialty.some(us => us[0] === doc.username)) {
+                        return { ...doc, available: true };
+                    }
+                    return doc;
+                });
+
+                setDoctors(updatedDoctors);
+                setIsOpen(false);
+                setActiveForm(null);
+                handleGetList();
+            }
             console.log("Respuesta de la aprobación:", response.data);
-            handleGetList();
-            setIsOpen(false);
-            setActiveForm(null);
         } catch (error) {
             console.error('Error al aprobar la cita:', error.response ? error.response.data : 'Error sin respuesta');
         }
-    };
+    };    
     
+    const handleReject = (index) => {
+        setActiveForm("RejectForm");
+        setIsOpen(true);
+        setRejectInfo({ index: index });
+    };
+
+    const handleAprove = (index) => {
+        setActiveForm("HourForm");
+        setIsOpen(true);
+        setAproveInfo({ index: index });
+    };
 
     const handleConfirmRejection = async (index) => {
 
@@ -176,6 +201,8 @@ function Citas() {
         const data = {
             appointmentId: appointmentId
         }
+
+        console.log(data);
     
         try {
 
@@ -194,7 +221,7 @@ function Citas() {
             console.log("Respuesta de cancelación:", response.data);
             setIsOpen(false);
             setActiveForm(null);
-            handleGetList(); // Para recargar la lista de citas y reflejar el cambio
+            handleGetList();
         } catch (error) {
             console.error('Error al cancelar la cita:', error.response ? error.response.data : 'Error sin respuesta');
         }
@@ -222,20 +249,17 @@ function Citas() {
                         <div>
                             <p className="info-tittle">Estado</p>
                             <div className="btns-container">
-                                {cita.state === "pending_execution" && (
-                                    <p>Aprobada</p>
-                                )}
-                                {cita.state === "rejected" && (
-                                    <p>Rechazada</p>
-                                )}
+                                {cita.state === "pending_execution" && <p>Aprobada</p>}
+                                {cita.state === "rejected" && <p>Rechazada</p>}
                                 {cita.state === "pending_approval" && (
                                     <>
-                                        <button onClick={() => toggleOverlay()} className="aprove-btn">Aprobar</button>
+                                        <button onClick={() => {
+                                            handleAprove(index);
+                                        }} className="aprove-btn">Aprobar</button>
                                         <button onClick={() => handleReject(index)} className="reject-btn">Rechazar</button>
                                     </>
                                 )}
                             </div>
-                            
                             <Overlay isOpen={isOpen} onClose={toggleOverlay}>
                                 {activeForm === "HourForm" && (
                                     <div>
@@ -246,10 +270,16 @@ function Citas() {
                                         </div>
                                         <div className="time-container">
                                             <p>Duración estimada:</p>
-                                            <input type="number" value={estimatedTimeMinutes} onChange={e => setEstimatedTimeMinutes(e.target.value)} placeholder="Duración estimada en minutos" />
+                                            <input
+                                                type="number"
+                                                value={estimatedTimeMinutes}
+                                                onChange={e => setEstimatedTimeMinutes(e.target.value)}
+                                                placeholder="Duración estimada en minutos"
+                                                min="0"
+                                                max="240"
+                                            />                                        
                                         </div>
                                         <button onClick={handleNext} className="aprove-btn" disabled={!isFormValid()}>Siguiente</button>
-
                                     </div>
                                 )}
                                 {activeForm === "DoctorForm" && (
@@ -293,7 +323,8 @@ function Citas() {
                                                 <p>{ doctorCount }</p>
                                                 <button id="add-doc-btn" onClick={addDoctor} disabled={doctorCount >= doctors.length}>+</button>
                                             </div>
-                                            <button onClick={handleApprove} className="aprove-btn">Finalizar</button>
+                                            <button onClick={() => handleConfirmApprove(aproveInfo.index)} className="aprove-btn">Finalizar</button>
+
                                         </div>
                                     </div>
                                 )}
