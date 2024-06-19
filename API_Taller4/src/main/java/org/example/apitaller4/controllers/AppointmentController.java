@@ -166,7 +166,7 @@ public class AppointmentController {
             return GeneralResponse.getResponse(HttpStatus.OK, "Appointment already cancelled");
         }
 
-        if (!Objects.equals(appointment.getState(), "pending_approve")) {
+        if (!Objects.equals(appointment.getState(), "pending_approval")) {
             return GeneralResponse.getResponse(HttpStatus.OK, "Appointment already approve");
         }
 
