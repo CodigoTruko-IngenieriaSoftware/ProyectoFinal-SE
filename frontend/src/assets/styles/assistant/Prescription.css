@@ -77,3 +77,21 @@
 .reason-container input {
     width: 80%;
 }
+
+.record{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 1%;
+}
+
+.list-record{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.list-record p{
+    margin: 1% 0;
+}

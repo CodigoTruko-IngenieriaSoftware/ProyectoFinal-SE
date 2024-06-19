@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function Record() {
+  const navigate = useNavigate();
+
     const [dateStart, setDateStart] = useState('2020-01-01');
     const [dateEnd, setDateEnd] = useState('2022-01-01');
     const [records, setRecords] = useState([]);
@@ -13,6 +16,26 @@ function Record() {
             dateEnd
         };
         console.log(requestData);
+      const userData = localStorage.getItem("userData");
+
+
+        const user = JSON.parse(userData)
+
+        const roles = user.role.map(role => role.name);
+        if(!roles.includes("asistant")){
+          if(roles.includes('sysadmin')){
+            navigate('/ChangeRole');
+          } else if (roles.includes('doctor')){
+            navigate('/doctor');
+          } else if (roles.includes('assistant')){
+            navigate('/Assistant');
+          } else if (roles.includes('patient')){
+            navigate('/patient');
+          } else {
+            console.error('Unknown role:', user.role);
+            navigate('/User');
+        }
+        }
 
         try {
             const response = await axios.get('http://localhost:8080/api/user/record', {

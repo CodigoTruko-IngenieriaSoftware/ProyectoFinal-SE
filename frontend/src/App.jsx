@@ -18,6 +18,10 @@ import Patient from './pages/patient/Patient';
 
 import CitasPatient from './pages/patient/CitasPatient';
 
+import MyPrescription from './pages/patient/MyPrescription';
+
+import RecordDoctor from './pages/doctor/RecordDoctor';
+
 import './App.css'
 
 function App() {
@@ -41,6 +45,8 @@ function App() {
           <Route path="/Appointment" element={<Citas />} />
           <Route path="/Patient" element={<Patient />} />
           <Route path="/CitasPatient" element={<CitasPatient />} />
+          <Route path="/MyRecord" element={<MyPrescription />} />
+          <Route path="/DoctorRecord" element={<RecordDoctor />} />
         </Routes>
       </Router>
     </>

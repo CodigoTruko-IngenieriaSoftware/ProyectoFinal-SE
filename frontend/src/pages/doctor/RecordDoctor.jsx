@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import Layout from './Layout';
+import Layout from './DoctorLayout';
 import Overlay from './OverlayForm';
 import { useNavigate } from "react-router-dom";
 import '../../assets/styles/assistant/Prescription.css';
@@ -32,7 +32,7 @@ function Prescription() {
         const user = JSON.parse(userData)
 
         const roles = user.role.map(role => role.name);
-        if(!roles.includes("asistant")){
+        if(!roles.includes("doctor")){
           if(roles.includes('sysadmin')){
             navigate('/ChangeRole');
           } else if (roles.includes('doctor')){

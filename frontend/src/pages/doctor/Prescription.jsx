@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "./DoctorLayout";
+import { useNavigate } from "react-router-dom";
 
 import "../../assets/styles/doctor/Prescription.css";
 
 const Citas = () => {
-  
+  const navigate = useNavigate();
   const [userID, setUserID] = useState(''); // ID del usuario seleccionado del dropdown
   const [patients, setPatients] = useState([]); // Lista de pacientes obtenidos del API
   const [prescriptions, setPrescriptions] = useState([]); // Prescripciones obtenidas del API
@@ -17,9 +18,29 @@ const Citas = () => {
   const fetchPatients = async () => {
     try {
       const token = localStorage.getItem('token');
+      const userData = localStorage.getItem("userData");
+
       if (!token) {
         console.error('No token found');
         return;
+      }
+
+      const user = JSON.parse(userData)
+
+      const roles = user.role.map(role => role.name);
+      if(!roles.includes("doctor")){
+        if(roles.includes('sysadmin')){
+          navigate('/ChangeRole');
+        } else if (roles.includes('doctor')){
+          navigate('/doctor');
+        } else if (roles.includes('assistant')){
+          navigate('/Assistant');
+        } else if (roles.includes('patient')){
+          navigate('/patient');
+        } else {
+          console.error('Unknown role:', user.role);
+          navigate('/User');
+      }
       }
 
       const response = await axios.get('http://localhost:8080/api/user/all-patients', {

@@ -25,11 +25,29 @@ const Citas = () => {
   const fetchSchedule = async () => {
     try {
       const token = localStorage.getItem("token");
-
+      const userData = localStorage.getItem("userData");
       if (!token) {
         console.error("No token found");
         navigate("/");
         return;
+      }
+      
+      const user = JSON.parse(userData)
+
+      const roles = user.role.map(role => role.name);
+      if(!roles.includes("doctor")){
+        if(roles.includes('sysadmin')){
+          navigate('/ChangeRole');
+        } else if (roles.includes('doctor')){
+          navigate('/doctor');
+        } else if (roles.includes('assistant')){
+          navigate('/Assistant');
+        } else if (roles.includes('patient')){
+          navigate('/patient');
+        } else {
+          console.error('Unknown role:', user.role);
+          navigate('/User');
+      }
       }
 
       const response = await axios.get(

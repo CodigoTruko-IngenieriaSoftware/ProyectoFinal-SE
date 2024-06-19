@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios"; // Importa axios
+import axios from "axios";
 import Layout from "./LayoutPatient";
-
+import "../../assets/styles/assistant/Citas.css";
+import Modal from "./Modal"; // Asumiendo que tienes un componente Modal para mostrar confirmaciones
 import { useNavigate } from "react-router-dom";
 
-import "../../assets/styles/assistant/Citas.css";
-
 function Citas() {
-  const [appointmentState, setAppointmentState] = useState(""); // Inicialmente vacío
+  const navigate = useNavigate();
+
   const [appointments, setAppointments] = useState([]);
   const [citas, setCitas] = useState([]);
-
-  const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
+  const [error, setError] = useState("");
 
   const stateMapping = {
     pending_approval: "Pendiente de aprobación",
@@ -28,45 +29,92 @@ function Citas() {
 
       if (!token) {
         console.error("No token found");
-        navigate("/");
         return;
       }
 
-      const response = await axios.get("http://localhost:8080/api/appointment/own", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const userData = localStorage.getItem("userData");
+      const user = JSON.parse(userData);
+      const roles = user.role.map((role) => role.name);
+      if (!roles.includes("patient")) {
+        if (roles.includes("sysadmin")) {
+          navigate("/ChangeRole");
+        } else if (roles.includes("doctor")) {
+          navigate("/doctor");
+        } else if (roles.includes("assistant")) {
+          navigate("/Assistant");
+        } else if (roles.includes("patient")) {
+          navigate("/patient");
+        } else {
+          console.error("Unknown role:", user.role);
+          navigate("/User");
+        }
+      }
+
+      const response = await axios.get(
+        "http://localhost:8080/api/appointment/own",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const appointmentsData = response.data.data;
       setAppointments(appointmentsData);
-
-      // Obtén el estado de la primera cita (si existe) para mostrar
-      const appointment = appointmentsData.find(
-        (appointment) => appointment.state === "pending_approval" || appointment.state === "pending_execution" || appointment.state === "in_execution" || appointment.state === "completed" || appointment.state === "rejected" || appointment.state === "cancelled" || appointment.state === "approved"
-      );
-      setAppointmentState(appointment ? appointment.state : "");
-
     } catch (error) {
       console.error(
-        "Error fetching appointment state:",
-        error.response ? error.response.data.message : "Error sin respuesta"
+        "Error fetching appointments:",
+        error.response ? error.response.data.message : error.message
       );
     }
   };
 
   const handleGetList = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/appointment/");
-      console.log("Data:", response.data);
+      const response = await axios.get(
+        "http://localhost:8080/api/appointment/"
+      );
       setCitas(response.data.data);
-
       fetchAppointments();
     } catch (error) {
       console.error(
-        "Error al obtener citas:",
-        error.response ? error.response.data : "Error sin respuesta"
+        "Error fetching appointments:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  const handleCancelAppointment = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:8080/api/appointment/cancel`,
+        { appointmentId: cancelAppointmentId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.message === "OK") {
+        setModalOpen(false);
+        fetchAppointments();
+      } else {
+        setError("Failed to cancel appointment");
+      }
+    } catch (error) {
+      setError(
+        "Failed to cancel appointment: " +
+          (error.response ? error.response.data.message : error.message)
       );
     }
   };
@@ -74,13 +122,21 @@ function Citas() {
   useEffect(() => {
     handleGetList();
 
-    // Actualizar automáticamente la lista de citas cada 60 segundos
     const interval = setInterval(() => {
       fetchAppointments();
-    }, 5000);
+    }, 5000); // Actualizar automáticamente cada 60 segundos
 
     return () => clearInterval(interval);
   }, []);
+
+  const openModal = (appointmentId) => {
+    setCancelAppointmentId(appointmentId);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   return (
     <Layout>
@@ -105,9 +161,22 @@ function Citas() {
                 <p className="info-tittle">Estado</p>
                 <p>{stateMapping[cita.state] || "Desconocido"}</p>
               </div>
+              {cita.state === "pending_approval" && (
+                <button onClick={() => openModal(cita.id)}>
+                  Cancelar cita
+                </button>
+              )}
             </div>
           ))}
         </div>
+        <Modal isOpen={modalOpen} onClose={closeModal}>
+          <h2>¿Estás seguro de cancelar esta cita?</h2>
+          <div className="modal-buttons">
+            <button onClick={handleCancelAppointment}>Confirmar</button>
+            <button onClick={closeModal}>Cancelar</button>
+          </div>
+        </Modal>
+        {error && <p>{error}</p>}
       </div>
     </Layout>
   );
