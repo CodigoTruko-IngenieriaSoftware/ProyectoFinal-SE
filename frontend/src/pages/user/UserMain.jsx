@@ -98,6 +98,27 @@ function UserMain() {
         return;
       }
 
+      const userData = localStorage.getItem("userData");
+
+      const user = JSON.parse(userData)
+
+
+      const roles = user.role.map(role => role.name);
+      if (!roles.includes("patient")) {
+        if (roles.includes("sysadmin")) {
+          navigate("/ChangeRole");
+        } else if (roles.includes("doctor")) {
+          navigate("/doctor");
+        } else if (roles.includes("assistant")) {
+          navigate("/Assistant");
+        } else if (roles.includes("patient")) {
+          navigate("/patient");
+        } else {
+          console.error("Unknown role:", user.role);
+          navigate("/User");
+        }
+      }
+
       const response = await axios.post("http://localhost:8080/api/appointment/request", data, {
         headers: {
           'Authorization': `Bearer ${token}`

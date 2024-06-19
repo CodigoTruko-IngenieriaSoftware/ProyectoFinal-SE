@@ -93,11 +93,7 @@ function Citas() {
     setSpecialtyDropdownOpen(null);
   };
 
-  const getAvailableSpecialties = () => {
-    return specialties.filter(
-      (specialty) => !selectedSpecialties.includes(specialty.name)
-    );
-  };
+  const getAvailableSpecialties = () => specialties;
 
   const addDoctor = () => {
     if (doctorCount < doctors.length) {
@@ -123,38 +119,20 @@ function Citas() {
   const fetchDoctors = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:8080/api/user/all-doctors",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setDoctors(
-        response.data.data.map((doc) => ({
-          username: doc.username,
-          available: doc.available, // Asegúrate de que esta propiedad viene del backend
-        }))
-      );
+      const response = await axios.get("http://localhost:8080/api/user/all-doctors", { headers: { Authorization: `Bearer ${token}` } });
+      setDoctors(response.data.data.map(doc => ({ ...doc, available: true })));
     } catch (error) {
-      console.error("Error al obtener doctores:", error);
+      console.error("Error fetching doctors:", error);
     }
   };
 
   const fetchSpecialties = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/specialty/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.log(response);
-      setSpecialties(
-        response.data.data.map((specialty) => ({
-          name: specialty.name,
-        }))
-      );
+      const response = await axios.get("http://localhost:8080/api/specialty/", { headers: { Authorization: `Bearer ${token}` } });
+      setSpecialties(response.data.data);
     } catch (error) {
-      console.error("Error al obtener especialidades:", error);
+      console.error("Error fetching specialties:", error);
     }
   };
 
@@ -174,7 +152,7 @@ function Citas() {
           navigate("/ChangeRole");
         } else if (roles.includes("doctor")) {
           navigate("/doctor");
-        } else if (roles.includes("assistant")) {
+        } else if (roles.includes("asistant")) {
           navigate("/Assistant");
         } else if (roles.includes("patient")) {
           navigate("/patient");

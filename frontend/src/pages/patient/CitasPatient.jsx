@@ -72,11 +72,31 @@ function Citas() {
 
   const handleGetList = async () => {
     try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const userData = localStorage.getItem("userData");
+      const user = JSON.parse(userData);
+      const username = user.username;
+
       const response = await axios.get(
-        "http://localhost:8080/api/appointment/"
+        "http://localhost:8080/api/appointment/",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
-      setCitas(response.data.data);
-      fetchAppointments();
+
+      const citasData = response.data.data.filter(
+        (cita) => cita.user.username === username
+      );
+      setCitas(citasData);
     } catch (error) {
       console.error(
         "Error fetching appointments:",
@@ -105,8 +125,10 @@ function Citas() {
         }
       );
 
+      
+      setModalOpen(false);
+
       if (response.data.message === "OK") {
-        setModalOpen(false);
         fetchAppointments();
       } else {
         setError("Failed to cancel appointment");
@@ -120,11 +142,12 @@ function Citas() {
   };
 
   useEffect(() => {
+    fetchAppointments();
     handleGetList();
 
     const interval = setInterval(() => {
       fetchAppointments();
-    }, 5000); // Actualizar automáticamente cada 60 segundos
+    }, 5000); // Actualizar automáticamente cada 5 segundos
 
     return () => clearInterval(interval);
   }, []);

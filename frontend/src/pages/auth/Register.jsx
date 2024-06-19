@@ -23,7 +23,9 @@ function Register() {
         data
       );
       console.log("Registro exitoso:", response.data);
-      navigate('/');
+      // Suponiendo que el registro también devuelve un token
+      localStorage.setItem("token", response.data.token);
+      navigate('/'); // Navegar al inicio de sesión o al dashboard, según corresponda
     } catch (error) {
       console.error(
         "Error en el registro:",
