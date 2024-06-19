@@ -24,7 +24,7 @@ function Inicio() {
       const user = JSON.parse(userData)
 
       const roles = user.role.map(role => role.name);
-      if(!roles.includes("asistant")){
+      if(!roles.includes("assistant")){
         if(roles.includes('sysadmin')){
           navigate('/ChangeRole');
         } else if (roles.includes('doctor')){

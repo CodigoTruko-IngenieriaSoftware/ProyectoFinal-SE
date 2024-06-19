@@ -51,7 +51,7 @@ function Login() {
           navigate('/ChangeRole');
         } else if (roleNames.includes('doctor')){
           navigate('/doctor');
-        } else if (roleNames.includes('asistant')){
+        } else if (roleNames.includes('assistant')){
           navigate('/Assistant');
         } else if (roleNames.includes('patient')){
           navigate('/patient');
