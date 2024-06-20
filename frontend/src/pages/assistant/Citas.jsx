@@ -294,6 +294,9 @@ function Citas() {
                 <div className="btns-container">
                   {cita.state === "pending_execution" && <p>Aprobada</p>}
                   {cita.state === "rejected" && <p>Rechazada</p>}
+                  {cita.state === "finished" && <p>finalizado</p>}
+                  {cita.state === "in_execution" && <p>En ejecución</p>}
+                  {cita.state === "cancelled" && <p>Cancelada</p>}
                   {cita.state === "pending_approval" && (
                     <>
                       <button

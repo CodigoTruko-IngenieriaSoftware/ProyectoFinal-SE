@@ -190,6 +190,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public void setRoles(User user, List<String> roles) {
+        List<Role> rolesFound = roleRepository.findAllById(roles);
+        user.setRoles(rolesFound);
+        userRepository.save(user);
+    }
+
 
     @Override
     public Boolean isUserAssignedToThisAppointment(User user, Appointment appointment) {

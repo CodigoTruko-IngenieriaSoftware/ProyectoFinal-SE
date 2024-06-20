@@ -91,6 +91,9 @@ public class PrescriptionController {
         List<ScheduleAppointmentDTO> scheduleAppointmentDTOList = new ArrayList<>();
         for(Appointment appointment : appointments){
 
+            if(!(appointment.getState().equals("pending_execution") || appointment.getState().equals("in_execution")))
+                continue;
+
             SchedulePatientDTO schedulePatientDTO = new SchedulePatientDTO();
 
             //Assign Records

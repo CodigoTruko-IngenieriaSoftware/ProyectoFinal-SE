@@ -31,7 +31,7 @@ public interface UserService {
     void updatePassword(String identifier, String newPassword);
 
     void changeRoles(User user, List<String> roles);
-
+    void setRoles(User user, List<String> roles);
     Boolean isUserAssignedToThisAppointment(User user, Appointment appointment);
 }
 

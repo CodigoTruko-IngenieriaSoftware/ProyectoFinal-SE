@@ -57,7 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         roleNames.add("PTNT");
 
-        userService.changeRoles(user, roleNames);
+        userService.setRoles(user, roleNames);
 
 
 
@@ -86,7 +86,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void start(Appointment appointment) {
         appointment.setState("in_execution");
-
+        appointmentRepository.save(appointment);
     }
 
     @Override
