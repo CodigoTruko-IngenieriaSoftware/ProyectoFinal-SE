@@ -9,5 +9,6 @@ import java.util.List;
 public class UserInfoResponseDTO {
     private String username;
     private String email;
+    private Integer avatar;
     private List<Role> role;
 }

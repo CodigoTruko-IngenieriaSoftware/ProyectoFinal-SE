@@ -20,4 +20,19 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findAllAppointmentsByDateAndEstimatedEndHourAfterAndEntryHourBefore(LocalDate date, LocalTime entryHour, LocalTime estimatedEndHour);
 
     List<Appointment> findAllAppointmentsByIdAndUser(UUID id, User user);
+
+    @Query("SELECT a FROM Appointment a WHERE " +
+            "a.user = :user AND a.state = :state AND " +
+            "((a.date = :currentDate AND a.estimatedEndHour >= :currentTime) OR " +
+            "(a.date = :nextDate AND a.entryHour < :nextTime))")
+    List<Appointment> findAppointmentsByUserAndStateWithin24Hours(
+            @Param("user") User user,
+            @Param("state") String state,
+            @Param("currentDate") LocalDate currentDate,
+            @Param("currentTime") LocalTime currentTime,
+            @Param("nextDate") LocalDate nextDate,
+            @Param("nextTime") LocalTime nextTime
+    );
+
+
 }
