@@ -28,4 +28,5 @@ public interface AppointmentService {
     List<Appointment> findAllByUserAndState(User user, String state);
     List<Appointment> findAllByUser(User user);
     List<Appointment> findAllByDateAndAttends(LocalDate date, List<Attend> attends);
+    List<Appointment> findAllByUserApproveNextDay(User user);
 }

@@ -28,9 +28,8 @@ public class    AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<GeneralResponse> register(@RequestBody @Valid UserRegisterDTO info){
-        User user = userService.findByUsernameOrEmail(info.getUsername(), info.getEmail());
-        if(user != null){
-            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "User already exists");
+        if(userService.findByIdentifier(info.getEmail()) != null || userService.findByIdentifier(info.getUsername()) != null){
+            return GeneralResponse.getResponse(HttpStatus.CONFLICT, "Email or Username already exists");
         }
 
         userService.create(info);

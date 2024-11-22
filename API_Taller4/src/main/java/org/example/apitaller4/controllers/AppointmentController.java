@@ -175,16 +175,16 @@ public class AppointmentController {
     }
 
 
-        @PostMapping("/request")
-        public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
+    @PostMapping("/request")
+    public ResponseEntity<GeneralResponse> requestAppointment(@AuthenticationPrincipal User user, @RequestBody @Valid AppointmentRequestRequestDTO info){
 
-            if (user == null) {
-                return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
-            }
-
-            appointmentService.create(user, info);
-            return GeneralResponse.getResponse(HttpStatus.OK, "Appointment requested");
+        if (user == null) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
         }
+
+        appointmentService.create(user, info);
+        return GeneralResponse.getResponse(HttpStatus.OK, "Appointment requested");
+    }
 
 
     @GetMapping("/own")
@@ -193,6 +193,12 @@ public class AppointmentController {
             return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUser(user));
         }
         return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUserAndState(user, info.getState()));
+    }
+
+
+    @GetMapping("/own-approve")
+    public ResponseEntity<GeneralResponse> getAllInNextDay(@AuthenticationPrincipal User user){
+        return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUserApproveNextDay(user));
     }
 
 

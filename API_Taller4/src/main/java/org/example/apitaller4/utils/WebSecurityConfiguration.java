@@ -69,9 +69,10 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/user/all-doctors").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
                         .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_SUDO", "ROLE_PTNT")
                         .requestMatchers("/api/config/**").hasAuthority("ROLE_SUDO")
-                        .requestMatchers("/api/appointment/").permitAll()
+                        .requestMatchers("/api/appointment/").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/appointment/request").permitAll()
                         .requestMatchers("/api/appointment/own").hasAuthority("ROLE_PTNT")
+                        .requestMatchers("/api/appointment/own-approve").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/cancel").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/finish").hasAuthority("ROLE_DCTR")
                         .requestMatchers("/api/appointment/{username}").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
@@ -102,5 +103,5 @@ public class WebSecurityConfiguration {
 
         return http.build();
     }
-    
+
 }

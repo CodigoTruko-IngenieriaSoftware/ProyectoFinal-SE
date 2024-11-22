@@ -170,6 +170,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void updateAvatar(String identifier, Integer avatar){
+        User user = findByIdentifier(identifier);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with identifier: " + identifier);
+        }
+        if (avatar < 1 || avatar > 10) {
+            throw new EntityNotFoundException("Avatar out of range [1, 10]");
+        }
+        user.setAvartar(avatar);
+        userRepository.save(user);
+    }
+
+    @Override
     public void changeRoles(User user, List<String> roles) {
         List<Role> currentRoles = user.getRoles();
 
