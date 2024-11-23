@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(info.getPassword()));
         user.setEmail(info.getEmail());
         userRepository.save(user);
+        setRoles(user, Collections.singletonList("PTNT"));
     }
 
     @Override
@@ -166,6 +168,20 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("User not found with identifier: " + identifier);
         }
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void updateAvatar(String identifier, Integer avatar){
+        User user = findByIdentifier(identifier);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with identifier: " + identifier);
+        }
+        if (avatar < 1 || avatar > 10) {
+            throw new EntityNotFoundException("Avatar out of range [1, 10]");
+        }
+        user.setAvartar(avatar);
         userRepository.save(user);
     }
 

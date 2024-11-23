@@ -1,6 +1,7 @@
 package org.example.apitaller4.controllers;
 
 import jakarta.validation.Valid;
+import org.example.apitaller4.domain.dtos.user.ChangeAvatarRequestDTO;
 import org.example.apitaller4.domain.dtos.user.ChangePasswordRequestDTO;
 import org.example.apitaller4.domain.dtos.GeneralResponse;
 import org.example.apitaller4.domain.dtos.record.RecordCreateRequestDTO;
@@ -44,6 +45,7 @@ public class UserController {
         responseDTO.setUsername(user.getUsername());
         responseDTO.setEmail(user.getEmail());
         responseDTO.setRole(user.getRoles());
+        responseDTO.setAvatar(user.getAvartar());
         return GeneralResponse.getResponse(HttpStatus.OK, responseDTO);
     }
 
@@ -105,6 +107,17 @@ public class UserController {
             return GeneralResponse.getResponse(HttpStatus.OK, "Password changed successfully");
         } catch (Exception e) {
             return GeneralResponse.getResponse(HttpStatus.EXPECTATION_FAILED, "Could not update password");
+        }
+    }
+
+
+    @PatchMapping("/change-avatar")
+    public ResponseEntity<GeneralResponse> changeAvatar(@AuthenticationPrincipal User user, @RequestBody ChangeAvatarRequestDTO request) {
+        try {
+            userService.updateAvatar(user.getEmail(), request.getAvatar());
+            return GeneralResponse.getResponse(HttpStatus.OK, "Avatar changed successfully");
+        } catch (Exception e) {
+            return GeneralResponse.getResponse(HttpStatus.EXPECTATION_FAILED, "Could not update avatar");
         }
     }
 

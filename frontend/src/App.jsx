@@ -5,6 +5,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 
 import ChangeRole from './pages/admin/ChangeRole';
+import Profile from './pages/components/Profile';
 
 import MainAssistant from './pages/assistant/MainAssistant';
 import AprobarCita from './pages/assistant/Citas';
@@ -23,6 +24,7 @@ import MyPrescription from './pages/patient/MyPrescription';
 import RecordDoctor from './pages/doctor/RecordDoctor';
 
 import './App.css'
+import MisCitas from './pages/user/MisCitas';
 
 function App() {
 
@@ -34,9 +36,12 @@ function App() {
           <Route path="/Register" element={<Register />} />
 
           <Route path="/ChangeRole" element={<ChangeRole />} />
+          <Route path="/Profile" element={<Profile />} />
 
           <Route path="/Assistant" element={<MainAssistant />} />
           <Route path="/Cita" element={<AprobarCita />} />
+          <Route path="/MisCitas" element={<MisCitas />} />
+
           <Route path="/Prescripcion" element={<Prescription />} />
           <Route path="/User" element={<UserMain />} />
           <Route path="/Record" element={<Record />} />

@@ -63,8 +63,8 @@ function UserMain() {
         navigate('/');
         return;
       }
-
-      const response = await axios.get('http://localhost:8080/api/appointment/own', {
+      
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own`, {
         params: { state: 'pending_approval' },
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -119,7 +119,7 @@ function UserMain() {
         }
       }
 
-      const response = await axios.post("http://localhost:8080/api/appointment/request", data, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/request`, data, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -178,7 +178,7 @@ function UserMain() {
             <p className="user-title">¿Quieres agendar una cita?</p>
             <p className="user-text">Nuestros mejores doctores te atenderán</p>
             <button className="btn-make-apointment" onClick={togglePopup}>
-              Has click aquí
+              ¡Haz click aquí!
             </button>
 
             {appointments.length > 0 && (

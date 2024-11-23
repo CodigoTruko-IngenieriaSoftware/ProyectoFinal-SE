@@ -1,0 +1,398 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+}
+
+.content .tittle {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.citas-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.paciente {
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1.5fr 1fr;
+    align-items: center;
+    gap: 1rem;
+    background-color: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.paciente .info-tittle {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.paciente p {
+    font-size: 1rem;
+    text-align: center;
+}
+
+.paciente .reject-btn {
+    background-color: #ff8686;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.paciente .reject-btn:hover {
+    background-color: #ff4d4d;
+}
+
+.reject-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.reject-container h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.btns-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btns-container button {
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btns-container .reject-btn {
+    background-color: #ff8686;
+    color: white;
+}
+
+.btns-container .reject-btn:hover {
+    background-color: #ff4d4d;
+}
+
+.btns-container .approve-btn {
+    background-color: rgb(97, 208, 115);
+    color: white;
+}
+
+.btns-container .approve-btn:hover {
+    background-color: rgb(50, 150, 70);
+}
+
+.paciente {
+    position: relative; /* Necesario para que los elementos con posición absoluta dentro de .paciente se posicionen con respecto a esta tarjeta */
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1.5fr 1fr;
+    align-items: center;
+    gap: 1rem;
+    background-color: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.paciente .reject-btn {
+    position: absolute; /* Posiciona el botón en relación a .paciente */
+    top: -10px; /* Ajusta este valor para posicionar el botón hacia arriba */
+    left: -10px; /* Ajusta este valor para posicionar el botón hacia la izquierda */
+    background-color: #ff8686;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.paciente .reject-btn:hover {
+    background-color: #ff4d4d;
+}
+
+
+/* Contenedor del modal */
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; /* Para pantallas pequeñas, usa un ancho adaptativo */
+    max-width: 400px; /* Límite máximo del ancho */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    z-index: 1000;
+}
+
+/* Título dentro del modal */
+.modal-container h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* Botones del modal */
+.modal-container .btns-container {
+    display: flex;
+    flex-direction: column; /* Para pantallas pequeñas, los botones se apilan */
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-container .btns-container button {
+    width: 100%; /* Los botones ocupan todo el ancho disponible */
+    max-width: 150px; /* Máximo ancho para pantallas grandes */
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-container .btns-container .reject-btn {
+    background-color: #ff8686;
+    color: white;
+}
+
+.modal-container .btns-container .reject-btn:hover {
+    background-color: #ff4d4d;
+}
+
+.modal-container .btns-container .approve-btn {
+    background-color: rgb(97, 208, 115);
+    color: white;
+}
+
+.modal-container .btns-container .approve-btn:hover {
+    background-color: rgb(50, 150, 70);
+}
+
+/* Fondo del modal para bloquear la interacción */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    z-index: 999; /* Asegúrate de que esté detrás del modal */
+}
+
+/* Modal principal */
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px; /* Limitar el ancho máximo */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out; /* Añade una animación suave */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Para dispositivos más pequeños */
+@media (max-width: 480px) {
+    .modal-container {
+        padding: 1rem; /* Reduce el padding en pantallas más pequeñas */
+    }
+
+    .modal-container h2 {
+        font-size: 1.2rem; /* Ajusta el tamaño del texto */
+    }
+
+    .btns-container button {
+        max-width: 120px; /* Reducir el ancho máximo de los botones */
+        font-size: 0.9rem; /* Ajustar el tamaño de la fuente */
+    }
+}
+
+.paciente {
+    position: relative;
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1.5fr 1fr;
+    align-items: center;
+    gap: 1rem;
+    background-color: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Cambiar a diseño vertical en pantallas pequeñas */
+@media (max-width: 768px) {
+    .paciente {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Alinear contenido a la izquierda */
+        gap: 0.5rem; /* Espaciado más pequeño */
+    }
+
+    .paciente p {
+        font-size: 0.9rem; /* Reducir el tamaño del texto */
+    }
+}
+
+/* Asegurar que el botón de cancelar esté siempre en la esquina */
+.paciente .reject-btn {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    background-color: #ff8686;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.paciente .reject-btn:hover {
+    background-color: #ff4d4d;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    z-index: 999; /* Asegúrate de que esté detrás del modal */
+    opacity: 0;
+    animation: fadeInOverlay 0.3s ease-out forwards; /* Animación de entrada */
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.paciente {
+    position: relative;
+    width: 100%;
+    padding: 2rem; /* Ajusta el padding para más espacio */
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column; /* Los elementos estarán en columna */
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+    background-color: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Centra el texto */
+    gap: 1rem; /* Espacio entre elementos */
+}
+
+/* Mantén el botón de cancelación en la esquina superior izquierda */
+.paciente .reject-btn {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    background-color: #ff8686;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.paciente .reject-btn:hover {
+    background-color: #ff4d4d;
+}
+
+.paciente p {
+    font-size: 1rem; /* Tamaño del texto */
+    text-align: center; /* Centra el texto */
+    margin: 0; /* Elimina márgenes adicionales */
+}
+
+.paciente .info-tittle {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-align: center; /* Asegura que los títulos también estén centrados */
+}

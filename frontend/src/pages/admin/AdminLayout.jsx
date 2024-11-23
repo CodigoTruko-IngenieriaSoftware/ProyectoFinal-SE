@@ -4,6 +4,7 @@ import LogoutModal from './LogoutModal';
 import '../../assets/styles/assistant/Layout.css';
 
 const DoctorLayout = ({ children }) => {
+    
     const nav = useNavigate();
     const location = useLocation();
     const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -14,12 +15,10 @@ const DoctorLayout = ({ children }) => {
 
     const getActiveNav = () => {
         switch (location.pathname) {
-            case '/Doctor':
+            case '/Admin':
                 return 'Inicio';
-            case '/appointment':
-                return 'appointment';
-            case '/PrescriptionDoctor':
-                return 'Prescription';
+            case '/Profile':
+                return 'Profile';
             default:
                 return 'Inicio';
         }
@@ -46,6 +45,8 @@ const DoctorLayout = ({ children }) => {
                     <ul className="menu">
                         <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
                             onClick={() => navigateTo('/ChangeRole')}>Cambiar Roles</li>
+                        <li className={`navElement ${getActiveNav() === 'Profile' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/Profile')}>Perfil</li>
                         <li className="navElement logout" onClick={handleLogout}>Logout</li>
                     </ul>
                 </nav>

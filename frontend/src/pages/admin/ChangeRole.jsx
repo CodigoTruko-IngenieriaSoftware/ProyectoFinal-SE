@@ -5,15 +5,25 @@ import { useNavigate } from "react-router-dom";
 import "../../assets/styles/admin/ChangeRole.css";
 
 function ChangeRole() {
+  
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [newRole, setNewRole] = useState("");
 
   useEffect(() => {
     handleGetUser();
   }, []);
 
+  useEffect(() => {
+    if (users.length > 0 && !selectedUser) {
+      setSelectedUser(users[0]);
+    }
+  }, [users, selectedUser]);
+
   const handleGetUser = async () => {
+
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -40,7 +50,7 @@ function ChangeRole() {
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/user/all-users",
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/all-users`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -75,16 +85,15 @@ function ChangeRole() {
 
   const handleChangeRole = async (username, newRole) => {
     const token = localStorage.getItem("token");
-
+  
     if (!token) {
       console.error("No token found");
       return;
     }
-    console.log(username, newRole);
-
+  
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/config/change-roles",
+        `${import.meta.env.VITE_API_BASE_URL}/api/config/change-roles`,
         {
           identifier: username,
           roles: [newRole],
@@ -93,10 +102,20 @@ function ChangeRole() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
+      
       if (response.status === 200) {
+
         console.log("Role changed successfully");
-        handleGetUser();
+    
+        // Actualizar el usuario seleccionado después del refetch
+        const updatedUser = users.find((user) => user.username === username);
+        if (updatedUser) {
+          setSelectedUser(updatedUser);
+        } else {
+          console.error("No se encontró el usuario después del refetch");
+        }
+  
+        setNewRole(""); // Limpia el estado del nuevo rol
       }
     } catch (error) {
       console.error(
@@ -105,40 +124,95 @@ function ChangeRole() {
       );
     }
   };
+  
 
   return (
     <Layout>
-      <div className="content">
-        <h2 className="tittle">Lista de Usuarios</h2>
-        <div className="user-info-container">
-          <div className="users">
-            <p className="info-tittle">Nombre</p>
-            <p className="info-tittle">Email</p>
-            <p className="info-tittle">Rol</p>
-            <p className="info-tittle">Cambiar Rol</p>
+      <div className="role-content">
+        <div className="functions-container">
+
+          <div className="list-container">
+            <h2 className="list-text">Lista de Usuarios</h2>
+
+            <div className="element-container" style={{ fontWeight: "bold", backgroundColor: "white", boxShadow: "none"}}>
+              <div className="user-inf-container">
+                <h3 className="title">Usuario</h3>
+              </div>
+              <div className="user-inf-container">
+                <h3 className="title">Email</h3>
+              </div>
+            </div>
+
+            {users.map((user, index) => (
+              <div
+                key={index}
+                className="element-container"
+                onClick={() => setSelectedUser(user)} // Selecciona el usuario al hacer clic en la fila
+                style={{
+                  cursor: "pointer",
+                  backgroundColor: selectedUser?.username === user.username ? "#B0D9FF" : "#E3F2FF",
+                  borderRadius: "10px",
+                  margin: "0.5rem 0",
+                  padding: "0.5rem",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <div className="user-inf-container">
+                  <div className="user-data-container">
+                    <p>{user.username}</p>
+                  </div>
+                </div>
+                <div className="user-inf-container">
+                  <div className="email-data-container">
+                    <p>{user.email}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          {users.map((user, index) => (
-            <div key={index} className="users-info">
-              <p>{user.username}</p>
-              <p>{user.email}</p>
-              <p>{user.roles.map(getRoleDescription).join(", ")}</p>
-              <div>
+
+          {selectedUser && (
+            <div className="change-role-container">
+              <div className="c-r-info-container">
+                <div className="role-info">
+                  <h3 className="role-title">ROL</h3>
+                  <p>{selectedUser.roles.map(getRoleDescription).join(", ")}</p>
+                </div>
+              </div>
+              <div className="c-r-selector-container">
+                <h4>Cambiar Rol</h4>
+                <div>
                 <select
+                  className="role-selector"
                   defaultValue=""
-                  onChange={(e) =>
-                    handleChangeRole(user.username, e.target.value)
-                  }
+                  onChange={(e) => setNewRole(e.target.value)} // Almacena el nuevo rol en el estado
                 >
                   <option value="" disabled>
-                    Change Role
+                    Roles
                   </option>
                   <option value="PTNT">Paciente</option>
                   <option value="DCTR">Doctor</option>
                   <option value="ASST">Asistente</option>
                 </select>
+                </div>
+              </div>
+              <div className="c-r-button-container">
+              <button
+                className="c-r-button"
+                onClick={() => {
+                  if (newRole) {
+                    handleChangeRole(selectedUser.username, newRole);
+                    setNewRole("");
+                  } else {
+                    alert("Por favor, selecciona un rol antes de cambiar.");
+                  }
+                }}
+              >
+                Cambiar Rol
+              </button>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </Layout>

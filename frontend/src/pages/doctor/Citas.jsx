@@ -51,7 +51,7 @@ const Citas = () => {
       }
 
       const response = await axios.get(
-        "http://localhost:8080/api/clinic/schedule",
+        `${import.meta.env.VITE_API_BASE_URL}/api/clinic/schedule`,
         {
           params: { date },
           headers: {
@@ -104,8 +104,8 @@ const Citas = () => {
         return;
       }
 
-      const response = await axios.post(
-        "http://localhost:8080/api/clinic/prescription",
+      const response = await axios.post(  
+        `${import.meta.env.VITE_API_BASE_URL}/api/clinic/prescription`,
         newPrescription,
         {
           headers: {
@@ -144,7 +144,7 @@ const Citas = () => {
       const requestData = { appointmentId };
 
       await axios.post(
-        `http://localhost:8080/api/appointment/start`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/start`,
         requestData,
         {
           headers: {
@@ -177,7 +177,7 @@ const Citas = () => {
       const requestData = { appointmentId };
 
       await axios.post(
-        `http://localhost:8080/api/appointment/finish`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/finish`,
         requestData,
         {
           headers: {

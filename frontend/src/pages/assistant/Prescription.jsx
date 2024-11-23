@@ -48,7 +48,7 @@ function Prescription() {
         }
 
         try {
-            const response = await axios.get("http://localhost:8080/api/user/all-patients", {
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/all-patients`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const filteredUsers = response.data.data.filter(user =>
@@ -63,8 +63,8 @@ function Prescription() {
     const handleGetRecords = async (user) => {
         setSelectedPatient(user);
         const token = localStorage.getItem('token');
-        try {
-            const response = await axios.get(`http://localhost:8080/api/record/${user.username}`, {
+        try {            
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/record/${user.username}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setSelectedPatientRecords(response.data.data.records);
@@ -95,9 +95,8 @@ function Prescription() {
             if (!token) {
                 console.error('No token found');
                 return;
-            }
-
-            const response = await axios.post(`http://localhost:8080/api/user/record`, data,{
+            }            
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/user/record`, data,{
                 headers: { 
                     'Authorization': `Bearer ${token}` 
                 }

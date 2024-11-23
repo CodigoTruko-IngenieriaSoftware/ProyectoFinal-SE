@@ -9,16 +9,18 @@
 * {
   font-family: "Poppins", sans-serif;
   color: var(--fontColor);
+  box-sizing: border-box; /* Asegura que el padding no altere las dimensiones */
 }
 
-p {
+body {
   margin: 0;
-  line-height: 0.8;
+  padding: 0;
+  background-color: #f8f9fa; /* Fondo claro general */
 }
 
-h1 {
+p, h1 {
   margin: 0;
-  line-height: 0.8;
+  line-height: 1.2;
 }
 
 .x-small {
@@ -32,20 +34,18 @@ h1 {
   height: 80vh;
 }
 
-.btn-make-apointment {
-  background-color: var(--Color);
-  color: white;
-  border: none;
-  width: 50%;
-  padding: 1% 0;
-  border-radius: 20px;
-  margin-top: 5%;
-  font-size: medium;
-  font-weight: bold;
-}
-
 .user-img {
   width: 24%;
+  margin-right: 20px; /* Separación entre imagen y contenido */
+}
+
+.cita-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 20px; /* Espacio entre elementos */
 }
 
 .user-title {
@@ -54,25 +54,42 @@ h1 {
 }
 
 .user-text {
-  margin-top: 2%;
+  margin-top: 10px;
+  font-size: 1.2rem;
+}
+
+.btn-make-apointment {
+  background-color: var(--Color);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 28px;
+  font-size: medium;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-make-apointment:hover {
+  background-color: #204254; /* Color más oscuro al pasar el cursor */
 }
 
 .elements-popup {
   background-color: white;
   padding: 35px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-radius: 10px 10px 0px 0px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
 }
 
 .appointment-title {
-  font-size: 2em;
+  font-size: 1.8rem;
   font-weight: bold;
-  margin-bottom: 2%;
+  margin-bottom: 10px;
 }
 
 .appointment-text {
-  font-size: normal;
-  margin-bottom: 5%;
+  font-size: 1rem;
+  margin-bottom: 15px;
 }
 
 .steps > div {
@@ -84,82 +101,106 @@ h1 {
 }
 
 .date-selector {
-  width: 80%;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.reason {
+  margin-top: 20px;
+  text-align: justify;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  resize: none;
+  overflow-y: auto;
+}
+
+.summary {
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: justify;
+}
+
+.setAppointment {
+  background-color: var(--Color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.setAppointment:hover {
+  background-color: #204254; /* Efecto hover */
 }
 
 .navigation-buttons {
   background-color: white;
-  padding: 2% 0;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  padding: 15px 0;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Espacio entre botones */
 }
 
 .step-btn {
   background-color: var(--Color);
   color: white;
-  padding: 1% 2%;
+  padding: 10px 15px;
   border-radius: 20px;
-  margin: 0 2%;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.reason{
-    margin-top: 5%;
-    text-align: justify;
+.step-btn:hover {
+  background-color: #204254;
 }
 
-.summary {
-  width: 300px; 
-  border: none; 
-  background-color: transparent; 
-  max-height: 200px; 
-  overflow-y: auto;
-  text-align: justify;
-}
-
-.setAppointment{
-    color: var(--fontColor);
-    background-color: var(--bgColor);
-    margin-top: 5%;
-    padding: 2% 4%;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-.message-popup{
+.message-popup {
   position: fixed;
   top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 20px;
   border-radius: 10px;
   z-index: 1000;
   text-align: center;
+  font-size: 1rem;
 }
 
-.appointment-status{
+.appointment-status {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5%;
   flex-direction: column;
   background-color: gray;
-  border-color: var(--fontColor);
-  padding: 4% 2%;
+  padding: 20px;
   border-radius: 10px;
+  margin-top: 20px;
+  color: white;
 }
 
-.status-text{
-  font-size: 1.5em;
+.status-text {
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 2%;
-  color: rgb(255, 255, 255);
-}
-
-.cita-container{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  margin-bottom: 10px;
 }

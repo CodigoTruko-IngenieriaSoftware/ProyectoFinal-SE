@@ -23,7 +23,7 @@ function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
         data
       );
       const token = response.data.data.token;
@@ -32,7 +32,7 @@ function Login() {
       console.log("Token:", response.data.data.token);
       localStorage.setItem("token", response.data.data.token);
 
-      const userInfoResponse = await axios.get("http://localhost:8080/api/user/", {
+      const userInfoResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/`, {
         headers: {
           'Authorization': `Bearer ${response.data.data.token}`
         }
@@ -72,7 +72,7 @@ function Login() {
 
   const fetchUserData = async (token) => {
     try {
-      const response = await axios.get("http://localhost:8080/api/user/", {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
