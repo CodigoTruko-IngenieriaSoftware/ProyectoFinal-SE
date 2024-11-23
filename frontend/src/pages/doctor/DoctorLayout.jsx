@@ -14,16 +14,16 @@ const DoctorLayout = ({ children }) => {
 
   const getActiveNav = () => {
     switch (location.pathname) {
-      case "/Doctor":
-        return "Inicio";
       case "/appointment":
         return "appointment";
       case "/PrescriptionDoctor":
         return "Prescription";
       case "/RecordDoctor":
         return "Record";
+      case "/profile":
+        return "profile";
       default:
-        return "Inicio";
+        return "";
     }
   };
 
@@ -48,14 +48,6 @@ const DoctorLayout = ({ children }) => {
           <ul className="menu">
             <li
               className={`navElement ${
-                getActiveNav() === "Inicio" ? "active" : ""
-              }`}
-              onClick={() => navigateTo("/Doctor")}
-            >
-              Doctor
-            </li>
-            <li
-              className={`navElement ${
                 getActiveNav() === "appointment" ? "active" : ""
               }`}
               onClick={() => navigateTo("/appointment")}
@@ -64,7 +56,7 @@ const DoctorLayout = ({ children }) => {
             </li>
             <li
               className={`navElement ${
-                getActiveNav() === "Records" ? "active" : ""
+                getActiveNav() === "Prescription" ? "active" : ""
               }`}
               onClick={() => navigateTo("/PrescriptionDoctor")}
             >
@@ -77,6 +69,14 @@ const DoctorLayout = ({ children }) => {
               onClick={() => navigateTo("/DoctorRecord")}
             >
               Historiales
+            </li>
+            <li
+              className={`navElement ${
+                getActiveNav() === "profile" ? "active" : ""
+              }`}
+              onClick={() => navigateTo("/profile")}
+            >
+              Perfil
             </li>
             <li className="navElement logout" onClick={handleLogout}>
               Logout

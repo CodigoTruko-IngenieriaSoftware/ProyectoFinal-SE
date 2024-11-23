@@ -62,6 +62,7 @@ const Citas = () => {
 
       const appointmentsData = response.data.data.appointments;
       setAppointments(appointmentsData);
+      console.log("Citas encontradas:", appointmentsData);
     } catch (error) {
       setError(
         "Failed to fetch data: " +
@@ -199,39 +200,37 @@ const Citas = () => {
   return (
     <DoctorLayout>
       <div className="appointments-container">
-        <h2>Horarios de citas</h2>
+        <h2>Buscar citas</h2>
 
-        <label>
-          Buscar por fecha
+        <label className="citas-lbl">
+          Buscar una cita por fecha
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
+            className="citas-input"
           />
         </label>
 
-        <button onClick={fetchSchedule}>Buscar</button>
+        <button className="search-btn-special" onClick={fetchSchedule}>Iniciar búsqueda</button>
 
-        {error && <p className="error-message">{error}</p>}
+     
 
         <ul className="appointments-list">
           {appointments.map((appointment) => (
             <li key={appointment.appointmentId} className="appointment-item">
               <div className="appointment-item-content">
                 <div className="appointment-item-text">
-                  <h3>
-                    <strong>Paciente:</strong>{" "}
-                    {appointment.patient.patientUsername}
-                  </h3>
                   <p>
-                    <strong>ID de la cita:</strong> {appointment.appointmentId}
+                    <strong>Nombre</strong>{" "}
+                    {appointment.patient.patientUsername}
                   </p>
                   <p>
-                    <strong>Hora de entrada:</strong>{" "}
+                    <strong>Entrada:</strong>{" "}
                     {appointment.appointmentEntryHour}
                   </p>
                   <p>
-                    <strong>Hora estimada fin:</strong>{" "}
+                    <strong>Salida:</strong>{" "}
                     {appointment.appointmentEstimatedEndHour}
                   </p>
                   <p>

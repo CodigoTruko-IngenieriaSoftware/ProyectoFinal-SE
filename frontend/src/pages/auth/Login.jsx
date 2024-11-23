@@ -50,7 +50,7 @@ function Login() {
         if(roleNames.includes('sysadmin')){
           navigate('/ChangeRole');
         } else if (roleNames.includes('doctor')){
-          navigate('/doctor');
+          navigate('/appointment');
         } else if (roleNames.includes('assistant')){
           navigate('/Assistant');
         } else if (roleNames.includes('patient')){
