@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../../assets/styles/admin/ChangeRole.css";
 
 function ChangeRole() {
+  
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
@@ -49,7 +50,7 @@ function ChangeRole() {
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/user/all-users",
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/all-users`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -92,7 +93,7 @@ function ChangeRole() {
   
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/config/change-roles",
+        `${import.meta.env.VITE_API_BASE_URL}/api/config/change-roles`,
         {
           identifier: username,
           roles: [newRole],

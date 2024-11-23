@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../../assets/styles/assistant/Prescription.css";
 
 function Prescription() {
+
   const navigate = useNavigate();
 
   const [dateStart, setDateStart] = useState("");
@@ -43,7 +44,7 @@ function Prescription() {
       }
 
       const response = await axios.get(
-        "http://localhost:8080/api/user/record",
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/record`,
         {
           params: requestData,
           headers: {

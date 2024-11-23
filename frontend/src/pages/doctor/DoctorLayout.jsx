@@ -4,8 +4,10 @@ import LogoutModal from "./LogoutModal";
 import "../../assets/styles/assistant/Layout.css";
 
 const DoctorLayout = ({ children }) => {
+  
   const nav = useNavigate();
   const location = useLocation();
+
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const navigateTo = (path) => {
@@ -22,6 +24,8 @@ const DoctorLayout = ({ children }) => {
         return "Prescription";
       case "/RecordDoctor":
         return "Record";
+      case '/Profile':
+        return 'Profile';
       default:
         return "Inicio";
     }
@@ -78,6 +82,8 @@ const DoctorLayout = ({ children }) => {
             >
               Historiales
             </li>
+            <li className={`navElement ${getActiveNav() === 'Profile' ? 'active' : ''}`}
+              onClick={() => navigateTo('/Profile')}>Perfil</li>
             <li className="navElement logout" onClick={handleLogout}>
               Logout
             </li>

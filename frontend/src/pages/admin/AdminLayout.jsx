@@ -4,6 +4,7 @@ import LogoutModal from './LogoutModal';
 import '../../assets/styles/assistant/Layout.css';
 
 const DoctorLayout = ({ children }) => {
+    
     const nav = useNavigate();
     const location = useLocation();
     const [showLogoutModal, setShowLogoutModal] = useState(false);
