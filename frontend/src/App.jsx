@@ -24,6 +24,7 @@ import MyPrescription from './pages/patient/MyPrescription';
 import RecordDoctor from './pages/doctor/RecordDoctor';
 
 import './App.css'
+import MisCitas from './pages/user/MisCitas';
 
 function App() {
 
@@ -39,6 +40,8 @@ function App() {
 
           <Route path="/Assistant" element={<MainAssistant />} />
           <Route path="/Cita" element={<AprobarCita />} />
+          <Route path="/MisCitas" element={<MisCitas />} />
+
           <Route path="/Prescripcion" element={<Prescription />} />
           <Route path="/User" element={<UserMain />} />
           <Route path="/Record" element={<Record />} />

@@ -18,18 +18,19 @@ const Layout = ({ children }) => {
 
     const getActiveNav = () => {
         switch (location.pathname) {
-            case '/User ':
+            case '/User':
                 return 'Inicio';
-            case '/Cita':
-                return 'Citas';
+            case '/MisCitas':
+                return 'MisCitas';
             case '/Prescripcion':
                 return 'Prescripción';
             case '/Profile':
                 return 'Profile';
             default:
-                return 'Inicio';
+                return ''; // Retorna una cadena vacía si no hay coincidencias
         }
     };
+
 
     return (
         <div className="main-container">
@@ -37,16 +38,26 @@ const Layout = ({ children }) => {
                 <div className="logo">Clinica Ya Merito</div>
                 <nav className="nav">
                     <ul className="menu">
-                        <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/User')}>Inicio</li>
-                        <li className={`navElement ${getActiveNav() === 'Profile' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Profile')}>Perfil</li>
-                        <li className="navElement logout" onClick={handleLogout}>Logout</li>
+                        <li
+                            className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/User')}
+                        >
+                            Agendar cita
+                        </li>
+                        <li
+                            className={`navElement ${getActiveNav() === 'MisCitas' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/MisCitas')}
+                        >
+                            Mis citas
+                        </li>
+                        <li className="navElement logout" onClick={handleLogout}>
+                            Logout
+                        </li>
                     </ul>
                 </nav>
             </header>
             <div className="main-content">
-                { children }
+                {children}
             </div>
         </div>
     );

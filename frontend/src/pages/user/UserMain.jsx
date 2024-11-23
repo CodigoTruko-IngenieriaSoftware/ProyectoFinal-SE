@@ -178,7 +178,7 @@ function UserMain() {
             <p className="user-title">¿Quieres agendar una cita?</p>
             <p className="user-text">Nuestros mejores doctores te atenderán</p>
             <button className="btn-make-apointment" onClick={togglePopup}>
-              Has click aquí
+              ¡Haz click aquí!
             </button>
 
             {appointments.length > 0 && (
