@@ -62,7 +62,7 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/").permitAll()
+                        .requestMatchers("/api/user/").hasAuthority("ROLE_SUDO")
                         .requestMatchers(HttpMethod.GET,"/api/user/record").hasAuthority("ROLE_PTNT")
                         .requestMatchers(HttpMethod.POST, "/api/user/record").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
                         .requestMatchers("/api/user/all-patients").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
@@ -70,7 +70,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_SUDO", "ROLE_PTNT")
                         .requestMatchers("/api/config/**").hasAuthority("ROLE_SUDO")
                         .requestMatchers("/api/appointment/").hasAuthority("ROLE_SUDO")
-                        .requestMatchers("/api/appointment/request").permitAll()
+                        .requestMatchers("/api/appointment/request").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/own").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/own-approve").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/cancel").hasAuthority("ROLE_PTNT")

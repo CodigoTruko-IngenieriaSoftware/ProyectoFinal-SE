@@ -189,6 +189,9 @@ public class AppointmentController {
 
     @GetMapping("/own")
     public ResponseEntity<GeneralResponse> getAll(@AuthenticationPrincipal User user, @ModelAttribute @Valid AppointmentGetByStateRequestDTO info){
+        if (user == null) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Your not logged");
+        }
         if(info.getState() == null){
             return GeneralResponse.getResponse(HttpStatus.OK, appointmentService.findAllByUser(user));
         }
