@@ -62,7 +62,7 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/").hasAuthority("ROLE_SUDO")
+                        .requestMatchers("/api/user/").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST", "ROLE_PTNT", "ROLE_SUDO")
                         .requestMatchers(HttpMethod.GET,"/api/user/record").hasAuthority("ROLE_PTNT")
                         .requestMatchers(HttpMethod.POST, "/api/user/record").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
                         .requestMatchers("/api/user/all-patients").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
