@@ -24,6 +24,8 @@ const Layout = ({ children }) => {
                 return 'Citas';
             case '/Prescripcion':
                 return 'Prescripción';
+            case '/Profile':
+                return 'Profile';
             default:
                 return 'Inicio';
         }
@@ -37,6 +39,8 @@ const Layout = ({ children }) => {
                     <ul className="menu">
                         <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
                             onClick={() => navigateTo('/User')}>Inicio</li>
+                        <li className={`navElement ${getActiveNav() === 'Profile' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/Profile')}>Perfil</li>
                         <li className="navElement logout" onClick={handleLogout}>Logout</li>
                     </ul>
                 </nav>

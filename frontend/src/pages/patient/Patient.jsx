@@ -83,8 +83,8 @@ function UserMain() {
           navigate('/User');
       }
       }
-
-      const response = await axios.get("http://localhost:8080/api/appointment/own", {
+      
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -125,8 +125,8 @@ function UserMain() {
         navToRegister();
         return;
       }
-
-      const response = await axios.post("http://localhost:8080/api/appointment/request", data, {
+      
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/request`, data, {
         headers: {
           'Authorization': `Bearer ${token}`
         },

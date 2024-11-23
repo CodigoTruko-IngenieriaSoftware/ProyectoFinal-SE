@@ -51,7 +51,7 @@ function Citas() {
       }
 
       const response = await axios.get(
-        "http://localhost:8080/api/appointment/own",
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/own`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ function Citas() {
       const username = user.username;
 
       const response = await axios.get(
-        "http://localhost:8080/api/appointment/",
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -115,7 +115,7 @@ function Citas() {
       }
 
       const response = await axios.post(
-        `http://localhost:8080/api/appointment/cancel`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/cancel`,
         { appointmentId: cancelAppointmentId },
         {
           headers: {

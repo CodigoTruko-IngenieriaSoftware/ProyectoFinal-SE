@@ -118,8 +118,8 @@ function Citas() {
   // LOGICA DE CONEXIÓN CON API
   const fetchDoctors = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/user/all-doctors", { headers: { Authorization: `Bearer ${token}` } });
+      const token = localStorage.getItem("token");  
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/all-doctors`, { headers: { Authorization: `Bearer ${token}` } });
       setDoctors(response.data.data.map(doc => ({ ...doc, available: true })));
     } catch (error) {
       console.error("Error fetching doctors:", error);
@@ -128,8 +128,8 @@ function Citas() {
 
   const fetchSpecialties = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/specialty/", { headers: { Authorization: `Bearer ${token}` } });
+      const token = localStorage.getItem("token");      
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/specialty/`, { headers: { Authorization: `Bearer ${token}` } });
       setSpecialties(response.data.data);
     } catch (error) {
       console.error("Error fetching specialties:", error);
@@ -139,7 +139,7 @@ function Citas() {
   const handleGetList = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/appointment/"
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/`
       );
       console.log("Data:", response.data);
 
@@ -189,7 +189,7 @@ function Citas() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:8080/api/appointment/approve",
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/approve`,
         data,
         {
           headers: {
@@ -250,7 +250,7 @@ function Citas() {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/api/appointment/reject",
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/reject`,
         data,
         {
           headers: {

@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 import "../../assets/styles/doctor/Prescription.css";
 
 const Citas = () => {
+
   const navigate = useNavigate();
-  const [userID, setUserID] = useState(''); // ID del usuario seleccionado del dropdown
-  const [patients, setPatients] = useState([]); // Lista de pacientes obtenidos del API
-  const [prescriptions, setPrescriptions] = useState([]); // Prescripciones obtenidas del API
+  const [userID, setUserID] = useState('');
+  const [patients, setPatients] = useState([]);
+  const [prescriptions, setPrescriptions] = useState([]);
 
   useEffect(() => {
     fetchPatients();
@@ -43,7 +44,7 @@ const Citas = () => {
       }
       }
 
-      const response = await axios.get('http://localhost:8080/api/user/all-patients', {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/all-patients`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -65,8 +66,8 @@ const Citas = () => {
         console.error('No token found');
         return;
       }
-
-      const response = await axios.get(`http://localhost:8080/api/clinic/prescription/${userID}`, {
+      
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/clinic/prescription/${userID}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

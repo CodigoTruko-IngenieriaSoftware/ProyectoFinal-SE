@@ -17,6 +17,8 @@ const Layout = ({ children }) => {
                 return 'Inicio';
             case '/Cita':
                 return 'Citas';
+            case '/Profile':
+                return 'Profile';
             case '/Prescripcion':
                 return 'Historial Medico';
             default:
@@ -41,6 +43,8 @@ const Layout = ({ children }) => {
                             onClick={() => navigateTo('/Cita')}>Citas</li>
                         <li className={`navElement ${getActiveNav() === 'Historial Medico' ? 'active' : ''}`}
                             onClick={() => navigateTo('/Prescripcion')}>Historial Medico</li>
+                        <li className={`navElement ${getActiveNav() === 'Profile' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/Profile')}>Perfil</li>
                         <li className="navElement logout" onClick={handleLogout}>Logout</li>
                     </ul>
                 </nav>
