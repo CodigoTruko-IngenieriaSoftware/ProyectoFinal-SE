@@ -134,7 +134,7 @@ function Prescription() {
                     <Overlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
                         {activeForm === "RecordHistory" && selectedPatient && (
                             <div className="record-container">
-                                <h2>Historial de {selectedPatient.username}</h2>
+                                <h2 className="record-title">Historial de {selectedPatient.username}</h2>
                                 {selectedPatientRecords.length > 0 ? (
                                     <div className="record-data-container">
                                         {selectedPatientRecords.map((record, index) => (

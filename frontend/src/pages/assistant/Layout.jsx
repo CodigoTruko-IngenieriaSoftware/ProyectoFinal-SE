@@ -37,8 +37,6 @@ const Layout = ({ children }) => {
                 <div className="logo">Clinica Ya Merito</div>
                 <nav className="nav">
                     <ul className="menu">
-                        <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Assistant')}>Inicio</li>
                         <li className={`navElement ${getActiveNav() === 'Citas' ? 'active' : ''}`}
                             onClick={() => navigateTo('/Cita')}>Citas</li>
                         <li className={`navElement ${getActiveNav() === 'Historial Medico' ? 'active' : ''}`}

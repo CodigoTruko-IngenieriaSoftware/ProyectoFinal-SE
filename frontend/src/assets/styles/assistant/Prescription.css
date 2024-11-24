@@ -18,6 +18,7 @@
 .user {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid #000;
 }
 
 .user p {
@@ -25,10 +26,28 @@
     font-weight: 700;
 }
 
-.user-info {
+.user-info{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-}
+    gap: 1rem;
+    justify-items: center;
+    background-color: #e5f1ff;
+    border-radius: 10px;
+  }
+
+  .user-info-btn-astnt{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: #2E6171;
+    color: white;
+    font-weight: bold;
+    border: none;
+    width: 100%;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
 
 .user div {
     display: flex;

@@ -304,3 +304,24 @@
   width: 100%;
   border-radius: 10px; 
 }
+
+
+/*------RECORD PART 3------*/
+.record-data-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.data-container{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+}
+
+.record-title{
+  border-bottom: 1px solid black;
+}
