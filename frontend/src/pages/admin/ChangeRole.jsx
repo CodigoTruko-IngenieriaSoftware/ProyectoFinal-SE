@@ -4,8 +4,21 @@ import Layout from "../admin/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/admin/ChangeRole.css";
 
+const ROLES = {
+  PTNT: "Paciente",
+  DCTR: "Doctor",
+  ASST: "Asistente",
+};
+
+const ROLE_PATHS = {
+  sysadmin: "/ChangeRole",
+  doctor: "/doctor",
+  assistant: "/Assistant",
+  patient: "/patient",
+  default: "/User",
+};
+
 function ChangeRole() {
-  
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
@@ -17,35 +30,33 @@ function ChangeRole() {
   }, []);
 
   useEffect(() => {
-    if (users.length > 0 && !selectedUser) {
-      setSelectedUser(users[0]);
+    if (users.length > 0) {
+      setSelectedUser((prev) => prev || users[0]);
     }
-  }, [users, selectedUser]);
+  }, [users]);
+
+  const getToken = () => localStorage.getItem("token");
+
+  const handleRoleNavigation = (roles) => {
+    const path = roles.find((role) => ROLE_PATHS[role.toLowerCase()]) || "default";
+    navigate(ROLE_PATHS[path]);
+  };
 
   const handleGetUser = async () => {
-
-    const token = localStorage.getItem("token");
+    const token = getToken();
 
     if (!token) {
       console.error("No token found");
       return;
     }
+
     const userData = localStorage.getItem("userData");
     const user = JSON.parse(userData);
     const roles = user.role.map((role) => role.name);
+
     if (!roles.includes("sysadmin")) {
-      if (roles.includes("sysadmin")) {
-        navigate("/ChangeRole");
-      } else if (roles.includes("doctor")) {
-        navigate("/doctor");
-      } else if (roles.includes("assistant")) {
-        navigate("/Assistant");
-      } else if (roles.includes("patient")) {
-        navigate("/patient");
-      } else {
-        console.error("Unknown role:", user.role);
-        navigate("/User");
-      }
+      handleRoleNavigation(roles);
+      return;
     }
 
     try {
@@ -55,7 +66,7 @@ function ChangeRole() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Data:", response.data);
+
       const filteredUsers = response.data.data
         .filter(
           (user) =>
@@ -68,73 +79,74 @@ function ChangeRole() {
               ? user.authorities.map((auth) => auth.authority)
               : ["Usuario"],
         }));
+
       setUsers(filteredUsers);
     } catch (error) {
+      alert("Error al obtener usuarios. Por favor, inténtalo nuevamente.");
       console.error("Error al obtener usuarios:", error.toString());
     }
   };
 
-  const getRoleDescription = (roleCode) => {
-    const roleDescriptions = {
-      ROLE_PTNT: "Paciente",
-      ROLE_DCTR: "Doctor",
-      ROLE_ASST: "Asistente",
-    };
-    return roleDescriptions[roleCode] || roleCode;
+  const getRoleDescription = (roleCode) => ROLES[roleCode.replace("ROLE_", "")] || roleCode;
+
+  const getAvailableRoles = (currentRoles) => {
+    const currentFormattedRoles = currentRoles.map((role) => role.replace("ROLE_", ""));
+    return Object.keys(ROLES).filter((role) => !currentFormattedRoles.includes(role));
   };
 
   const handleChangeRole = async (username, newRole) => {
-    const token = localStorage.getItem("token");
-  
+    const token = getToken();
+
     if (!token) {
       console.error("No token found");
       return;
     }
-  
+
     try {
+      const currentRole = selectedUser.roles[0].replace("ROLE_", "");
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/config/change-roles`,
-        {
-          identifier: username,
-          roles: [newRole],
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { identifier: username, roles: [newRole, currentRole] },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      if (response.status === 200) {
 
-        console.log("Role changed successfully");
-    
-        // Actualizar el usuario seleccionado después del refetch
+      if (response.status === 200) {
         const updatedUser = users.find((user) => user.username === username);
         if (updatedUser) {
-          setSelectedUser(updatedUser);
-        } else {
-          console.error("No se encontró el usuario después del refetch");
+          setSelectedUser({ ...updatedUser, roles: [newRole] });
         }
-  
-        setNewRole(""); // Limpia el estado del nuevo rol
+        setNewRole("");
       }
     } catch (error) {
-      console.error(
-        "Error changing role:",
-        error.response ? error.response.data : "Error"
-      );
+      console.error("Error changing role:", error.response?.data || "Error");
     }
   };
-  
+
+  const selectedUserStyle = {
+    cursor: "pointer",
+    backgroundColor: "#B0D9FF",
+    borderRadius: "10px",
+    margin: "0.5rem 0",
+    padding: "0.5rem",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  };
+
+  const defaultUserStyle = {
+    ...selectedUserStyle,
+    backgroundColor: "#E3F2FF",
+  };
 
   return (
     <Layout>
       <div className="role-content">
         <div className="functions-container">
-
           <div className="list-container">
             <h2 className="list-text">Lista de Usuarios</h2>
 
-            <div className="element-container" style={{ fontWeight: "bold", backgroundColor: "white", boxShadow: "none"}}>
+            <div
+              className="element-container"
+              style={{ fontWeight: "bold", backgroundColor: "white", boxShadow: "none" }}
+            >
               <div className="user-inf-container">
                 <h3 className="title">Usuario</h3>
               </div>
@@ -143,28 +155,25 @@ function ChangeRole() {
               </div>
             </div>
 
-            {users.map((user, index) => (
+            {users.map(({ username, email }, index) => (
               <div
                 key={index}
                 className="element-container"
-                onClick={() => setSelectedUser(user)} // Selecciona el usuario al hacer clic en la fila
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: selectedUser?.username === user.username ? "#B0D9FF" : "#E3F2FF",
-                  borderRadius: "10px",
-                  margin: "0.5rem 0",
-                  padding: "0.5rem",
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                }}
+                onClick={() => setSelectedUser(users[index])}
+                style={
+                  selectedUser?.username === username
+                    ? selectedUserStyle
+                    : defaultUserStyle
+                }
               >
                 <div className="user-inf-container">
                   <div className="user-data-container">
-                    <p>{user.username}</p>
+                    <p>{username}</p>
                   </div>
                 </div>
                 <div className="user-inf-container">
                   <div className="email-data-container">
-                    <p>{user.email}</p>
+                    <p>{email}</p>
                   </div>
                 </div>
               </div>
@@ -176,40 +185,41 @@ function ChangeRole() {
               <div className="c-r-info-container">
                 <div className="role-info">
                   <h3 className="role-title">ROL</h3>
-                  <p>{selectedUser.roles.map(getRoleDescription).join(", ")}</p>
+                  <p>{selectedUser.roles.map(getRoleDescription)}</p>
                 </div>
               </div>
               <div className="c-r-selector-container">
                 <h4>Cambiar Rol</h4>
                 <div>
-                <select
-                  className="role-selector"
-                  defaultValue=""
-                  onChange={(e) => setNewRole(e.target.value)} // Almacena el nuevo rol en el estado
-                >
-                  <option value="" disabled>
-                    Roles
-                  </option>
-                  <option value="PTNT">Paciente</option>
-                  <option value="DCTR">Doctor</option>
-                  <option value="ASST">Asistente</option>
-                </select>
+                  <select
+                    className="role-selector"
+                    defaultValue=""
+                    onChange={(e) => setNewRole(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Roles
+                    </option>
+                    {getAvailableRoles(selectedUser.roles).map((role) => (
+                      <option key={role} value={role}>
+                        {getRoleDescription(role)}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="c-r-button-container">
-              <button
-                className="c-r-button"
-                onClick={() => {
-                  if (newRole) {
-                    handleChangeRole(selectedUser.username, newRole);
-                    setNewRole("");
-                  } else {
-                    alert("Por favor, selecciona un rol antes de cambiar.");
-                  }
-                }}
-              >
-                Cambiar Rol
-              </button>
+                <button
+                  className="c-r-button"
+                  onClick={() => {
+                    if (newRole) {
+                      handleChangeRole(selectedUser.username, newRole);
+                    } else {
+                      alert("Por favor, selecciona un rol antes de cambiar.");
+                    }
+                  }}
+                >
+                  Cambiar Rol
+                </button>
               </div>
             </div>
           )}
