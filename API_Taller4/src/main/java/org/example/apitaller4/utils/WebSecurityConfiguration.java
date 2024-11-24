@@ -69,7 +69,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/user/all-doctors").hasAnyAuthority("ROLE_DCTR", "ROLE_ASST")
                         .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_SUDO", "ROLE_PTNT")
                         .requestMatchers("/api/config/**").hasAuthority("ROLE_SUDO")
-                        .requestMatchers("/api/appointment/").hasAuthority("ROLE_SUDO")
+                        .requestMatchers("/api/appointment/").hasAnyAuthority("ROLE_SUDO", "ROLE_DCTR", "ROLE_ASST")
                         .requestMatchers("/api/appointment/request").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/own").hasAuthority("ROLE_PTNT")
                         .requestMatchers("/api/appointment/own-approve").hasAuthority("ROLE_PTNT")

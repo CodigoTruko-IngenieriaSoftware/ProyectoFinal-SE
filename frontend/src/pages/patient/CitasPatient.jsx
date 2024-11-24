@@ -51,7 +51,7 @@ function Citas() {
       }
 
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/own`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/own-approve`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ function Citas() {
       const username = user.username;
 
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/own-approve`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

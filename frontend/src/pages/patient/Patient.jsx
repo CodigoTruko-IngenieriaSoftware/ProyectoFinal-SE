@@ -84,7 +84,7 @@ function UserMain() {
       }
       }
       
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own-approve`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
