@@ -138,37 +138,47 @@ function Citas() {
 
   const handleGetList = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/`
-      );
-      console.log("Data:", response.data);
+        console.log("Obteniendo citas..."); // Indica que se inicia la llamada
+        const response = await axios.get(
+            `${import.meta.env.VITE_API_BASE_URL}/api/appointment/`
+        );
 
-      setCitas(response.data.data);
-      const userData = localStorage.getItem("userData");
-      const user = JSON.parse(userData);
-      const roles = user.role.map((role) => role.name);
-      if (!roles.includes("assistant")) {
-        if (roles.includes("sysadmin")) {
-          navigate("/ChangeRole");
-        } else if (roles.includes("doctor")) {
-          navigate("/doctor");
-        } else if (roles.includes("asistant")) {
-          navigate("/Assistant");
-        } else if (roles.includes("patient")) {
-          navigate("/patient");
-        } else {
-          console.error("Unknown role:", user.role);
-          navigate("/User");
+        console.log("Respuesta de la API (citas):", response.data); // Depura la respuesta completa
+
+        setCitas(response.data.data); // Guarda las citas en el estado
+
+        const userData = localStorage.getItem("userData");
+        const user = JSON.parse(userData);
+
+        console.log("Datos del usuario desde localStorage:", user); // Muestra los datos del usuario
+
+        const roles = user.role.map((role) => role.name);
+
+        console.log("Roles del usuario:", roles); // Lista los roles del usuario
+
+        // Navegación según el rol del usuario
+        if (!roles.includes("assistant")) {
+            if (roles.includes("sysadmin")) {
+                navigate("/ChangeRole");
+            } else if (roles.includes("doctor")) {
+                navigate("/doctor");
+            } else if (roles.includes("asistant")) {
+                navigate("/Assistant");
+            } else if (roles.includes("patient")) {
+                navigate("/patient");
+            } else {
+                console.error("Rol desconocido:", user.role);
+                navigate("/User");
+            }
         }
-      }
-      
     } catch (error) {
-      console.error(
-        "Error al obtener citas:",
-        error.response ? error.response.data : "Error sin respuesta"
-      );
+        console.error(
+            "Error al obtener citas:",
+            error.response ? error.response.data : "Error sin respuesta"
+        );
     }
-  };
+};
+
 
   const handleConfirmApprove = async (index) => {
     const appointmentId = citas[index].id;

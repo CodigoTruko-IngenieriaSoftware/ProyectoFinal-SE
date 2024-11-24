@@ -33,7 +33,7 @@ function MisCitas() {
       }
 
       const response = await axios.get(
-        "http://localhost:8080/api/appointment/",
+        "https://hlvs.online/api/appointment/",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,7 +68,7 @@ function MisCitas() {
       }
 
       const response = await axios.post(
-        `http://localhost:8080/api/appointment/cancel`,
+        `https://hlvs.online/api/appointment/cancel`,
         { appointmentId: cancelAppointmentId },
         {
           headers: {
