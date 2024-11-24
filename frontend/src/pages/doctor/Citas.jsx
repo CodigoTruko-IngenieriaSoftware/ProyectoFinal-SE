@@ -361,7 +361,7 @@ const Citas = () => {
                             className="close-modal-btn"
                           >
                             Cancelar
-                          </button>
+                          </button> 
                         </div>
                       </div>
                     </div>

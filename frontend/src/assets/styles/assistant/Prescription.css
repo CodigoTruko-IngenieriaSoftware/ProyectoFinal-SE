@@ -3,7 +3,7 @@
 .user-info-container {
     width: 100%;
     height: auto;
-    padding: 3rem;
+    padding: 1rem;
 
     display: flex;
     flex-direction: column;
@@ -57,7 +57,7 @@
 }
 
 .data-container > p {
-    text-align: center;
+    text-align: justify;
     padding: 0.5rem;
 }
 

@@ -116,16 +116,16 @@ function Prescription() {
                 <h2 className="tittle">Lista de Pacientes</h2>
                 <div className="user-info-container">
                     <div className="user">
-                        <p className="info-tittle">Nombre</p>
-                        <p className="info-tittle">Email</p>
-                        <p className="info-tittle">Historial</p>
+                        <p className="info-title-r">Nombre</p>
+                        <p className="info-title-r">Email</p>
+                        <p className="info-title-r">Historial</p>
                     </div>
                     {users.map((user, index) => (
                         <div key={index} className="user-info">
-                            <p>{user.username}</p>
-                            <p>{user.email}</p>
-                            <div>
-                                <button onClick={() => handleGetRecords(user)}>Acceder</button>
+                            <p className="user-info-username">{user.username}</p>
+                            <p className="user-info-email">{user.email}</p>
+                            <div className="user-div-info">
+                                <button onClick={() => handleGetRecords(user)} className="user-info-btn">Acceder</button>
                             </div>
                         </div>
                     ))}
@@ -149,7 +149,7 @@ function Prescription() {
                                     <p>No hay registros disponibles para {selectedPatient.username} en este momento.</p>
                                 )}
                                 <div>
-                                    <button onClick={handleAddRecord}>Agregar Nueva Entrada</button>
+                                    <button className="new-entry-doctor" onClick={handleAddRecord}>Agregar Nueva Entrada</button>
                                 </div>
                             </div>
                         )}
@@ -161,7 +161,7 @@ function Prescription() {
                                     <input type="text" onChange={e => setNewRecordReason(e.target.value)} />
                                 </div>
                                 <div>
-                                    <button onClick={handleSubmitNewRecord}>Guardar Entrada</button>
+                                    <button className="new-entry-doctor" onClick={handleSubmitNewRecord}>Guardar Entrada</button>
                                 </div>
                             </div>
                         )}
