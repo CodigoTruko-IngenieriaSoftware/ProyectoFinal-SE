@@ -298,22 +298,23 @@ function Citas() {
     <Layout>
       <div className="content">
         <h2 className="tittle">Citas Pendientes de Aprobación</h2>
-        <div className="citas-container">
+        <div className="appointments-list-astnt">
           {citas.map((cita, index) => (
-            <div key={index} className="paciente">
-              <div>
+            <div key={index} className="appointment-item">
+              <div className="appointment-item-content">
+              <div className="appointment-item-text-astnt">
                 <p className="info-tittle">Nombre</p>
                 <p>{cita.user.username}</p>
               </div>
-              <div>
+              <div className="appointment-item-text-astnt">
                 <p className="info-tittle">Descripción</p>
                 <p>{cita.reason || "No proporcionada"}</p>
               </div>
-              <div>
+              <div className="appointment-item-text-astnt">
                 <p className="info-tittle">Fecha Solicitada</p>
                 <p>{cita.date || "Fecha no definida"}</p>
               </div>
-              <div>
+              <div className="appointment-item-text-astnt">
                 <p className="info-tittle">Estado</p>
                 <div className="btns-container">
                   {cita.state === "pending_execution" && <p>Aprobada</p>}
@@ -327,13 +328,13 @@ function Citas() {
                         onClick={() => {
                           handleAprove(index);
                         }}
-                        className="aprove-btn"
+                        className="start-button"
                       >
                         Aprobar
                       </button>
                       <button
                         onClick={() => handleReject(index)}
-                        className="reject-btn"
+                        className="finish-button"
                       >
                         Rechazar
                       </button>
@@ -474,8 +475,11 @@ function Citas() {
                 </Overlay>
               </div>
             </div>
+            </div>
           ))}
+          
         </div>
+        
       </div>
     </Layout>
   );

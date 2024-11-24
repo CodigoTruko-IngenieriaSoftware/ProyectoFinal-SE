@@ -121,10 +121,10 @@ function Prescription() {
                     </div>
                     {users.map((user, index) => (
                         <div key={index} className="user-info">
-                            <p>{user.username}</p>
-                            <p>{user.email}</p>
-                            <div>
-                                <button onClick={() => handleGetRecords(user)}>Acceder</button>
+                            <p className="user-info-username">{user.username}</p>
+                            <p className="user-info-email">{user.email}</p>
+                            <div className="user-div-info">
+                                <button className="user-info-btn-astnt" onClick={() => handleGetRecords(user)}>Acceder</button>
                             </div>
                         </div>
                     ))}
@@ -133,7 +133,7 @@ function Prescription() {
                     <Overlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
                         {activeForm === "RecordHistory" && selectedPatient && (
                             <div className="record-container">
-                                <h2>Historial de {selectedPatient.username}</h2>
+                                <h2 className="record-title">Historial de {selectedPatient.username}</h2>
                                 {selectedPatientRecords.length > 0 ? (
                                     <div className="record-data-container">
                                         {selectedPatientRecords.map((record, index) => (
@@ -148,7 +148,7 @@ function Prescription() {
                                     <p>No hay registros disponibles para {selectedPatient.username} en este momento.</p>
                                 )}
                                 <div>
-                                    <button onClick={handleAddRecord}>Agregar Nueva Entrada</button>
+                                    <button className="new-entry-doctor" onClick={handleAddRecord}>Agregar Nueva Entrada</button>
                                 </div>
                             </div>
                         )}
@@ -160,7 +160,7 @@ function Prescription() {
                                     <input type="text" onChange={e => setNewRecordReason(e.target.value)} />
                                 </div>
                                 <div>
-                                    <button onClick={handleSubmitNewRecord}>Guardar Entrada</button>
+                                    <button className="new-entry-doctor" onClick={handleSubmitNewRecord}>Guardar Entrada</button>
                                 </div>
                             </div>
                         )}
