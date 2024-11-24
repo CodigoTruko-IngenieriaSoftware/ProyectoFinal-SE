@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "./LayoutPatient";
-import "../../assets/styles/assistant/Citas.css";
+import "../user/Citas2.css";
+import CitaCard from "../user/CitaCard"; // Subcomponente para una cita
 import Modal from "./Modal"; // Asumiendo que tienes un componente Modal para mostrar confirmaciones
 import { useNavigate } from "react-router-dom";
 
 function Citas() {
   const navigate = useNavigate();
 
-  const [appointments, setAppointments] = useState([]);
-  const [citas, setCitas] = useState([]);
+  const [citasAprobadas, setCitasAprobadas] = useState([]);
+  const [citasPendientes, setCitasPendientes] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
   const [error, setError] = useState("");
@@ -23,57 +24,9 @@ function Citas() {
     cancelled: "Cancelada",
   };
 
-  const fetchAppointments = async () => {
+  const fetchCitas = async () => {
     try {
       const token = localStorage.getItem("token");
-
-      if (!token) {
-        console.error("No token found");
-        return;
-      }
-
-      const userData = localStorage.getItem("userData");
-      const user = JSON.parse(userData);
-      const roles = user.role.map((role) => role.name);
-      if (!roles.includes("patient")) {
-        if (roles.includes("sysadmin")) {
-          navigate("/ChangeRole");
-        } else if (roles.includes("doctor")) {
-          navigate("/doctor");
-        } else if (roles.includes("assistant")) {
-          navigate("/Assistant");
-        } else if (roles.includes("patient")) {
-          navigate("/patient");
-        } else {
-          console.error("Unknown role:", user.role);
-          navigate("/User");
-        }
-      }
-
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/own-approve`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const appointmentsData = response.data.data;
-      setAppointments(appointmentsData);
-    } catch (error) {
-      console.error(
-        "Error fetching appointments:",
-        error.response ? error.response.data.message : error.message
-      );
-    }
-  };
-
-  const handleGetList = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
       if (!token) {
         console.error("No token found");
         return;
@@ -83,20 +36,45 @@ function Citas() {
       const user = JSON.parse(userData);
       const username = user.username;
 
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/own-approve`,
+      // Fetch citas aprobadas (pending_execution)
+      const responseAprobadas = await axios.get(
+        "https://hlvs.online/api/appointment/own",
         {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          params: {
+            state: "pending_execution",
+          },
         }
       );
 
-      const citasData = response.data.data.filter(
+      const citasAprobadasData = responseAprobadas.data.data.filter(
         (cita) => cita.user.username === username
       );
-      setCitas(citasData);
+
+      setCitasAprobadas(citasAprobadasData);
+
+      // Fetch citas pendientes de aprobación (pending_approval)
+      const responsePendientes = await axios.get(
+        "https://hlvs.online/api/appointment/own",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          params: {
+            state: "pending_approval",
+          },
+        }
+      );
+
+      const citasPendientesData = responsePendientes.data.data.filter(
+        (cita) => cita.user.username === username
+      );
+
+      setCitasPendientes(citasPendientesData);
     } catch (error) {
       console.error(
         "Error fetching appointments:",
@@ -108,14 +86,13 @@ function Citas() {
   const handleCancelAppointment = async () => {
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
         console.error("No token found");
         return;
       }
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/cancel`,
+        `https://hlvs.online/api/appointment/cancel`,
         { appointmentId: cancelAppointmentId },
         {
           headers: {
@@ -125,11 +102,10 @@ function Citas() {
         }
       );
 
-      
       setModalOpen(false);
 
       if (response.data.message === "OK") {
-        fetchAppointments();
+        fetchCitas();
       } else {
         setError("Failed to cancel appointment");
       }
@@ -142,11 +118,10 @@ function Citas() {
   };
 
   useEffect(() => {
-    fetchAppointments();
-    handleGetList();
+    fetchCitas();
 
     const interval = setInterval(() => {
-      fetchAppointments();
+      fetchCitas();
     }, 5000); // Actualizar automáticamente cada 5 segundos
 
     return () => clearInterval(interval);
@@ -164,41 +139,44 @@ function Citas() {
   return (
     <Layout>
       <div className="content">
-        <h2 className="tittle">Mis Citas</h2>
+        <h2 className="title">Mis Citas Aprobadas</h2>
         <div className="citas-container">
-          {citas.map((cita, index) => (
-            <div key={index} className="paciente">
-              <div>
-                <p className="info-tittle">Nombre</p>
-                <p>{cita.user.username}</p>
-              </div>
-              <div>
-                <p className="info-tittle">Descripción</p>
-                <p>{cita.reason || "No proporcionada"}</p>
-              </div>
-              <div>
-                <p className="info-tittle">Fecha Solicitada</p>
-                <p>{cita.date || "Fecha no definida"}</p>
-              </div>
-              <div>
-                <p className="info-tittle">Estado</p>
-                <p>{stateMapping[cita.state] || "Desconocido"}</p>
-              </div>
-              {cita.state === "pending_approval" && (
-                <button onClick={() => openModal(cita.id)}>
-                  Cancelar cita
-                </button>
-              )}
-            </div>
+          {citasAprobadas.map((cita, index) => (
+            <CitaCard
+              key={index}
+              cita={cita}
+              stateMapping={stateMapping}
+              onCancel={openModal}
+            />
           ))}
         </div>
+         <br></br>   
+        <h2 className="title">Citas Pendientes de Aprobación</h2>
+        <div className="citas-container">
+          {citasPendientes.map((cita, index) => (
+            <CitaCard
+              key={index}
+              cita={cita}
+              stateMapping={stateMapping}
+              onCancel={openModal}
+            />
+          ))}
+        </div>
+
         <Modal isOpen={modalOpen} onClose={closeModal}>
-          <h2>¿Estás seguro de cancelar esta cita?</h2>
-          <div className="modal-buttons">
-            <button onClick={handleCancelAppointment}>Confirmar</button>
-            <button onClick={closeModal}>Cancelar</button>
+          <div className="reject-container">
+            <h2>¿Seguro que quieres cancelar?</h2>
+            <div className="btns-container">
+              <button className="reject-btn" onClick={closeModal}>
+                Rechazar
+              </button>
+              <button className="approve-btn" onClick={handleCancelAppointment}>
+                Confirmar
+              </button>
+            </div>
           </div>
         </Modal>
+
         {error && <p>{error}</p>}
       </div>
     </Layout>
