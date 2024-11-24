@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "../admin/AdminLayout";
 import "../../assets/styles/components/Profile.css";
+import AdminLayout from "../admin/AdminLayout";
+import DoctorLayout from "../doctor/DoctorLayout";
+import AssistantLayout from "../assistant/Layout";
+import PatientLayout from "../patient/LayoutPatient";
 import tioChill from '../../assets/images/Tio-chill.jpg';
 import bgImage from '../../assets/images/bg.jpg';
 
@@ -53,6 +56,21 @@ function Profile() {
             .join(", ");
     };
 
+    const getLayout = (roles) => {
+        if (!roles || roles.length === 0) return AdminLayout;
+        
+        const roleNames = roles.map((role) => role.name.toLowerCase());
+        if (roleNames.includes("sysadmin")) return AdminLayout;
+        if (roleNames.includes("doctor")) return DoctorLayout;
+        if (roleNames.includes("assistant")) return AssistantLayout;
+        if (roleNames.includes("patient")) return PatientLayout;
+    
+        return AdminLayout;
+    };
+
+    const Layout = user ? getLayout(user.role) : AdminLayout;
+
+
     return (
         <Layout>
             <div className="bg-content">
@@ -70,12 +88,14 @@ function Profile() {
                             <div className="profile-image">
                                 <img src={tioChill} alt="Imagen de Tio Chill de Cojones." />
                             </div>
-                            <div className="profile-info">
+                            <div className="profile-info-center">
                                 <h3>{user.username}</h3>
-                                <p>Correo</p>
-                                <p>{user.email}</p>
-                                <p>Roles</p>
-                                <p>{getRoleDescriptions(user.role)}</p>
+                                <div className="profile-data">
+                                    <p className="strong">Email:</p>
+                                    <p>{user.email}</p>
+                                    <p className="strong">Rol:</p>
+                                    <p>{getRoleDescriptions(user.role)}</p>
+                                </div>
                             </div>
                         </div>
                     ) : (
