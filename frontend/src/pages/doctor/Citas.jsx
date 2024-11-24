@@ -18,9 +18,7 @@ const Citas = () => {
   });
   const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
 
-  useEffect(() => {
-    fetchSchedule();
-  }, [date]);
+  // Eliminado el useEffect para no hacer fetch automático al cambiar la fecha
 
   const fetchSchedule = async () => {
     try {
@@ -197,6 +195,25 @@ const Citas = () => {
     }
   };
 
+  const getStateLabel = (state) => {
+    switch (state) {
+      case 'pending_execution':
+        return 'En espera de ejecución';
+      case 'in_execution':
+        return 'En ejecución';
+      case 'rejected':
+        return 'Rechazada';
+      case 'pending_approval':
+        return 'Pendiente de aprobación';
+      case 'finished':
+        return 'Finalizada';
+      case 'cancelled':
+        return 'Cancelada';
+      default:
+        return state;
+    }
+  };
+
   return (
     <DoctorLayout>
       <div className="appointments-container">
@@ -207,14 +224,12 @@ const Citas = () => {
           <input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDate(e.target.value)} // Actualiza la fecha, pero no hace fetch automáticamente
             className="citas-input"
           />
         </label>
 
         <button className="search-btn-special" onClick={fetchSchedule}>Iniciar búsqueda</button>
-
-     
 
         <ul className="appointments-list">
           {appointments.map((appointment) => (
@@ -234,7 +249,7 @@ const Citas = () => {
                     {appointment.appointmentEstimatedEndHour}
                   </p>
                   <p>
-                    <strong>Estado:</strong> {appointment.appointmentState}
+                    <strong>Estado:</strong> {getStateLabel(appointment.appointmentState)}
                   </p>
                 </div>
                 <div className="appointment-item-buttons">

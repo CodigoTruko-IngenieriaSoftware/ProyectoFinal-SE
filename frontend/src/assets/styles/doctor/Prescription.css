@@ -18,10 +18,26 @@
   justify-content: center;
   flex-direction: column;
   border-radius: 10px;
-  width: 40%;
+  width: 100%;
 }
 
 .prescriptions-list TABLE{
+  width: 80%;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+.table-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+.table-cell{
+  padding: 10px;
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 
@@ -136,7 +152,8 @@
 
 .search-input{
   width: 50%;
-  padding: 0.25% 0;
+  padding: 0.25% 1%;
+  border-radius: 2vh;
 }
 
 .historial-item {
