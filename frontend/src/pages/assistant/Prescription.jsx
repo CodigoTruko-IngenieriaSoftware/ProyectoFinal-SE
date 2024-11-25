@@ -48,7 +48,7 @@ function Prescription() {
         }
 
         try {
-            const response = await axios.get("http://localhost:8080/api/user/all-patients", {
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/all-patients`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const filteredUsers = response.data.data.filter(user =>
@@ -63,8 +63,8 @@ function Prescription() {
     const handleGetRecords = async (user) => {
         setSelectedPatient(user);
         const token = localStorage.getItem('token');
-        try {
-            const response = await axios.get(`http://localhost:8080/api/record/${user.username}`, {
+        try {            
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/record/${user.username}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setSelectedPatientRecords(response.data.data.records);
@@ -95,9 +95,8 @@ function Prescription() {
             if (!token) {
                 console.error('No token found');
                 return;
-            }
-
-            const response = await axios.post(`http://localhost:8080/api/user/record`, data,{
+            }            
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/user/record`, data,{
                 headers: { 
                     'Authorization': `Bearer ${token}` 
                 }
@@ -122,10 +121,10 @@ function Prescription() {
                     </div>
                     {users.map((user, index) => (
                         <div key={index} className="user-info">
-                            <p>{user.username}</p>
-                            <p>{user.email}</p>
-                            <div>
-                                <button onClick={() => handleGetRecords(user)}>Acceder</button>
+                            <p className="user-info-username">{user.username}</p>
+                            <p className="user-info-email">{user.email}</p>
+                            <div className="user-div-info">
+                                <button className="user-info-btn-astnt" onClick={() => handleGetRecords(user)}>Acceder</button>
                             </div>
                         </div>
                     ))}
@@ -134,7 +133,7 @@ function Prescription() {
                     <Overlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
                         {activeForm === "RecordHistory" && selectedPatient && (
                             <div className="record-container">
-                                <h2>Historial de {selectedPatient.username}</h2>
+                                <h2 className="record-title">Historial de {selectedPatient.username}</h2>
                                 {selectedPatientRecords.length > 0 ? (
                                     <div className="record-data-container">
                                         {selectedPatientRecords.map((record, index) => (
@@ -149,7 +148,7 @@ function Prescription() {
                                     <p>No hay registros disponibles para {selectedPatient.username} en este momento.</p>
                                 )}
                                 <div>
-                                    <button onClick={handleAddRecord}>Agregar Nueva Entrada</button>
+                                    <button className="new-entry-doctor" onClick={handleAddRecord}>Agregar Nueva Entrada</button>
                                 </div>
                             </div>
                         )}
@@ -161,7 +160,7 @@ function Prescription() {
                                     <input type="text" onChange={e => setNewRecordReason(e.target.value)} />
                                 </div>
                                 <div>
-                                    <button onClick={handleSubmitNewRecord}>Guardar Entrada</button>
+                                    <button className="new-entry-doctor" onClick={handleSubmitNewRecord}>Guardar Entrada</button>
                                 </div>
                             </div>
                         )}

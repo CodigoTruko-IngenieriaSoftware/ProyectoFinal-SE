@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Layout from "./LayoutUser.jsx";
 import AddElement from "../components/AddElement.jsx";
 import axios from "axios";
+import user_bg from '../../assets/images/doctor-1.png';
 import { useNavigate } from "react-router-dom";
 
 import "../../assets/styles/user/User.css";
@@ -63,8 +64,8 @@ function UserMain() {
         navigate('/');
         return;
       }
-
-      const response = await axios.get('http://localhost:8080/api/appointment/own', {
+      
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own`, {
         params: { state: 'pending_approval' },
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -119,7 +120,7 @@ function UserMain() {
         }
       }
 
-      const response = await axios.post("http://localhost:8080/api/appointment/request", data, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/request`, data, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -170,7 +171,7 @@ function UserMain() {
       <Layout>
         <div className="main-container-user">
           <img
-            src="src/assets/images/doctor-1.png"
+            src={user_bg}
             alt=""
             className="user-img"
           />
@@ -178,7 +179,7 @@ function UserMain() {
             <p className="user-title">¿Quieres agendar una cita?</p>
             <p className="user-text">Nuestros mejores doctores te atenderán</p>
             <button className="btn-make-apointment" onClick={togglePopup}>
-              Has click aquí
+              ¡Haz click aquí!
             </button>
 
             {appointments.length > 0 && (

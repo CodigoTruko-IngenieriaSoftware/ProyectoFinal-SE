@@ -2,50 +2,73 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../admin/AdminLayout";
 import { useNavigate } from "react-router-dom";
+import AddElement from "../components/AddElement";
 import "../../assets/styles/admin/ChangeRole.css";
+
+const ROLES = {
+  PTNT: "Paciente",
+  DCTR: "Doctor",
+  ASST: "Asistente",
+};
+
+const ROLE_PATHS = {
+  sysadmin: "/ChangeRole",
+  doctor: "/doctor",
+  assistant: "/Assistant",
+  patient: "/patient",
+  default: "/User",
+};
 
 function ChangeRole() {
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [newRole, setNewRole] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     handleGetUser();
   }, []);
 
+  useEffect(() => {
+    if (users.length > 0) {
+      setSelectedUser((prev) => prev || users[0]);
+    }
+  }, [users]);
+
+  const getToken = () => localStorage.getItem("token");
+
+  const handleRoleNavigation = (roles) => {
+    const path = roles.find((role) => ROLE_PATHS[role.toLowerCase()]) || "default";
+    navigate(ROLE_PATHS[path]);
+  };
+
   const handleGetUser = async () => {
-    const token = localStorage.getItem("token");
+    const token = getToken();
 
     if (!token) {
       console.error("No token found");
       return;
     }
+
     const userData = localStorage.getItem("userData");
     const user = JSON.parse(userData);
     const roles = user.role.map((role) => role.name);
+
     if (!roles.includes("sysadmin")) {
-      if (roles.includes("sysadmin")) {
-        navigate("/ChangeRole");
-      } else if (roles.includes("doctor")) {
-        navigate("/doctor");
-      } else if (roles.includes("assistant")) {
-        navigate("/Assistant");
-      } else if (roles.includes("patient")) {
-        navigate("/patient");
-      } else {
-        console.error("Unknown role:", user.role);
-        navigate("/User");
-      }
+      handleRoleNavigation(roles);
+      return;
     }
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/user/all-users",
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/all-users`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Data:", response.data);
+
       const filteredUsers = response.data.data
         .filter(
           (user) =>
@@ -58,88 +81,182 @@ function ChangeRole() {
               ? user.authorities.map((auth) => auth.authority)
               : ["Usuario"],
         }));
+
       setUsers(filteredUsers);
     } catch (error) {
+      alert("Error al obtener usuarios. Por favor, inténtalo nuevamente.");
       console.error("Error al obtener usuarios:", error.toString());
     }
   };
 
-  const getRoleDescription = (roleCode) => {
-    const roleDescriptions = {
-      ROLE_PTNT: "Paciente",
-      ROLE_DCTR: "Doctor",
-      ROLE_ASST: "Asistente",
-    };
-    return roleDescriptions[roleCode] || roleCode;
+  const getRoleDescription = (roleCode) => ROLES[roleCode.replace("ROLE_", "")] || roleCode;
+
+  const getAvailableRoles = (currentRoles) => {
+    const currentFormattedRoles = currentRoles.map((role) => role.replace("ROLE_", ""));
+    return Object.keys(ROLES).filter((role) => !currentFormattedRoles.includes(role));
   };
 
   const handleChangeRole = async (username, newRole) => {
-    const token = localStorage.getItem("token");
+    const token = getToken();
 
     if (!token) {
       console.error("No token found");
       return;
     }
-    console.log(username, newRole);
 
     try {
+      const currentRole = selectedUser.roles[0].replace("ROLE_", "");
       const response = await axios.post(
-        "http://localhost:8080/api/config/change-roles",
-        {
-          identifier: username,
-          roles: [newRole],
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `${import.meta.env.VITE_API_BASE_URL}/api/config/change-roles`,
+        { identifier: username, roles: [newRole, currentRole] },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.status === 200) {
-        console.log("Role changed successfully");
-        handleGetUser();
+        const updatedUser = users.find((user) => user.username === username);
+        if (updatedUser) {
+          setSelectedUser({ ...updatedUser, roles: [newRole] });
+        }
+        setNewRole("");
       }
     } catch (error) {
-      console.error(
-        "Error changing role:",
-        error.response ? error.response.data : "Error"
-      );
+      console.error("Error changing role:", error.response?.data || "Error");
     }
+  };
+
+  const selectedUserStyle = {
+    cursor: "pointer",
+    backgroundColor: "#B0D9FF",
+    borderRadius: "10px",
+    margin: "0.5rem 0",
+    padding: "0.5rem",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  };
+
+  const defaultUserStyle = {
+    ...selectedUserStyle,
+    backgroundColor: "#E3F2FF",
+  };
+
+  const confirmationContainerStyle = {
+    backgroundColor: "white",
+    padding: "2rem",
+    borderRadius: "10px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
   };
 
   return (
     <Layout>
-      <div className="content">
-        <h2 className="tittle">Lista de Usuarios</h2>
-        <div className="user-info-container">
-          <div className="users">
-            <p className="info-tittle">Nombre</p>
-            <p className="info-tittle">Email</p>
-            <p className="info-tittle">Rol</p>
-            <p className="info-tittle">Cambiar Rol</p>
-          </div>
-          {users.map((user, index) => (
-            <div key={index} className="users-info">
-              <p>{user.username}</p>
-              <p>{user.email}</p>
-              <p>{user.roles.map(getRoleDescription).join(", ")}</p>
-              <div>
-                <select
-                  defaultValue=""
-                  onChange={(e) =>
-                    handleChangeRole(user.username, e.target.value)
-                  }
-                >
-                  <option value="" disabled>
-                    Change Role
-                  </option>
-                  <option value="PTNT">Paciente</option>
-                  <option value="DCTR">Doctor</option>
-                  <option value="ASST">Asistente</option>
-                </select>
+      <div className="role-content">
+        <div className="functions-container">
+          <div className="list-container" style={{ maxHeight: '500px', overflowY: users.length > 7 ? 'scroll' : 'visible' }}>
+            <h2 className="list-text">Lista de Usuarios</h2>
+
+            <div
+              className="element-container"
+              style={{ fontWeight: "bold", backgroundColor: "white", boxShadow: "none" }}
+            >
+              <div className="user-inf-container">
+                <h3 className="title">Usuario</h3>
+              </div>
+              <div className="user-inf-container">
+                <h3 className="title">Email</h3>
               </div>
             </div>
-          ))}
+
+            {users.map(({ username, email }, index) => (
+              <div
+                key={index}
+                className="element-container"
+                onClick={() => setSelectedUser(users[index])}
+                style={
+                  selectedUser?.username === username
+                    ? selectedUserStyle
+                    : defaultUserStyle
+                }
+              >
+                <div className="user-inf-container">
+                  <div className="user-data-container">
+                    <p>{username}</p>
+                  </div>
+                </div>
+                <div className="user-inf-container">
+                  <div className="email-data-container">
+                    <p>{email}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {selectedUser && (
+            <div className="change-role-container">
+              <div className="c-r-info-container">
+                <div className="role-info">
+                  <h3 className="role-title">ROL</h3>
+                  <p>{selectedUser.roles.map(getRoleDescription)}</p>
+                </div>
+              </div>
+              <div className="c-r-selector-container">
+                <h4>Cambiar Rol</h4>
+                <div>
+                  <select
+                    className="role-selector"
+                    defaultValue=""
+                    onChange={(e) => setNewRole(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Roles
+                    </option>
+                    {getAvailableRoles(selectedUser.roles).map((role) => (
+                      <option key={role} value={role}>
+                        {getRoleDescription(role)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="c-r-button-container">
+                <button
+                  className="c-r-button"
+                  onClick={() => {
+                    if (newRole) {
+                      setShowConfirmation(true);
+                    } else {
+                      alert("Por favor, selecciona un rol antes de cambiar.");
+                    }
+                  }}
+                >
+                  Cambiar Rol
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
+        <AddElement
+          show={showConfirmation}
+          handleClose={() => setShowConfirmation(false)}
+        >
+          <div className="confirmation-container" style={confirmationContainerStyle}>
+            <h3 className="margin">¿Estás seguro de que deseas cambiar el rol del usuario {selectedUser?.username} a {getRoleDescription(newRole)}?</h3>
+            <button
+              className="confirm-button"
+              onClick={() => {
+                handleChangeRole(selectedUser.username, newRole);
+                setShowConfirmation(false);
+              }}
+            >
+              Aceptar
+            </button>
+            <button
+              className="cancel-button"
+              onClick={() => setShowConfirmation(false)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </AddElement>
       </div>
     </Layout>
   );

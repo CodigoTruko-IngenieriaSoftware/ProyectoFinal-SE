@@ -37,6 +37,10 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 64)
     private String password;
 
+    @Column(insertable = false)
+    @ColumnDefault(value = "1")
+    private Integer avartar;
+
     @JsonIgnore
     @Column(insertable = false)
     @ColumnDefault(value = "true")

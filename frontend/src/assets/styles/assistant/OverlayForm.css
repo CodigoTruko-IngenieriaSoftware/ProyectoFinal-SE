@@ -15,7 +15,6 @@
 }
 
 .overlay__background {
-    background-color: rgba(0, 0, 0, 0.5);
     width: 100vw;
     height: 100vh;
     position: fixed;
@@ -31,9 +30,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 30px;
-    border-radius: 0.5rem;
-    width: auto;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
+    padding: 60px;
+    border-radius: 18px;
+    width: 500px;
     height: auto;
     z-index: 10;
 }
@@ -56,4 +57,5 @@
     font-size: 36px;
     cursor: pointer;
   }
+  
   

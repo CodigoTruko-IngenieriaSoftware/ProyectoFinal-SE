@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 import "../../assets/styles/doctor/Prescription.css";
 
 const Citas = () => {
+
   const navigate = useNavigate();
-  const [userID, setUserID] = useState(''); // ID del usuario seleccionado del dropdown
-  const [patients, setPatients] = useState([]); // Lista de pacientes obtenidos del API
-  const [prescriptions, setPrescriptions] = useState([]); // Prescripciones obtenidas del API
+  const [userID, setUserID] = useState('');
+  const [patients, setPatients] = useState([]);
+  const [prescriptions, setPrescriptions] = useState([]);
 
   useEffect(() => {
     fetchPatients();
@@ -43,7 +44,7 @@ const Citas = () => {
       }
       }
 
-      const response = await axios.get('http://localhost:8080/api/user/all-patients', {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/all-patients`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -65,8 +66,8 @@ const Citas = () => {
         console.error('No token found');
         return;
       }
-
-      const response = await axios.get(`http://localhost:8080/api/clinic/prescription/${userID}`, {
+      
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/clinic/prescription/${userID}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -101,21 +102,20 @@ const Citas = () => {
           <button onClick={handleSearchPrescriptions} className="search-btn">Buscar Prescripciones</button>
           {prescriptions.length > 0 && (
             <div className="prescriptions-list">
-              <h3>Prescripciones del usuario</h3>
               <table className="prescription-table">
                 <thead>
-                  <tr>
-                    <th>Medicament</th>
-                    <th>Dosis</th>
-                    <th>Fecha de Caducidad</th>
+                  <tr className="table-row">
+                    <th className="table-cell">Medicament</th>
+                    <th className="table-cell">Dosis</th>
+                    <th className="table-cell">Fecha de Caducidad</th>
                   </tr>
                 </thead>
                 <tbody>
                   {prescriptions.map((prescription, index) => (
-                    <tr key={index}>
-                      <td>{prescription.dose}</td>
-                      <td>{prescription.instructions}</td>
-                      <td>{prescription.issueDate}</td>
+                    <tr key={index} className="table-row">
+                      <td className="table-cell">{prescription.dose}</td>
+                      <td className="table-cell">{prescription.instructions}</td>
+                      <td className="table-cell">{prescription.issueDate}</td>
                     </tr>
                   ))}
                 </tbody>

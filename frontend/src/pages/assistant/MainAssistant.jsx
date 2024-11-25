@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
+import assistant_bg from '../../assets/images/doctor-1.png';
 import Layout from './Layout.jsx';
 
 
@@ -51,7 +52,7 @@ function Inicio() {
             <div className="inicio-container">
                 <div className="main-content">
                 <img
-                    src="src/assets/images/doctor-1.png"
+                    src={assistant_bg}
                     alt="Imagen de un doctor"
                     className="sesion-img"
                 />

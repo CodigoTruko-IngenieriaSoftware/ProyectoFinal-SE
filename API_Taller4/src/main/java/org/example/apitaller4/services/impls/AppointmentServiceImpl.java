@@ -2,7 +2,6 @@ package org.example.apitaller4.services.impls;
 
 import org.example.apitaller4.domain.dtos.appointment.AppointmentRequestRequestDTO;
 import org.example.apitaller4.domain.dtos.appointment.AppointmentApproveRequestDTO;
-import org.example.apitaller4.domain.dtos.appointment.AppointmentStartRequestDTO;
 import org.example.apitaller4.domain.entities.*;
 import org.example.apitaller4.repositories.AppointmentRepository;
 import org.example.apitaller4.services.AppointmentService;
@@ -174,5 +173,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findAllByDateAndAttendIds(date, attendIds);
 
     }
+
+    @Override
+
+    public List<Appointment> findAllByUserApproveNextDay(User user)
+    {
+        return appointmentRepository.findAppointmentsByUserAndStateWithin24Hours(user, "pending_execution", LocalDate.now(), LocalTime.now(), LocalDate.now().plusDays(1), LocalTime.now());
+    }
+
 
 }

@@ -4,8 +4,10 @@ import LogoutModal from "./LogoutModal";
 import "../../assets/styles/assistant/Layout.css";
 
 const DoctorLayout = ({ children }) => {
+  
   const nav = useNavigate();
   const location = useLocation();
+
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const navigateTo = (path) => {
@@ -14,16 +16,16 @@ const DoctorLayout = ({ children }) => {
 
   const getActiveNav = () => {
     switch (location.pathname) {
-      case "/Doctor":
-        return "Inicio";
       case "/appointment":
         return "appointment";
       case "/PrescriptionDoctor":
         return "Prescription";
       case "/RecordDoctor":
         return "Record";
+      case '/Profile':
+        return 'Profile';
       default:
-        return "Inicio";
+        return "";
     }
   };
 
@@ -48,14 +50,6 @@ const DoctorLayout = ({ children }) => {
           <ul className="menu">
             <li
               className={`navElement ${
-                getActiveNav() === "Inicio" ? "active" : ""
-              }`}
-              onClick={() => navigateTo("/Doctor")}
-            >
-              Doctor
-            </li>
-            <li
-              className={`navElement ${
                 getActiveNav() === "appointment" ? "active" : ""
               }`}
               onClick={() => navigateTo("/appointment")}
@@ -64,7 +58,7 @@ const DoctorLayout = ({ children }) => {
             </li>
             <li
               className={`navElement ${
-                getActiveNav() === "Records" ? "active" : ""
+                getActiveNav() === "Prescription" ? "active" : ""
               }`}
               onClick={() => navigateTo("/PrescriptionDoctor")}
             >
@@ -78,6 +72,8 @@ const DoctorLayout = ({ children }) => {
             >
               Historiales
             </li>
+            <li className={`navElement ${getActiveNav() === 'Profile' ? 'active' : ''}`}
+              onClick={() => navigateTo('/Profile')}>Perfil</li>
             <li className="navElement logout" onClick={handleLogout}>
               Logout
             </li>

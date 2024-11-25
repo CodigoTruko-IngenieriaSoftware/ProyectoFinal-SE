@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import register_bg from "../../assets/images/doctor-2.png";
 import "../../assets/styles/Login.css";
 
 function Register() {
@@ -18,8 +19,8 @@ function Register() {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/register",
+      const response = await axios.post(        
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
         data
       );
       console.log("Registro exitoso:", response.data);
@@ -44,7 +45,7 @@ function Register() {
       <div className="main-container-sesion">
         <div className="column-img-l">
           <img
-            src="src/assets/images/doctor-2.png"
+            src={register_bg}
             alt="Imagen de un doctor"
             className="sesion-img"
           />

@@ -29,6 +29,7 @@ public interface UserService {
     void cleanTokens(User user) throws Exception;
     User findUserAuthenticated();
     void updatePassword(String identifier, String newPassword);
+    void updateAvatar(String identifier, Integer avatar);
 
     void changeRoles(User user, List<String> roles);
     void setRoles(User user, List<String> roles);

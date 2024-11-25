@@ -18,9 +18,7 @@ const Citas = () => {
   });
   const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
 
-  useEffect(() => {
-    fetchSchedule();
-  }, [date]);
+  // Eliminado el useEffect para no hacer fetch automático al cambiar la fecha
 
   const fetchSchedule = async () => {
     try {
@@ -51,7 +49,7 @@ const Citas = () => {
       }
 
       const response = await axios.get(
-        "http://localhost:8080/api/clinic/schedule",
+        `${import.meta.env.VITE_API_BASE_URL}/api/clinic/schedule`,
         {
           params: { date },
           headers: {
@@ -62,6 +60,7 @@ const Citas = () => {
 
       const appointmentsData = response.data.data.appointments;
       setAppointments(appointmentsData);
+      console.log("Citas encontradas:", appointmentsData);
     } catch (error) {
       setError(
         "Failed to fetch data: " +
@@ -103,8 +102,8 @@ const Citas = () => {
         return;
       }
 
-      const response = await axios.post(
-        "http://localhost:8080/api/clinic/prescription",
+      const response = await axios.post(  
+        `${import.meta.env.VITE_API_BASE_URL}/api/clinic/prescription`,
         newPrescription,
         {
           headers: {
@@ -143,7 +142,7 @@ const Citas = () => {
       const requestData = { appointmentId };
 
       await axios.post(
-        `http://localhost:8080/api/appointment/start`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/start`,
         requestData,
         {
           headers: {
@@ -176,7 +175,7 @@ const Citas = () => {
       const requestData = { appointmentId };
 
       await axios.post(
-        `http://localhost:8080/api/appointment/finish`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/finish`,
         requestData,
         {
           headers: {
@@ -196,46 +195,61 @@ const Citas = () => {
     }
   };
 
+  const getStateLabel = (state) => {
+    switch (state) {
+      case 'pending_execution':
+        return 'En espera de ejecución';
+      case 'in_execution':
+        return 'En ejecución';
+      case 'rejected':
+        return 'Rechazada';
+      case 'pending_approval':
+        return 'Pendiente de aprobación';
+      case 'finished':
+        return 'Finalizada';
+      case 'cancelled':
+        return 'Cancelada';
+      default:
+        return state;
+    }
+  };
+
   return (
     <DoctorLayout>
       <div className="appointments-container">
-        <h2>Horarios de citas</h2>
+        <h2>Buscar citas</h2>
 
-        <label>
-          Buscar por fecha
+        <label className="citas-lbl">
+          Buscar una cita por fecha
           <input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDate(e.target.value)} // Actualiza la fecha, pero no hace fetch automáticamente
+            className="citas-input"
           />
         </label>
 
-        <button onClick={fetchSchedule}>Buscar</button>
-
-        {error && <p className="error-message">{error}</p>}
+        <button className="search-btn-special" onClick={fetchSchedule}>Iniciar búsqueda</button>
 
         <ul className="appointments-list">
           {appointments.map((appointment) => (
             <li key={appointment.appointmentId} className="appointment-item">
               <div className="appointment-item-content">
                 <div className="appointment-item-text">
-                  <h3>
-                    <strong>Paciente:</strong>{" "}
-                    {appointment.patient.patientUsername}
-                  </h3>
                   <p>
-                    <strong>ID de la cita:</strong> {appointment.appointmentId}
+                    <strong>Nombre</strong>{" "}
+                    {appointment.patient.patientUsername}
                   </p>
                   <p>
-                    <strong>Hora de entrada:</strong>{" "}
+                    <strong>Entrada:</strong>{" "}
                     {appointment.appointmentEntryHour}
                   </p>
                   <p>
-                    <strong>Hora estimada fin:</strong>{" "}
+                    <strong>Salida:</strong>{" "}
                     {appointment.appointmentEstimatedEndHour}
                   </p>
                   <p>
-                    <strong>Estado:</strong> {appointment.appointmentState}
+                    <strong>Estado:</strong> {getStateLabel(appointment.appointmentState)}
                   </p>
                 </div>
                 <div className="appointment-item-buttons">
@@ -347,7 +361,7 @@ const Citas = () => {
                             className="close-modal-btn"
                           >
                             Cancelar
-                          </button>
+                          </button> 
                         </div>
                       </div>
                     </div>

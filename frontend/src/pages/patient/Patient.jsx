@@ -3,13 +3,16 @@ import Layout from "./LayoutPatient.jsx";
 import AddElement from "../components/AddElement.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import patient_bg from '../../assets/images/doctor-1.png';
+import AppointmentCard from "./AppointmentCard.jsx";
 
 import "../../assets/styles/user/User.css";
 
-function UserMain() {
+function Patient() {
   const navigate = useNavigate();
 
   const [showPopup, setShowPopup] = useState(false);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]); // Citas próximas
 
   const navToRegister = () => {
     navigate("/");
@@ -35,17 +38,16 @@ function UserMain() {
   const [appointmentReason, setAppointmentReason] = useState("");
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
+  const [appointmentState, setAppointmentState] = useState(''); // Inicialmente vacío
   const [appointments, setAppointments] = useState([]);
-  const [appointmentState, setAppointmentState] = useState(""); // Inicialmente vacío
 
   const stateMapping = {
-    pending_approval: "Pendiente de aprobación",
-    pending_execution: "Pendiente de ejecución",
-    in_execution: "En ejecución",
-    completed: "Finalizada",
-    rejected: "Rechazada",
-    cancelled: "Cancelada",
-    approved: "Aprobado"
+    "pending_approval": "Pendiente de aprobación",
+    "pending_execution": "Pendiente de ejecución",
+    "in_execution": "En ejecución",
+    "completed": "Finalizada",
+    "rejected": "Rechazada",
+    "cancelled": "Cancelada"
   };
 
   useEffect(() => {
@@ -57,57 +59,30 @@ function UserMain() {
 
   const fetchAppointments = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const userData = localStorage.getItem("userData");
+      const token = localStorage.getItem('token');
 
       if (!token) {
-        console.error("No token found");
-        navigate("/");
+        console.error('No token found');
+        navigate('/');
         return;
       }
-
-      const user = JSON.parse(userData)
-
-      const roles = user.role.map(role => role.name);
-      if(!roles.includes("patient")){
-        if(roles.includes('sysadmin')){
-          navigate('/ChangeRole');
-        } else if (roles.includes('doctor')){
-          navigate('/doctor');
-        } else if (roles.includes('assistant')){
-          navigate('/Assistant');
-        } else if (roles.includes('patient')){
-          navigate('/patient');
-        } else {
-          console.error('Unknown role:', user.role);
-          navigate('/User');
-      }
-      }
-
-      const response = await axios.get("http://localhost:8080/api/appointment/own", {
+      
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own`, {
+        params: { state: 'pending_approval' },
         headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
       });
 
-      const appointmentsData = response.data.data;
-      setAppointments(appointmentsData);
-
-      // Obtén el estado de la primera cita (si existe) para mostrar
-      const appointment = appointmentsData.find(
-        (appointment) => appointment.state === "pending_approval" || appointment.state === "pending_execution" || appointment.state === "in_execution" || appointment.state === "completed" || appointment.state === "rejected" || appointment.state === "cancelled" || appointment.state === "approved"
-      );
-      setAppointmentState(appointment ? appointment.state : "");
+      const appointment = response.data.data.find(appointment => appointment.state === 'pending_approval');
+      setAppointments(response.data.data);
+      setAppointmentState(appointment ? appointment.state : '');
 
     } catch (error) {
-      console.error(
-        "Error fetching appointment state:",
-        error.response ? error.response.data.message : "Error sin respuesta"
-      );
+      console.error('Error fetching appointment state:', error.response ? error.response.data.message : 'Error sin respuesta');
     }
   };
-
 
   const handleSubmit = async () => {
     console.log("Intentando agendar cita con:", appointmentDate, appointmentReason);
@@ -126,31 +101,46 @@ function UserMain() {
         return;
       }
 
-      const response = await axios.post("http://localhost:8080/api/appointment/request", data, {
+      const userData = localStorage.getItem("userData");
+
+      const user = JSON.parse(userData)
+
+
+      const roles = user.role.map(role => role.name);
+      if (!roles.includes("patient")) {
+        if (roles.includes("sysadmin")) {
+          navigate("/ChangeRole");
+        } else if (roles.includes("doctor")) {
+          navigate("/doctor");
+        } else if (roles.includes("assistant")) {
+          navigate("/Assistant");
+        } else if (roles.includes("patient")) {
+          navigate("/patient");
+        } else {
+          console.error("Unknown role:", user.role);
+          navigate("/User");
+        }
+      }
+
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/request`, data, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
       });
 
-      if (response.status === 200) {
-        console.log("Cita registrada:", response.data);
-        setMessage('Cita registrada con éxito');
-        setShowMessage(true);
-        navigate('/CitasPatient');
+      console.log("Cita registrada:", response.data);
+      setMessage('Cita registrada con éxito');
+      setShowMessage(true);
 
-        // Cerrar el popup y reiniciar los campos
-        setShowPopup(false);
-        setAppointmentDate("");
-        setAppointmentReason("");
-        setCurrentStep(1);
+      // Cerrar el popup y reiniciar los campos
+      setShowPopup(false);
+      setAppointmentDate("");
+      setAppointmentReason("");
+      setCurrentStep(1);
 
-        // Fetch appointments after submitting
-        fetchAppointments();
-      } else {
-        console.error('Error registrando cita: ', response);
-        setMessage('Error al registrar la cita');
-        setShowMessage(true);
-      }
+      // Fetch appointments after submitting
+      fetchAppointments();
+
     } catch (error) {
       console.error('Error para registrar la cita:', error.response ? error.response.data.message : 'Error sin respuesta');
       setMessage('Error al registrar la cita');
@@ -164,7 +154,7 @@ function UserMain() {
     // Actualizar automáticamente la lista de citas cada 60 segundos
     const interval = setInterval(() => {
       fetchAppointments();
-    }, 10000); 
+    }, 5000); 
 
     return () => clearInterval(interval);
   }, []);
@@ -177,31 +167,71 @@ function UserMain() {
       return () => clearTimeout(timer);
     }
   }, [showMessage]);
+  const fetchUpcomingAppointments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found");
+        navigate("/");
+        return;
+      }
+
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own-approve`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setUpcomingAppointments(response.data.data);
+    } catch (error) {
+      console.error(
+        "Error fetching upcoming appointments:",
+        error.response ? error.response.data.message : "Error sin respuesta"
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchUpcomingAppointments();
+
+    const interval = setInterval(() => {
+      fetchUpcomingAppointments();
+    }, 5000); // Actualiza automáticamente cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   return (
     <>
       <Layout>
         <div className="main-container-user">
           <img
-            src="src/assets/images/doctor-1.png"
+            src={patient_bg}
             alt=""
             className="user-img"
           />
           <div className="cita-container">
             <p className="user-title">¿Quieres agendar una cita?</p>
-            <p className="user-text">Nuestros mejores doctores te atenderán</p>
+            <p className="user-text">Nuestros mejores doctores te atenderán.</p>
             <button className="btn-make-apointment" onClick={togglePopup}>
-              Has click aquí
+              ¡Haz click aquí!
             </button>
 
-            {appointments.length > 0 && (
-              <div className="appointment-status">
-                <p className="status-text">Estado de la cita:</p>
-                {appointments.map((appointment, index) => (
-                  <p key={index}>{stateMapping[appointment.state] || 'Desconocido'}</p>
+            {/* Sección para citas pendientes */}
+            {upcomingAppointments.length > 0 && (
+              <div className="appointment-cards-container">
+                {upcomingAppointments.map((appointment) => (
+                  <AppointmentCard
+                    key={appointment.id}
+                    appointment={appointment}
+                  />
                 ))}
               </div>
             )}
+            
 
             <AddElement show={showPopup} handleClose={togglePopup}>
               <div className="setps">
@@ -286,4 +316,4 @@ function UserMain() {
   );
 }
 
-export default UserMain;
+export default Patient;

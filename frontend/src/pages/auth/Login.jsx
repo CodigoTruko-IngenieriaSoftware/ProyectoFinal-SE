@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Importa axios
+import axios from "axios";
+import login_bg from "../../assets/images/doctor-1.png";
 import "../../assets/styles/Login.css";
 
 function Login() {
@@ -8,6 +9,10 @@ function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+
 
   const navToRegister = () => {
     navigate("/Register");
@@ -21,9 +26,11 @@ function Login() {
       password: password,
     };
 
+    setLoading(true); // Activa el indicador de carga al comenzar la solicitud.
+
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
         data
       );
       const token = response.data.data.token;
@@ -32,34 +39,37 @@ function Login() {
       console.log("Token:", response.data.data.token);
       localStorage.setItem("token", response.data.data.token);
 
-      const userInfoResponse = await axios.get("http://localhost:8080/api/user/", {
-        headers: {
-          'Authorization': `Bearer ${response.data.data.token}`
+      const userInfoResponse = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/`,
+        {
+          headers: {
+            Authorization: `Bearer ${response.data.data.token}`,
+          },
         }
-      });
-  
+      );
+
       const userRoles = userInfoResponse.data.data.role;
-      const hasEmptyRole = userRoles.some(role => !role.name);
-      localStorage.setItem('token', response.data.data.token);
+      const hasEmptyRole = userRoles.some((role) => !role.name);
+      localStorage.setItem("token", response.data.data.token);
 
       if (hasEmptyRole) {
-        console.warn('User role is empty');
-        navigate('/User');
-      }else{
-        const roleNames = userRoles.map(role => role.name.toLowerCase());
-        if(roleNames.includes('sysadmin')){
-          navigate('/ChangeRole');
-        } else if (roleNames.includes('doctor')){
-          navigate('/doctor');
-        } else if (roleNames.includes('assistant')){
-          navigate('/Assistant');
-        } else if (roleNames.includes('patient')){
-          navigate('/patient');
+        console.warn("User role is empty");
+        navigate("/User");
+      } else {
+        const roleNames = userRoles.map((role) => role.name.toLowerCase());
+        if (roleNames.includes("sysadmin")) {
+          navigate("/ChangeRole");
+        } else if (roleNames.includes("doctor")) {
+          navigate("/appointment");
+        } else if (roleNames.includes("assistant")) {
+          navigate("/Cita");
+        } else if (roleNames.includes("patient")) {
+          navigate("/patient");
         } else {
-          console.error('Unknown role:', userRoles);
-          navigate('/User');
+          console.error("Unknown role:", userRoles);
+          navigate("/User");
+        }
       }
-    }
     } catch (error) {
       console.error(
         "Error en el login:",
@@ -67,12 +77,15 @@ function Login() {
       );
       setMessage("Error al iniciar sesión, intente nuevamente");
       setShowMessage(true);
+    } finally {
+      setLoading(false); // Desactiva el indicador de carga después del intento.
     }
   };
 
+
   const fetchUserData = async (token) => {
     try {
-      const response = await axios.get("http://localhost:8080/api/user/", {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -105,7 +118,7 @@ function Login() {
       <div className="main-container-sesion">
         <div className="column-img-l">
           <img
-            src="src/assets/images/doctor-1.png"
+            src={login_bg}
             alt="Imagen de un doctor"
             className="sesion-img"
           />
@@ -139,7 +152,7 @@ function Login() {
           </div>
 
           <button className="sesion-btn" onClick={handleLogin}>
-            Iniciar Sesión
+            {loading ? <div className="spinner"></div> : "Iniciar Sesión"}
           </button>
           <div className="to-register">
             <p className="x-small">¿No tienes una cuenta?</p>

@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Layout from "./LayoutPatient";
 import { useNavigate } from "react-router-dom";
-import "../../assets/styles/assistant/Prescription.css";
-
+import "./Prescription2.css"
 function Prescription() {
   const navigate = useNavigate();
 
@@ -13,42 +12,31 @@ function Prescription() {
   const [error, setError] = useState("");
 
   const fetchRecords = async () => {
-    const requestData = {
-      dateStart,
-      dateEnd,
-    };
+    const requestData = { dateStart, dateEnd };
 
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No token found");
-      }
+      if (!token) throw new Error("No token found");
 
       const userData = localStorage.getItem("userData");
       const user = JSON.parse(userData);
       const roles = user.role.map((role) => role.name);
       if (!roles.includes("patient")) {
-        if (roles.includes("sysadmin")) {
-          navigate("/ChangeRole");
-        } else if (roles.includes("doctor")) {
-          navigate("/doctor");
-        } else if (roles.includes("assistant")) {
-          navigate("/Assistant");
-        } else if (roles.includes("patient")) {
-          navigate("/patient");
-        } else {
+        if (roles.includes("sysadmin")) navigate("/ChangeRole");
+        else if (roles.includes("doctor")) navigate("/doctor");
+        else if (roles.includes("assistant")) navigate("/Assistant");
+        else if (roles.includes("patient")) navigate("/patient");
+        else {
           console.error("Unknown role:", user.role);
           navigate("/User");
         }
       }
 
       const response = await axios.get(
-        "http://localhost:8080/api/user/record",
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/record`,
         {
           params: requestData,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -61,8 +49,7 @@ function Prescription() {
       }
     } catch (error) {
       setError(
-        "Failed to fetch data: " +
-          (error.response ? error.response.data.message : error.message)
+        "Valores de la búsqueda inválidos."
       );
       setRecords([]);
     }
@@ -70,31 +57,37 @@ function Prescription() {
 
   return (
     <Layout>
-      <div className="content">
-        <h1>Mi Historial</h1>
-        <label>
-          Fecha de Inicio:
-          <input
-            type="date"
-            value={dateStart}
-            onChange={(e) => setDateStart(e.target.value)}
-          />
-        </label>
-        <label>
-          Fecha de Finalización:
-          <input
-            type="date"
-            value={dateEnd}
-            onChange={(e) => setDateEnd(e.target.value)}
-          />
-        </label>
-        <button onClick={fetchRecords}>Buscar</button>
-        <div className="record">
-          {error && <p>{error}</p>}
+      <div className="prescription-container">
+        <h1 className="title">Mi Historial de Prescripciones</h1>
+        <div className="form-container">
+          <label className="form-label">
+            Fecha de Inicio:
+            <input
+              type="date"
+              value={dateStart}
+              onChange={(e) => setDateStart(e.target.value)}
+              className="form-input"
+            />
+          </label>
+          <label className="form-label">
+            Fecha de Finalización:
+            <input
+              type="date"
+              value={dateEnd}
+              onChange={(e) => setDateEnd(e.target.value)}
+              className="form-input"
+            />
+          </label>
+          <button onClick={fetchRecords} className="search-button">
+            Buscar
+          </button>
+        </div>
+        <div className="record-container">
+          {error && <p className="error-message">{error}</p>}
           {records.length > 0 && (
-            <ul>
+            <ul className="record-list">
               {records.map((record) => (
-                <li key={record.id} className="list-record">
+                <li key={record.id} className="record-item">
                   <p>
                     <strong>Razón: </strong> {record.reason}
                   </p>
@@ -103,14 +96,14 @@ function Prescription() {
                     {record.creationDate}
                   </p>
                   <p>
-                    <strong>Fecha de actulización: </strong> {record.updateDate}
+                    <strong>Fecha de actualización: </strong> {record.updateDate}
                   </p>
                 </li>
               ))}
             </ul>
           )}
-          {records.length === 0 && !error && (
-            <p>No hay registros encontrados</p>
+          {error && (
+            <p className="no-records">No hay registros encontrados</p>
           )}
         </div>
       </div>

@@ -22,6 +22,8 @@ const Layout = ({ children }) => {
                 return 'Citas';
             case '/MyRecord':
                 return 'Mi Historial';
+            case '/Profile':
+                return 'Profile';
             default:
                 return 'Inicio';
         }
@@ -47,11 +49,13 @@ const Layout = ({ children }) => {
                 <nav className="nav">
                     <ul className="menu">
                         <li className={`navElement ${getActiveNav() === 'Inicio' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/Patient')}>Inicio</li>
+                            onClick={() => navigateTo('/Patient')}>Crear cita</li>
                             <li className={`navElement ${getActiveNav() === 'Citas' ? 'active' : ''}`}
-                            onClick={() => navigateTo('/CitasPatient')}>Citas</li>
+                            onClick={() => navigateTo('/CitasPatient')}>Mis Citas</li>
                         <li className={`navElement ${getActiveNav() === 'Mi Historial' ? 'active' : ''}`}
                             onClick={() => navigateTo('/MyRecord')}>Mi Historial</li>
+                        <li className={`navElement ${getActiveNav() === 'Profile' ? 'active' : ''}`}
+                            onClick={() => navigateTo('/Profile')}>Perfil</li>
                         <li className="navElement logout" onClick={handleLogout}>Logout</li>
                     </ul>
                 </nav>

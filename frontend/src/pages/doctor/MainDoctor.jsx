@@ -2,6 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import '../../assets/styles/doctor/inicio.css';
 import DoctorLayout from './DoctorLayout';
+import doctor_bg from '../../assets/images/doctor-1.png';
 import { useNavigate } from "react-router-dom";
 
 const Inicio = () => {
@@ -53,7 +54,7 @@ const Inicio = () => {
       <div className="inicio-container">
         <div className="main-content">
         <img
-            src="src/assets/images/doctor-1.png"
+            src={doctor_bg}
             alt="Imagen de un doctor"
             className="sesion-img"
           />

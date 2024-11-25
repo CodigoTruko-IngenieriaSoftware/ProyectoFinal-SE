@@ -119,7 +119,7 @@ function Citas() {
   const fetchDoctors = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/user/all-doctors", { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/all-doctors`, { headers: { Authorization: `Bearer ${token}` } });
       setDoctors(response.data.data.map(doc => ({ ...doc, available: true })));
     } catch (error) {
       console.error("Error fetching doctors:", error);
@@ -129,7 +129,7 @@ function Citas() {
   const fetchSpecialties = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/specialty/", { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/specialty/`, { headers: { Authorization: `Bearer ${token}` } });
       setSpecialties(response.data.data);
     } catch (error) {
       console.error("Error fetching specialties:", error);
@@ -138,15 +138,39 @@ function Citas() {
 
   const handleGetList = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/appointment/"
-      );
-      console.log("Data:", response.data);
+      console.log("Obteniendo citas..."); // Indica que se inicia la llamada
 
-      setCitas(response.data.data);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Respuesta de la API (citas):", response.data); // Depura la respuesta completa
+
+      setCitas(response.data.data); // Guarda las citas en el estado
+
       const userData = localStorage.getItem("userData");
       const user = JSON.parse(userData);
+
+      console.log("Datos del usuario desde localStorage:", user); // Muestra los datos del usuario
+
       const roles = user.role.map((role) => role.name);
+
+      console.log("Roles del usuario:", roles); // Lista los roles del usuario
+
+      // Navegación según el rol del usuario
       if (!roles.includes("assistant")) {
         if (roles.includes("sysadmin")) {
           navigate("/ChangeRole");
@@ -157,11 +181,10 @@ function Citas() {
         } else if (roles.includes("patient")) {
           navigate("/patient");
         } else {
-          console.error("Unknown role:", user.role);
+          console.error("Rol desconocido:", user.role);
           navigate("/User");
         }
       }
-      
     } catch (error) {
       console.error(
         "Error al obtener citas:",
@@ -169,6 +192,7 @@ function Citas() {
       );
     }
   };
+
 
   const handleConfirmApprove = async (index) => {
     const appointmentId = citas[index].id;
@@ -189,7 +213,7 @@ function Citas() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:8080/api/appointment/approve",
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/approve`,
         data,
         {
           headers: {
@@ -250,7 +274,7 @@ function Citas() {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/api/appointment/reject",
+        `${import.meta.env.VITE_API_BASE_URL}/api/appointment/reject`,
         data,
         {
           headers: {
@@ -274,144 +298,151 @@ function Citas() {
     <Layout>
       <div className="content">
         <h2 className="tittle">Citas Pendientes de Aprobación</h2>
-        <div className="citas-container">
+        <div className="appointments-list-astnt">
           {citas.map((cita, index) => (
-            <div key={index} className="paciente">
-              <div>
-                <p className="info-tittle">Nombre</p>
-                <p>{cita.user.username}</p>
-              </div>
-              <div>
-                <p className="info-tittle">Descripción</p>
-                <p>{cita.reason || "No proporcionada"}</p>
-              </div>
-              <div>
-                <p className="info-tittle">Fecha Solicitada</p>
-                <p>{cita.date || "Fecha no definida"}</p>
-              </div>
-              <div>
-                <p className="info-tittle">Estado</p>
-                <div className="btns-container">
-                  {cita.state === "pending_execution" && <p>Aprobada</p>}
-                  {cita.state === "rejected" && <p>Rechazada</p>}
-                  {cita.state === "finished" && <p>finalizado</p>}
-                  {cita.state === "in_execution" && <p>En ejecución</p>}
-                  {cita.state === "cancelled" && <p>Cancelada</p>}
-                  {cita.state === "pending_approval" && (
-                    <>
-                      <button
-                        onClick={() => {
-                          handleAprove(index);
-                        }}
-                        className="aprove-btn"
-                      >
-                        Aprobar
-                      </button>
-                      <button
-                        onClick={() => handleReject(index)}
-                        className="reject-btn"
-                      >
-                        Rechazar
-                      </button>
-                    </>
-                  )}
+            <div key={index} className="appointment-item">
+              <div className="appointment-item-content">
+                <div className="appointment-item-text-astnt">
+                  <p className="info-tittle">Nombre</p>
+                  <p>{cita.user.username}</p>
                 </div>
-                <Overlay isOpen={isOpen} onClose={toggleOverlay}>
-                  {activeForm === "HourForm" && (
-                    <div>
-                      <h2>Aprobar Cita</h2>
-                      <div className="time-container">
-                        <p>Hora que se aprobara:</p>
-                        <input
-                          type="time"
-                          value={entryHour}
-                          onChange={(e) => setEntryHour(e.target.value)}
-                          placeholder="Hora de entrada"
-                        />
+                <div className="appointment-item-text-astnt">
+                  <p className="info-tittle">Descripción</p>
+                  <p>{cita.reason || "No proporcionada"}</p>
+                </div>
+                <div className="appointment-item-text-astnt">
+                  <p className="info-tittle">Fecha Solicitada</p>
+                  <p>{cita.date || "Fecha no definida"}</p>
+                </div>
+                <div className="appointment-item-text-astnt">
+                  <p className="info-tittle">Estado</p>
+                  <div className="btns-container">
+                    {cita.state === "pending_execution" && <p>Aprobada</p>}
+                    {cita.state === "rejected" && <p>Rechazada</p>}
+                    {cita.state === "finished" && <p>finalizado</p>}
+                    {cita.state === "in_execution" && <p>En ejecución</p>}
+                    {cita.state === "cancelled" && <p>Cancelada</p>}
+                    {cita.state === "pending_approval" && (
+                      <>
+                        <button
+                          onClick={() => {
+                            handleAprove(index);
+                          }}
+                          className="start-button"
+                        >
+                          Aprobar
+                        </button>
+                        <button
+                          onClick={() => handleReject(index)}
+                          className="finish-button"
+                        >
+                          Rechazar
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  <Overlay isOpen={isOpen} onClose={toggleOverlay}>
+                    {activeForm === "HourForm" && (
+                      <div className="popup-container">
+                        <h2 className="popup-header">Aprobar Cita</h2>
+                        <div className="popup-input-container">
+                          <p className="popup-label">Hora que se aprobará:</p>
+                          <input
+                            type="time"
+                            className="popup-input time-input"
+                            value={entryHour}
+                            onChange={(e) => setEntryHour(e.target.value)}
+                            placeholder="Hora de entrada"
+                          />
+                        </div>
+                        <div className="popup-input-container">
+                          <p className="popup-label">Duración estimada:</p>
+                          <input
+                            type="number"
+                            className="popup-input duration-input"
+                            value={estimatedTimeMinutes}
+                            onChange={(e) => setEstimatedTimeMinutes(e.target.value)}
+                            placeholder="Duración estimada en minutos"
+                            min="0"
+                            max="240"
+                          />
+                        </div>
+                        <button
+                          onClick={handleNext}
+                          className="popup-btn approve-btn"
+                          disabled={!isFormValid()}
+                        >
+                          Siguiente
+                        </button>
                       </div>
-                      <div className="time-container">
-                        <p>Duración estimada:</p>
-                        <input
-                          type="number"
-                          value={estimatedTimeMinutes}
-                          onChange={(e) =>
-                            setEstimatedTimeMinutes(e.target.value)
-                          }
-                          placeholder="Duración estimada en minutos"
-                          min="0"
-                          max="240"
-                        />
-                      </div>
-                      <button
-                        onClick={handleNext}
-                        className="aprove-btn"
-                        disabled={!isFormValid()}
-                      >
-                        Siguiente
-                      </button>
-                    </div>
-                  )}
-                  {activeForm === "DoctorForm" && (
-                    <div>
-                      <h2>Seleccionar Doctores</h2>
+                    )}
+                    {activeForm === "DoctorForm" && (
+                      <div className="popup-container">
+                      <h2 className="popup-header">Seleccionar Doctores</h2>
                       <div className="doctors-container">
                         {selectedDoctors.map((selectedDoctor, index) => (
-                          <div key={index} className="doc-det-container">
-                            <p>Doctor:</p>
-                            <button onClick={() => toggleDropdown(index)}>
-                              {selectedDoctor} &#9660;
-                            </button>
-                            {dropdownOpen === index && (
-                              <ul style={{ listStyleType: "none", padding: 0 }}>
-                                {getAvailableDoctors().map((doc, idx) => (
-                                  <li
-                                    key={idx}
-                                    onClick={() =>
-                                      handleDoctorSelect(doc, index)
-                                    }
-                                  >
-                                    {doc.username}
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                            <p>Especialidad:</p>
-                            <button
-                              onClick={() => toggleSpecialtyDropdown(index)}
-                            >
-                              {selectedSpecialties[index]} &#9660;
-                            </button>
-                            {specialtyDropdownOpen === index && (
-                              <ul style={{ listStyleType: "none", padding: 0 }}>
-                                {getAvailableSpecialties().map(
-                                  (specialty, idx) => (
+                          <div key={index} className="doctor-selection">
+                            <div className="popup-input-group">
+                              <p className="popup-label">Doctor:</p>
+                              <button
+                                onClick={() => toggleDropdown(index)}
+                                className="popup-dropdown-btn"
+                              >
+                                {selectedDoctor} &#9660;
+                              </button>
+                              {dropdownOpen === index && (
+                                <ul className="dropdown-list">
+                                  {getAvailableDoctors().map((doc, idx) => (
                                     <li
                                       key={idx}
-                                      onClick={() =>
-                                        handleSpecialtySelect(specialty, index)
-                                      }
+                                      onClick={() => handleDoctorSelect(doc, index)}
+                                      className="dropdown-item"
+                                    >
+                                      {doc.username}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                            <div className="popup-input-group">
+                              <p className="popup-label">Especialidad:</p>
+                              <button
+                                onClick={() => toggleSpecialtyDropdown(index)}
+                                className="popup-dropdown-btn"
+                              >
+                                {selectedSpecialties[index]} &#9660;
+                              </button>
+                              {specialtyDropdownOpen === index && (
+                                <ul className="dropdown-list">
+                                  {getAvailableSpecialties().map((specialty, idx) => (
+                                    <li
+                                      key={idx}
+                                      onClick={() => handleSpecialtySelect(specialty, index)}
+                                      className="dropdown-item"
                                     >
                                       {specialty.name}
                                     </li>
-                                  )
-                                )}
-                              </ul>
-                            )}
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
                       <div className="btn-container">
-                        <div className="doc-num-container">
+                        <div className="doctor-count-container">
                           <button
-                            id="add-doc-btn"
+                            id="remove-doc-btn"
+                            className="popup-btn-secondary count-btn"
                             onClick={removeDoctor}
                             disabled={doctorCount <= 1}
                           >
                             -
                           </button>
-                          <p>{doctorCount}</p>
+                          <p className="doctor-count">{doctorCount}</p>
                           <button
                             id="add-doc-btn"
+                            className="popup-btn-secondary count-btn"
                             onClick={addDoctor}
                             disabled={doctorCount >= doctors.length}
                           >
@@ -420,38 +451,40 @@ function Citas() {
                         </div>
                         <button
                           onClick={() => handleConfirmApprove(aproveInfo.index)}
-                          className="aprove-btn"
+                          className="popup-btn approve-btn"
                         >
                           Finalizar
                         </button>
                       </div>
-                    </div>
-                  )}
-                  {activeForm === "RejectForm" && (
-                    <div className="reject-container">
-                      <h2>Confirmar Rechazo</h2>
-                      <p>¿Estás seguro de que quieres rechazar esta cita?</p>
-
-                      <div className="btns-container">
-                        <button
-                          onClick={() =>
-                            handleConfirmRejection(rejectInfo.index)
-                          }
-                          className="aprove-btn"
-                        >
-                          Confirmar
-                        </button>
-                        <button onClick={toggleOverlay} className="reject-btn">
-                          Cancelar
-                        </button>
+                    </div>                    
+                
+                    )}
+                    {activeForm === "RejectForm" && (
+                      <div className="popup-container reject-popup">
+                        <h2 className="popup-header">Confirmar Rechazo</h2>
+                        <p className="popup-text">¿Estás seguro de que quieres rechazar esta cita?</p>
+                        <div className="btns-container">
+                          <button
+                            onClick={() => handleConfirmRejection(rejectInfo.index)}
+                            className="popup-btn reject-confirm-btn"
+                          >
+                            Confirmar
+                          </button>
+                          <button onClick={toggleOverlay} className="popup-btn popup-btn-secondary">
+                            Cancelar
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </Overlay>
+                    )}
+                  </Overlay>
+
+                </div>
               </div>
             </div>
           ))}
+
         </div>
+
       </div>
     </Layout>
   );
