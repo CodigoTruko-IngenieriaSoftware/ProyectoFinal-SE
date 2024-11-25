@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Layout from "./LayoutUser.jsx";
 import AddElement from "../components/AddElement.jsx";
 import axios from "axios";
+import user_bg from '../../assets/images/doctor-1.png';
 import { useNavigate } from "react-router-dom";
 
 import "../../assets/styles/user/User.css";
@@ -170,7 +171,7 @@ function UserMain() {
       <Layout>
         <div className="main-container-user">
           <img
-            src="src/assets/images/doctor-1.png"
+            src={user_bg}
             alt=""
             className="user-img"
           />

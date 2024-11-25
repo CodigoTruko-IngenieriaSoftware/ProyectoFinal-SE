@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../admin/AdminLayout";
 import { useNavigate } from "react-router-dom";
+import AddElement from "../components/AddElement";
 import "../../assets/styles/admin/ChangeRole.css";
 
 const ROLES = {
@@ -24,6 +25,7 @@ function ChangeRole() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [newRole, setNewRole] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     handleGetUser();
@@ -136,11 +138,18 @@ function ChangeRole() {
     backgroundColor: "#E3F2FF",
   };
 
+  const confirmationContainerStyle = {
+    backgroundColor: "white",
+    padding: "2rem",
+    borderRadius: "10px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+  };
+
   return (
     <Layout>
       <div className="role-content">
         <div className="functions-container">
-          <div className="list-container">
+          <div className="list-container" style={{ maxHeight: '500px', overflowY: users.length > 7 ? 'scroll' : 'visible' }}>
             <h2 className="list-text">Lista de Usuarios</h2>
 
             <div
@@ -212,7 +221,7 @@ function ChangeRole() {
                   className="c-r-button"
                   onClick={() => {
                     if (newRole) {
-                      handleChangeRole(selectedUser.username, newRole);
+                      setShowConfirmation(true);
                     } else {
                       alert("Por favor, selecciona un rol antes de cambiar.");
                     }
@@ -224,6 +233,30 @@ function ChangeRole() {
             </div>
           )}
         </div>
+
+        <AddElement
+          show={showConfirmation}
+          handleClose={() => setShowConfirmation(false)}
+        >
+          <div className="confirmation-container" style={confirmationContainerStyle}>
+            <h3 className="margin">¿Estás seguro de que deseas cambiar el rol del usuario {selectedUser?.username} a {getRoleDescription(newRole)}?</h3>
+            <button
+              className="confirm-button"
+              onClick={() => {
+                handleChangeRole(selectedUser.username, newRole);
+                setShowConfirmation(false);
+              }}
+            >
+              Aceptar
+            </button>
+            <button
+              className="cancel-button"
+              onClick={() => setShowConfirmation(false)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </AddElement>
       </div>
     </Layout>
   );

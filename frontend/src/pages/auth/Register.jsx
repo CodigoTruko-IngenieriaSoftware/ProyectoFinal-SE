@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import register_bg from "../../assets/images/doctor-2.png";
 import "../../assets/styles/Login.css";
 
 function Register() {
@@ -44,7 +45,7 @@ function Register() {
       <div className="main-container-sesion">
         <div className="column-img-l">
           <img
-            src="src/assets/images/doctor-2.png"
+            src={register_bg}
             alt="Imagen de un doctor"
             className="sesion-img"
           />

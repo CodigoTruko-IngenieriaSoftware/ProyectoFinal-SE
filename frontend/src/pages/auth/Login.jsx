@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Importa axios
+import axios from "axios";
+import login_bg from "../../assets/images/doctor-1.png";
 import "../../assets/styles/Login.css";
 
 function Login() {
@@ -105,7 +106,7 @@ function Login() {
       <div className="main-container-sesion">
         <div className="column-img-l">
           <img
-            src="src/assets/images/doctor-1.png"
+            src={login_bg}
             alt="Imagen de un doctor"
             className="sesion-img"
           />

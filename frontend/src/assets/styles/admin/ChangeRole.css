@@ -13,14 +13,14 @@
 .list-container {
     max-width: 100%;
     height: auto;
-    padding: 1.5rem 8rem;
+    padding: 1rem 8rem;
     margin-top: 2.5rem;
 }
 
 .change-role-container {
     width: 100%;
     height: auto;
-    padding: 2rem;
+    padding: 2rem 2rem 0 2rem;
 
     display: grid;
     grid-template-rows: repeat(3, 1fr);
@@ -29,7 +29,7 @@
 .element-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    background-color: #E3F2FF;
+    background-color: #ffffff;
     border-radius: 10px;
     margin: 3rem 0 0 0;
     padding: 0.5rem;
@@ -90,4 +90,13 @@
     background-color: #2E6171;
     color: #ffffff;
     border-radius: 1rem;
+}
+
+.cancel-button {
+    background-color: #d30000;
+    color: white;
+}
+
+.margin {
+    margin-bottom: 2rem;
 }
