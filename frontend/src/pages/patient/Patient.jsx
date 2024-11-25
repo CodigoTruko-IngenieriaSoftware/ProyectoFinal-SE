@@ -3,6 +3,7 @@ import Layout from "./LayoutPatient.jsx";
 import AddElement from "../components/AddElement.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import AppointmentCard from "./AppointmentCard.jsx";
 
 import "../../assets/styles/user/User.css";
 
@@ -10,6 +11,7 @@ function Patient() {
   const navigate = useNavigate();
 
   const [showPopup, setShowPopup] = useState(false);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]); // Citas próximas
 
   const navToRegister = () => {
     navigate("/");
@@ -164,6 +166,42 @@ function Patient() {
       return () => clearTimeout(timer);
     }
   }, [showMessage]);
+  const fetchUpcomingAppointments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found");
+        navigate("/");
+        return;
+      }
+
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/appointment/own-approve`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setUpcomingAppointments(response.data.data);
+    } catch (error) {
+      console.error(
+        "Error fetching upcoming appointments:",
+        error.response ? error.response.data.message : "Error sin respuesta"
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchUpcomingAppointments();
+
+    const interval = setInterval(() => {
+      fetchUpcomingAppointments();
+    }, 5000); // Actualiza automáticamente cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   return (
     <>
@@ -180,6 +218,19 @@ function Patient() {
             <button className="btn-make-apointment" onClick={togglePopup}>
               ¡Haz click aquí!
             </button>
+
+            {/* Sección para citas pendientes */}
+            {upcomingAppointments.length > 0 && (
+              <div className="appointment-cards-container">
+                {upcomingAppointments.map((appointment) => (
+                  <AppointmentCard
+                    key={appointment.id}
+                    appointment={appointment}
+                  />
+                ))}
+              </div>
+            )}
+            
 
             <AddElement show={showPopup} handleClose={togglePopup}>
               <div className="setps">

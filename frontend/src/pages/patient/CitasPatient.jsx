@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "./LayoutPatient";
-import "../user/Citas2.css";
-import CitaCard from "../user/CitaCard"; // Subcomponente para una cita
-import Modal from "./Modal"; // Asumiendo que tienes un componente Modal para mostrar confirmaciones
+import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
+
+import "../user/Citas2.css";
 
 function Citas() {
   const navigate = useNavigate();
@@ -14,15 +14,6 @@ function Citas() {
   const [modalOpen, setModalOpen] = useState(false);
   const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
   const [error, setError] = useState("");
-
-  const stateMapping = {
-    pending_approval: "Pendiente de aprobación",
-    pending_execution: "Pendiente de ejecución",
-    in_execution: "En ejecución",
-    finished: "Finalizada",
-    rejected: "Rechazada",
-    cancelled: "Cancelada",
-  };
 
   const fetchCitas = async () => {
     try {
@@ -36,7 +27,7 @@ function Citas() {
       const user = JSON.parse(userData);
       const username = user.username;
 
-      // Fetch citas aprobadas (pending_execution)
+      // Fetch citas aprobadas
       const responseAprobadas = await axios.get(
         "https://hlvs.online/api/appointment/own",
         {
@@ -53,10 +44,9 @@ function Citas() {
       const citasAprobadasData = responseAprobadas.data.data.filter(
         (cita) => cita.user.username === username
       );
-
       setCitasAprobadas(citasAprobadasData);
 
-      // Fetch citas pendientes de aprobación (pending_approval)
+      // Fetch citas pendientes
       const responsePendientes = await axios.get(
         "https://hlvs.online/api/appointment/own",
         {
@@ -73,7 +63,6 @@ function Citas() {
       const citasPendientesData = responsePendientes.data.data.filter(
         (cita) => cita.user.username === username
       );
-
       setCitasPendientes(citasPendientesData);
     } catch (error) {
       console.error(
@@ -122,7 +111,7 @@ function Citas() {
 
     const interval = setInterval(() => {
       fetchCitas();
-    }, 5000); // Actualizar automáticamente cada 5 segundos
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -140,27 +129,60 @@ function Citas() {
     <Layout>
       <div className="content">
         <h2 className="title">Mis Citas Aprobadas</h2>
-        <div className="citas-container">
-          {citasAprobadas.map((cita, index) => (
-            <CitaCard
-              key={index}
-              cita={cita}
-              stateMapping={stateMapping}
-              onCancel={openModal}
-            />
-          ))}
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Fecha Solicitada</th>
+                <th>Hora Entrada</th>
+                <th>Hora Salida</th>
+              </tr>
+            </thead>
+            <tbody>
+              {citasAprobadas.map((cita) => (
+                <tr key={cita.id}>
+                  <td>{cita.user.username}</td>
+                  <td>{cita.reason}</td>
+                  <td>{cita.date}</td>
+                  <td>{cita.entryHour}</td>
+                  <td>{cita.estimatedEndHour}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-         <br></br>   
+                <br />
         <h2 className="title">Citas Pendientes de Aprobación</h2>
-        <div className="citas-container">
-          {citasPendientes.map((cita, index) => (
-            <CitaCard
-              key={index}
-              cita={cita}
-              stateMapping={stateMapping}
-              onCancel={openModal}
-            />
-          ))}
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Fecha Solicitada</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {citasPendientes.map((cita) => (
+                <tr key={cita.id}>
+                  <td>{cita.user.username}</td>
+                  <td>{cita.reason}</td>
+                  <td>{cita.date}</td>
+                  <td>
+                    <button
+                      className="reject-btn"
+                      onClick={() => openModal(cita.id)}
+                    >
+                      Cancelar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         <Modal isOpen={modalOpen} onClose={closeModal}>
