@@ -18,10 +18,27 @@
   justify-content: center;
   flex-direction: column;
   border-radius: 10px;
-  width: 40%;
+  width: 100%;
 }
 
 .prescriptions-list TABLE{
+  width: 80%;
+  border-collapse: collapse;
+}
+
+
+
+.table-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+.table-cell{
+  padding: 10px;
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 
@@ -63,7 +80,19 @@
 }
 
 .prescription-inputs input {
+  padding: 1% 2%;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.remove-btn{
+  background-color: #f44336;
+  color: white;
+  border: none;
   padding: 1% 0;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 10px;
 }
 
 .modal-btn {
@@ -74,11 +103,11 @@
   margin-top: 10px;
   cursor: pointer;
   width: 50%;
-  border-radius: 50px;
+  border-radius: 10px;
 }
 
 .modal-btn-save {
-  background-color: var(--Color);
+  background-color: #28a745;
   color: white;
   border: none;
   padding: 2% 1%;
@@ -86,7 +115,7 @@
   cursor: pointer;
   width: 90%;
   margin-right: 5%;
-  border-radius: 50px;
+  border-radius: 10px;
 }
 
 .action-btns-modal{
@@ -116,7 +145,7 @@
   padding: 2% 1%;
   margin-top: 10px;
   cursor: pointer;
-  border-radius: 50px;
+  border-radius: 10px;
 }
 
 .close-modal-btn:hover {
@@ -136,7 +165,8 @@
 
 .search-input{
   width: 50%;
-  padding: 0.25% 0;
+  padding: 1% 1%;
+  border-radius: 2vh;
 }
 
 .historial-item {
@@ -201,5 +231,97 @@
 }
 
 .prescription-table{
-  border-color: black ;
+  background-color: #e5f1ff;
+  border-radius: 10px;
+}
+
+
+
+/*------RECORD PART 2------*/
+.info-title-r{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid black;
+}
+
+.user-info{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  justify-items: center;
+  background-color: #e5f1ff;
+  border-radius: 10px;
+}
+
+.user-div-info{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.user-info-username{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.user-info-email{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.user-info-btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #2E6171;
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 100%;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.new-entry-doctor{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 10px;
+  background-color: #2E6171;
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 100%;
+  border-radius: 10px; 
+}
+
+
+/*------RECORD PART 3------*/
+.record-data-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.data-container{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+}
+
+.record-title{
+  border-bottom: 1px solid black;
 }

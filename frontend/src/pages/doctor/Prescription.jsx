@@ -102,21 +102,20 @@ const Citas = () => {
           <button onClick={handleSearchPrescriptions} className="search-btn">Buscar Prescripciones</button>
           {prescriptions.length > 0 && (
             <div className="prescriptions-list">
-              <h3>Prescripciones del usuario</h3>
               <table className="prescription-table">
                 <thead>
-                  <tr>
-                    <th>Medicament</th>
-                    <th>Dosis</th>
-                    <th>Fecha de Caducidad</th>
+                  <tr className="table-row">
+                    <th className="table-cell">Medicament</th>
+                    <th className="table-cell">Dosis</th>
+                    <th className="table-cell">Fecha de Caducidad</th>
                   </tr>
                 </thead>
                 <tbody>
                   {prescriptions.map((prescription, index) => (
-                    <tr key={index}>
-                      <td>{prescription.dose}</td>
-                      <td>{prescription.instructions}</td>
-                      <td>{prescription.issueDate}</td>
+                    <tr key={index} className="table-row">
+                      <td className="table-cell">{prescription.dose}</td>
+                      <td className="table-cell">{prescription.instructions}</td>
+                      <td className="table-cell">{prescription.issueDate}</td>
                     </tr>
                   ))}
                 </tbody>
