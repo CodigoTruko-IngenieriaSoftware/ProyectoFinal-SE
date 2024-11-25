@@ -3,7 +3,7 @@ import Layout from "./LayoutPatient.jsx";
 import AddElement from "../components/AddElement.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import patient_bg from '../../assets/images/doctor-1.png';
 import "../../assets/styles/user/User.css";
 
 function UserMain() {
@@ -183,7 +183,7 @@ function UserMain() {
       <Layout>
         <div className="main-container-user">
           <img
-            src="src/assets/images/doctor-1.png"
+            src={patient_bg}
             alt=""
             className="user-img"
           />
