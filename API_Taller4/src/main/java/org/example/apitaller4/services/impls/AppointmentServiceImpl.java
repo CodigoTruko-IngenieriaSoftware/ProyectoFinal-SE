@@ -178,7 +178,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     public List<Appointment> findAllByUserApproveNextDay(User user)
     {
-        return appointmentRepository.findAppointmentsByUserAndStateWithin24Hours(user, "approve", LocalDate.now(), LocalTime.now(), LocalDate.now().plusDays(1), LocalTime.now());
+        return appointmentRepository.findAppointmentsByUserAndStateWithin24Hours(user, "pending_execution", LocalDate.now(), LocalTime.now(), LocalDate.now().plusDays(1), LocalTime.now());
     }
 
 
