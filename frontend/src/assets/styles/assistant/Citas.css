@@ -142,3 +142,299 @@ body {
     align-items: center;
     width: 100%;
   }
+
+  :root {
+    --bgColor: #E3F2FF;
+    --fontColor: #0C0910;
+    --Color: #2E6171;
+    --buttonHover: #1e4c5b;
+  }
+  
+  * {
+    font-family: "Poppins", sans-serif;
+    color: var(--fontColor);
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .popup-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .popup-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    
+  }
+  
+  .popup-input-container {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .popup-input-container p {
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  
+  .popup-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .popup-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: var(--Color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .popup-btn:hover {
+    background-color: var(--buttonHover);
+  }
+  
+  .popup-btn-secondary {
+    margin-top: 10px;
+    background-color: #ff4d4d;
+  }
+  
+  .popup-btn-secondary:hover {
+    background-color: #d03c3c;
+  }
+  
+
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6); /* Fondo oscuro translúcido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+
+.popup-header {
+    font-size: 1.8rem; /* Tamaño del título */
+    font-weight: bold;
+    color: #333; /* Texto oscuro */
+    margin-bottom: 20px; /* Espaciado */
+}
+
+
+.popup-input-container p {
+    margin-bottom: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.popup-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f9f9f9; /* Fondo suave */
+    transition: border-color 0.3s ease-in-out;
+}
+
+.popup-input:focus {
+    border-color: #2e6171; /* Color del borde al enfocar */
+    outline: none;
+    background: #fff; /* Fondo blanco al enfocar */
+}
+
+.popup-btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: var(--Color); /* Botón principal */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.popup-btn:hover {
+    background-color: var(--buttonHover); /* Efecto hover */
+}
+
+.popup-btn-secondary {
+    margin-top: 10px;
+    background-color: #ff4d4d; /* Botón rojo para cancelar */
+}
+
+.popup-btn-secondary:hover {
+    background-color: #d03c3c; /* Hover en rojo */
+}
+
+/* Contenedor del popup */
+.popup-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* Título */
+  .popup-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Contenedor de doctores */
+  .doctors-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Cada selección de doctor */
+  .doctor-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Grupo de input */
+  .popup-input-group {
+    text-align: left;
+  }
+  
+  .popup-label {
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  
+  /* Botón desplegable */
+  .popup-dropdown-btn {
+    width: 100%;
+    padding: 10px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: left;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .popup-dropdown-btn:hover {
+    background: #e6e6e6;
+  }
+  
+  /* Lista desplegable */
+  .dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+  }
+  
+  .dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .dropdown-item:hover {
+    background: #f0f0f0;
+  }
+  
+  /* Contador de doctores */
+  .doctor-count-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .count-btn {
+    width: 40px;
+    height: 40px;
+    background: #ff4d4d;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .count-btn:hover {
+    background: #d03c3c;
+  }
+  
+  .doctor-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  /* Botón principal */
+  .popup-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: var(--Color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .popup-btn:hover {
+    background-color: var(--buttonHover);
+  }
+  
